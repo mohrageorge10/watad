@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   data_connection_checker_tv:
   dio:
-  shared_preferences:
+  shared_preferences: ^2.5.5
   go_router:
   flutter_bloc:
   equatable:

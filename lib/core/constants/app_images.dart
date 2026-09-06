@@ -16,14 +16,17 @@ class Assets {
 
   /// Assets for imagesOnboarding1
   /// assets/images/onboarding1.jpg
-  static const String imagesOnboarding1 = "assets/images/onboarding1.jpg";
+  static const String imagesOnboarding1 = "assets/images/on_boarding1.png";
 
   /// Assets for imagesOnboarding2
   /// assets/images/onboarding2.jpg
-  static const String imagesOnboarding2 = "assets/images/onboarding2.jpg";
+  static const String imagesOnboarding2 = "assets/images/on_boarding2.png";
 
   /// Assets for imagesOnboarding3
   /// assets/images/onboarding3.jpg
-  static const String imagesOnboarding3 = "assets/images/onboarding3.jpg";
+  static const String imagesOnboarding3 = "assets/images/on_boarding3.png";
+  /// Assets for imagesOnboarding4
+  /// assets/images/onboarding4.jpg
+  static const String imagesOnboarding4 = "assets/images/on_boarding4.jpg";
 }
 
