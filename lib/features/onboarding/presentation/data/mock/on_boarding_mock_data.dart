@@ -1,5 +1,5 @@
 import 'package:watad/core/constants/app_images.dart';
-import 'package:watad/features/onboarding/data/models/on_boarding_model.dart';
+import 'package:watad/features/onboarding/presentation/data/models/on_boarding_model.dart';
 
 class OnBoardingMockData {
   static const List<OnBoardingModel> items = [

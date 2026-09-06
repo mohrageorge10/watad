@@ -4,7 +4,7 @@ import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/onboarding/data/mock/on_boarding_mock_data.dart';
+import 'package:watad/features/onboarding/presentation/data/mock/on_boarding_mock_data.dart';
 import 'package:watad/features/onboarding/presentation/view/sections/on_boarding_content_section.dart';
 import 'package:watad/features/onboarding/presentation/view/sections/on_boarding_header_section.dart';
 import 'package:watad/features/onboarding/presentation/view/widgets/on_boarding_skip_button_widget.dart';

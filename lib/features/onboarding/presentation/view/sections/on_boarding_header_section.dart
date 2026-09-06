@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watad/features/onboarding/data/models/on_boarding_model.dart';
+import 'package:watad/features/onboarding/presentation/data/models/on_boarding_model.dart';
 import 'package:watad/features/onboarding/presentation/view/widgets/on_boarding_image_widget.dart';
 
 class OnBoardingHeaderSection extends StatelessWidget {

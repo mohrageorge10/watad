@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/theme/app_colors.dart';
-import 'package:watad/features/onboarding/data/models/on_boarding_model.dart';
+import 'package:watad/features/onboarding/presentation/data/models/on_boarding_model.dart';
 import 'package:watad/features/onboarding/presentation/view/widgets/on_boarding_brand_logo_widget.dart';
 import 'package:watad/features/onboarding/presentation/view/widgets/on_boarding_dot_indicator_widget.dart';
 import 'package:watad/features/onboarding/presentation/view/widgets/on_boarding_skip_button_widget.dart';
