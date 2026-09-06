@@ -6,6 +6,7 @@ import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
+import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/auth/data/mock/role_mock_data.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
 import 'package:watad/features/auth/presentation/view/sections/role_selection_footer_section.dart';
@@ -82,7 +83,7 @@ class _RoleSelectionPageState extends State<RoleSelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8FA),
+      backgroundColor: AppColors.signUp,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,

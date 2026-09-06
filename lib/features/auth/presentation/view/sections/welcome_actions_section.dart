@@ -25,9 +25,9 @@ class WelcomeActionsSection extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SocialAuthButtonWidget(
-          title: 'continue with Google',
+          title: '  continue with Google',
           icon: Container(
-            padding: EdgeInsets.all(3.r),
+            padding: EdgeInsets.all(4.r),
             decoration: const BoxDecoration(
               color: AppColors.white100,
               shape: BoxShape.circle,
@@ -37,7 +37,7 @@ class WelcomeActionsSection extends StatelessWidget {
               style: TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.w900,
-                fontSize: 16.sp,
+                fontSize: 18.sp,
                 fontFamily: 'Inter',
               ),
             ),
@@ -52,7 +52,7 @@ class WelcomeActionsSection extends StatelessWidget {
         SocialAuthButtonWidget(
           title: 'continue with Facebook',
           icon: Icon(
-            Icons.facebook,
+            Icons.facebook_sharp,
             color: AppColors.white100,
             size: 26.sp,
           ),
