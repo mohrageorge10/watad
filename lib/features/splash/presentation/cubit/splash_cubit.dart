@@ -45,6 +45,6 @@ class SplashCubit extends Cubit<SplashState> {
     }
 
     // Token is valid and unexpired
-    emit(SplashNavigate(AppRoutes.home));
+    emit(SplashNavigate(AppRoutes.projectDashboard));
   }
 }

@@ -36,6 +36,55 @@ class AppTextStyles {
     fontWeight: FontWeight.w600,
   );
 
+  // =============== Dashboard Design Tokens ===============
+  static const font22BoldPrimary = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.w700,
+    color: AppColors.primary,
+  );
+
+  static const font18SemiBoldDark = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+    color: AppColors.smallText,
+  );
+
+  static const font16BoldWhite = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w700,
+    color: AppColors.white100,
+  );
+
+  static const font14SemiBoldDark = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: AppColors.smallText,
+  );
+
+  static const font12RegularGrey = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: AppColors.deactivation,
+  );
+
+  static const font12MediumGrey = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    color: AppColors.deactivation,
+  );
+
+  static const font10MediumWhite = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.white100,
+  );
+
+  static const font10MediumDark = TextStyle(
+    fontSize: 10,
+    fontWeight: FontWeight.w500,
+    color: AppColors.smallText,
+  );
+
   // =============== Common Typography ===============
   static const font24Bold = TextStyle(
     fontSize: 24,

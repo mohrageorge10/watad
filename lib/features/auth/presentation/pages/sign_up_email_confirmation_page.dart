@@ -190,7 +190,7 @@ class _SignUpEmailConfirmationPageState
                     : 'Account confirmed successfully! Welcome to Watad!';
                 AppToast.showSuccess(context, msg);
                 // Token and expiration date are automatically saved by AuthCubit!
-                context.go(AppRoutes.home);
+                context.go(AppRoutes.projectDashboard);
               } else if (state is ResendOtpSuccessState) {
                 final msg = state.message.isNotEmpty
                     ? state.message

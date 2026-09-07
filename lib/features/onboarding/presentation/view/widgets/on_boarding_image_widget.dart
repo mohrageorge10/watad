@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class OnBoardingImageWidget extends StatelessWidget {
   final String imagePath;
   const OnBoardingImageWidget({
