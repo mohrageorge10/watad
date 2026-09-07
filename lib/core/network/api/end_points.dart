@@ -33,22 +33,53 @@ class ApiKey {
   static const String confirmPassword = "confirmPassword";
   static const String phoneNumber = "phoneNumber";
   static const String userType = "userType";
+  static const String userId = "userId";
+  static const String role = "role";
+  // token
+  static const String expirationDate = "expirationDate";
+  // refreshToken
+  static const String refreshTokenExpiration = "refreshTokenExpiration";
+
+  // ===================== Confirm email =================
+  // email
+  // otp
+
+  // ===================== Resend confirmation otp =================
+  // email
+
+  // ===================== Login =================
+  // email
+  // password
 
   // ================ OTP ===================
   static const String otp = "otp";
 
   // ================ Google Login ===================
   static const String idToken = "idToken";
+  // userType
 
   // ================ Facebook Login ===================
   static const String accessToken = "accessToken";
+  // userType
 
-  // ================ Refresh & Revoke Token ===================
+  // ================ Refresh Token ===================
   static const String refreshToken = "refreshToken";
+  // access token
+
+  // ================ Revoke Token & Logout ===================
+  // refreshToken 
+
+  // ================ Forget Password ===================
+  // email
+
+  // ================ Verify OTP ===================
+  // email
+  // otp
 
   // ================ Reset Password ===================
   static const String resetToken = "resetToken";
   static const String newPassword = "newPassword";
+  // email
 
   // ================ Verify Current Password ===================
   static const String currentPassword = "currentPassword";
@@ -56,4 +87,5 @@ class ApiKey {
   // ================ Confirm New Password ===================
   static const String otpCode = "otpCode";
   static const String confirmNewPassword = "confirmNewPassword";
+  // newPassword
 }

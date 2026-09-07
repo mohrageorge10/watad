@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/core/services/social_auth_service.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/auth/presentation/view/sections/welcome_actions_section.dart';
 import 'package:watad/features/auth/presentation/view/sections/welcome_footer_section.dart';
@@ -21,39 +24,51 @@ class _WelcomePageState extends State<WelcomePage> {
   Future<void> _handleGoogleSignIn() async {
     setState(() => _isGoogleLoading = true);
 
-    // Simulate Google Sign In token retrieval
-    await Future.delayed(const Duration(milliseconds: 600));
+    try {
+      final token = await sl<SocialAuthService>().signInWithGoogle();
 
-    if (!mounted) return;
-    setState(() => _isGoogleLoading = false);
+      if (!mounted) return;
+      setState(() => _isGoogleLoading = false);
 
-    // Pass token & provider to Role Selection screen
-    context.push(
-      AppRoutes.roleSelection,
-      extra: {
-        'provider': 'google',
-        'token': 'mock_google_id_token_watad_2026',
-      },
-    );
+      if (token != null) {
+        context.push(
+          AppRoutes.roleSelection,
+          extra: {
+            'provider': 'google',
+            'token': token,
+          },
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isGoogleLoading = false);
+      AppToast.showError(context, 'Google Sign-In failed: $e');
+    }
   }
 
   Future<void> _handleFacebookSignIn() async {
     setState(() => _isFacebookLoading = true);
 
-    // Simulate Facebook Login token retrieval
-    await Future.delayed(const Duration(milliseconds: 600));
+    try {
+      final token = await sl<SocialAuthService>().signInWithFacebook();
 
-    if (!mounted) return;
-    setState(() => _isFacebookLoading = false);
+      if (!mounted) return;
+      setState(() => _isFacebookLoading = false);
 
-    // Pass token & provider to Role Selection screen
-    context.push(
-      AppRoutes.roleSelection,
-      extra: {
-        'provider': 'facebook',
-        'token': 'mock_facebook_access_token_watad_2026',
-      },
-    );
+      if (token != null) {
+        context.push(
+          AppRoutes.roleSelection,
+          extra: {
+            'provider': 'facebook',
+            'token': token,
+          },
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isFacebookLoading = false);
+      AppToast.showError(context, 'Facebook Sign-In failed: $e');
+    }
   }
 
   void _handleEmailSignUp() {

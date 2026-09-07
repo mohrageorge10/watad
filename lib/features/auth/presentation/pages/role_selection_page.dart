@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/di/service_locator.dart';
-import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/auth/data/mock/role_mock_data.dart';
+import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
+import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:watad/features/auth/presentation/cubit/auth_state.dart';
 import 'package:watad/features/auth/presentation/view/sections/role_selection_footer_section.dart';
 import 'package:watad/features/auth/presentation/view/sections/role_selection_header_section.dart';
 import 'package:watad/features/auth/presentation/view/sections/role_selection_list_section.dart';
@@ -29,12 +31,10 @@ class RoleSelectionPage extends StatefulWidget {
 
 class _RoleSelectionPageState extends State<RoleSelectionPage> {
   RoleModel? _selectedRole;
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    // Default to first role or leave null for user selection
     if (RoleMockData.roles.isNotEmpty) {
       _selectedRole = RoleMockData.roles.first;
     }
@@ -46,76 +46,89 @@ class _RoleSelectionPageState extends State<RoleSelectionPage> {
     });
   }
 
-  Future<void> _handleContinue() async {
+  void _handleContinue(BuildContext cubitContext) {
     if (_selectedRole == null) {
       AppToast.showError(context, 'Please select a role first');
       return;
     }
 
-    setState(() => _isLoading = true);
+    final token = widget.authToken ?? 'token_placeholder';
+    final userType = _selectedRole!.userType;
 
-    try {
-      // Simulate API Authentication with role selection
-      await Future.delayed(const Duration(milliseconds: 1000));
-
-      final mockJwtToken = 'mock_jwt_token_${DateTime.now().millisecondsSinceEpoch}';
-
-      // Save token to Secure Storage
-      final secureStorage = sl<SecureStorageHelper>();
-      await secureStorage.write(key: ApiKey.token, value: mockJwtToken);
-
-      if (!mounted) return;
-      AppToast.showSuccess(context, 'Logged in successfully as ${_selectedRole!.title}');
-
-      // Navigate to Home or next destination
-      context.go(AppRoutes.home);
-    } catch (e) {
-      if (mounted) {
-        AppToast.showError(context, 'Authentication failed: $e');
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    if (widget.authProvider == 'facebook') {
+      cubitContext.read<AuthCubit>().facebookLogin(
+            FacebookLoginRequestModel(
+              accessToken: token,
+              userType: userType,
+            ),
+          );
+    } else {
+      // Default to Google Login
+      cubitContext.read<AuthCubit>().googleLogin(
+            GoogleLoginRequestModel(
+              idToken: token,
+              userType: userType,
+            ),
+          );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.signUp,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF1D1D1F)),
-          onPressed: () => context.pop(),
+    return BlocProvider(
+      create: (_) => sl<AuthCubit>(),
+      child: Scaffold(
+        backgroundColor: AppColors.signUp,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF1D1D1F)),
+            onPressed: () => context.pop(),
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 420.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const RoleSelectionHeaderSection(),
-                  RoleSelectionListSection(
-                    roles: RoleMockData.roles,
-                    selectedRole: _selectedRole,
-                    onRoleSelected: _onRoleSelected,
+        body: SafeArea(
+          child: BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is SocialLoginSuccessState) {
+                final msg = state.response.message.isNotEmpty
+                    ? state.response.message
+                    : 'Logged in successfully as ${_selectedRole!.title}';
+                AppToast.showSuccess(context, msg);
+                context.go(AppRoutes.home);
+              } else if (state is AuthErrorState) {
+                AppToast.showError(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              final bool isLoading = state is AuthLoading;
+
+              return Center(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: 420.w),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const RoleSelectionHeaderSection(),
+                        RoleSelectionListSection(
+                          roles: RoleMockData.roles,
+                          selectedRole: _selectedRole,
+                          onRoleSelected: _onRoleSelected,
+                        ),
+                        RoleSelectionFooterSection(
+                          isLoading: isLoading,
+                          isEnabled: _selectedRole != null,
+                          onContinuePressed: () => _handleContinue(context),
+                        ),
+                      ],
+                    ),
                   ),
-                  RoleSelectionFooterSection(
-                    isLoading: _isLoading,
-                    isEnabled: _selectedRole != null,
-                    onContinuePressed: _handleContinue,
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
         ),
       ),

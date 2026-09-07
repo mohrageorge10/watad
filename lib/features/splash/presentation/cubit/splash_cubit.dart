@@ -7,10 +7,13 @@ import 'splash_state.dart';
 class SplashCubit extends Cubit<SplashState> {
   final CacheHelper cacheHelper;
   SplashCubit({CacheHelper? cacheHelper})
-    : cacheHelper = cacheHelper ?? CacheHelper(),
-      super(SplashInitial());
+      : cacheHelper = cacheHelper ?? CacheHelper(),
+        super(SplashInitial());
+
   Future<void> decideNextRoute() async {
     emit(SplashLoading());
+
+    // 1. Check if user has seen Onboarding
     final bool hasSeenOnboarding =
         cacheHelper.getData(key: CacheKeys.hasSeenOnboarding) ?? false;
 
@@ -19,8 +22,29 @@ class SplashCubit extends Cubit<SplashState> {
       return;
     }
 
-    final bool isLoggedIn = await cacheHelper.containsKey(key: CacheKeys.token);
+    // 2. Check if token is stored
+    final String? token = cacheHelper.getData(key: CacheKeys.token);
 
-    emit(SplashNavigate(isLoggedIn ? AppRoutes.home : AppRoutes.welcome));
+    if (token == null || token.isEmpty) {
+      emit(SplashNavigate(AppRoutes.welcome));
+      return;
+    }
+
+    // 3. Check expiration date if available
+    final String? expirationStr =
+        cacheHelper.getData(key: CacheKeys.tokenExpiration);
+
+    if (expirationStr != null && expirationStr.isNotEmpty) {
+      final DateTime? expiration = DateTime.tryParse(expirationStr);
+      if (expiration != null && DateTime.now().isAfter(expiration)) {
+        // Token has expired -> clear stored token and send to welcome
+        await cacheHelper.removeData(key: CacheKeys.token);
+        emit(SplashNavigate(AppRoutes.welcome));
+        return;
+      }
+    }
+
+    // Token is valid and unexpired
+    emit(SplashNavigate(AppRoutes.home));
   }
 }

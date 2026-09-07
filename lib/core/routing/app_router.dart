@@ -12,10 +12,12 @@ import 'package:watad/features/auth/presentation/pages/sign_up_personal_info_pag
 import 'package:watad/features/auth/presentation/pages/sign_up_role_page.dart';
 import 'package:watad/features/auth/presentation/pages/welcome_page.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
+  observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(
       path: AppRoutes.splash,

@@ -1,15 +1,21 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
+import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
+import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:watad/features/auth/presentation/cubit/auth_state.dart';
 import 'package:watad/features/auth/presentation/view/sections/sign_up_confirmation_footer_section.dart';
 import 'package:watad/features/auth/presentation/view/sections/sign_up_header_section.dart';
+import 'package:watad/features/auth/presentation/view/widgets/spam_folder_hint_widget.dart';
 
 class SignUpEmailConfirmationPage extends StatefulWidget {
   const SignUpEmailConfirmationPage({
@@ -35,7 +41,6 @@ class SignUpEmailConfirmationPage extends StatefulWidget {
 class _SignUpEmailConfirmationPageState
     extends State<SignUpEmailConfirmationPage> {
   late final TextEditingController _otpController;
-  bool _isLoading = false;
   Timer? _resendTimer;
   int _remainingSeconds = 60;
 
@@ -91,7 +96,7 @@ class _SignUpEmailConfirmationPageState
     return '$maskedName@$maskedDomain';
   }
 
-  Future<void> _handleConfirm() async {
+  void _handleConfirm(BuildContext cubitContext) {
     final otp = _otpController.text.trim();
 
     if (otp.length < 6) {
@@ -99,31 +104,23 @@ class _SignUpEmailConfirmationPageState
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    // Simulate account creation & activation via API
-    await Future.delayed(const Duration(milliseconds: 1200));
-
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    AppToast.showSuccess(
-      context,
-      'Account created successfully! Welcome to Watad!',
-    );
-
-    context.go(AppRoutes.home);
+    cubitContext.read<AuthCubit>().confirmEmail(
+          ConfirmEmailRequestModel(
+            email: widget.email ?? '',
+            otp: otp,
+          ),
+        );
   }
 
-  Future<void> _handleResendCode() async {
+  void _handleResendCode(BuildContext cubitContext) {
     if (_remainingSeconds > 0) return;
 
-    _startResendTimer();
-
-    AppToast.showInfo(
-      context,
-      'A new activation code has been sent to your email!',
-    );
+    if (widget.email != null && widget.email!.isNotEmpty) {
+      _startResendTimer();
+      cubitContext.read<AuthCubit>().resendOtp(widget.email!);
+    } else {
+      AppToast.showError(context, 'Email is missing, please try signing up again.');
+    }
   }
 
   void _showTermsDialog() {
@@ -172,81 +169,108 @@ class _SignUpEmailConfirmationPageState
       ),
     );
 
-    return Scaffold(
-      backgroundColor: AppColors.signUp,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF1D1D1F)),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.only(
-            left: 24.w,
-            right: 24.w,
-            bottom: 24.h,
+    return BlocProvider(
+      create: (_) => sl<AuthCubit>(),
+      child: Scaffold(
+        backgroundColor: AppColors.signUp,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new, color: Color(0xFF1D1D1F)),
+            onPressed: () => context.pop(),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SignUpHeaderSection(currentStep: 4),
-              Text(
-                'Email Confirmation:',
-                style: TextStyle(
-                  color: const Color(0xFF1D1D1F),
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Inter',
+        ),
+        body: SafeArea(
+          child: BlocConsumer<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is ConfirmEmailSuccessState) {
+                final msg = state.response.message.isNotEmpty
+                    ? state.response.message
+                    : 'Account confirmed successfully! Welcome to Watad!';
+                AppToast.showSuccess(context, msg);
+                // Token and expiration date are automatically saved by AuthCubit!
+                context.go(AppRoutes.home);
+              } else if (state is ResendOtpSuccessState) {
+                final msg = state.message.isNotEmpty
+                    ? state.message
+                    : 'A new activation code has been sent to your email!';
+                AppToast.showSuccess(context, msg);
+              } else if (state is AuthErrorState) {
+                AppToast.showError(context, state.message);
+              }
+            },
+            builder: (context, state) {
+              final bool isLoading = state is AuthLoading;
+
+              return SingleChildScrollView(
+                padding: EdgeInsets.only(
+                  left: 24.w,
+                  right: 24.w,
+                  bottom: 24.h,
                 ),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                "We've sent a message with an activation code to your email ${_maskEmail(widget.email)}",
-                style: TextStyle(
-                  color: const Color(0xFF8E8E93),
-                  fontSize: 14.sp,
-                  height: 1.5,
-                  fontFamily: 'Inter',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SignUpHeaderSection(currentStep: 4),
+                    Text(
+                      'Email Confirmation:',
+                      style: TextStyle(
+                        color: const Color(0xFF1D1D1F),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      "We've sent a message with an activation code to your email ${_maskEmail(widget.email)}",
+                      style: TextStyle(
+                        color: const Color(0xFF8E8E93),
+                        fontSize: 14.sp,
+                        height: 1.5,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    const SpamFolderHintWidget(),
+                    SizedBox(height: 16.h),
+                    Center(
+                      child: Pinput(
+                        length: 6,
+                        controller: _otpController,
+                        defaultPinTheme: defaultPinTheme,
+                        focusedPinTheme: focusedPinTheme,
+                        submittedPinTheme: submittedPinTheme,
+                        onCompleted: (_) => _handleConfirm(context),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    SizedBox(height: 36.h),
+                    AppElevatedButton(
+                      title: 'Confirm',
+                      isLoading: isLoading,
+                      onPressed: () => _handleConfirm(context),
+                      backgroundColor: AppColors.primary,
+                      borderRadius: 12,
+                      height: 54,
+                      textStyle: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white100,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    SizedBox(height: 32.h),
+                    SignUpConfirmationFooterSection(
+                      remainingSeconds: _remainingSeconds,
+                      onResendCodePressed: () => _handleResendCode(context),
+                      onTermsPressed: _showTermsDialog,
+                      onPrivacyPressed: _showPrivacyDialog,
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 40.h),
-              Center(
-                child: Pinput(
-                  length: 6,
-                  controller: _otpController,
-                  defaultPinTheme: defaultPinTheme,
-                  focusedPinTheme: focusedPinTheme,
-                  submittedPinTheme: submittedPinTheme,
-                  onCompleted: (_) => _handleConfirm(),
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              SizedBox(height: 40.h),
-              AppElevatedButton(
-                title: 'Confirm',
-                isLoading: _isLoading,
-                onPressed: _handleConfirm,
-                backgroundColor: AppColors.primary,
-                borderRadius: 12,
-                height: 54,
-                textStyle: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white100,
-                  fontFamily: 'Inter',
-                ),
-              ),
-              SizedBox(height: 32.h),
-              SignUpConfirmationFooterSection(
-                remainingSeconds: _remainingSeconds,
-                onResendCodePressed: _handleResendCode,
-                onTermsPressed: _showTermsDialog,
-                onPrivacyPressed: _showPrivacyDialog,
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),

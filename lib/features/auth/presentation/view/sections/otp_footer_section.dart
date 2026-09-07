@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -23,37 +22,37 @@ class OtpFooterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final bool canResend = remainingSeconds == 0;
 
-    return Center(
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Didn't receive OTP? ",
           style: TextStyle(
             fontSize: 14.sp,
             fontFamily: 'Inter',
+            color: const Color(0xFF1D1D1F),
+            fontWeight: FontWeight.bold,
           ),
-          children: [
-            const TextSpan(
-              text: "Didn't receive OTP? ",
-              style: TextStyle(
-                color: Color(0xFF1D1D1F),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextSpan(
-              text: canResend
+        ),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: canResend ? onResendCodePressed : null,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
+            child: Text(
+              canResend
                   ? 'Re-send Code'
                   : 'Re-send in ${_formatDuration(remainingSeconds)}',
               style: TextStyle(
+                fontSize: 14.sp,
+                fontFamily: 'Inter',
                 color: canResend ? AppColors.primary : AppColors.grey400,
                 fontWeight: FontWeight.bold,
               ),
-              recognizer: canResend
-                  ? (TapGestureRecognizer()..onTap = onResendCodePressed)
-                  : null,
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
