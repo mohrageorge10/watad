@@ -220,6 +220,9 @@ class AuthCubit extends Cubit<AuthState> {
     if (user.role != null) {
       await cacheHelper.saveData(key: CacheKeys.userRole, value: user.role!);
     }
+    if (user.userType != null) {
+      await cacheHelper.saveData(key: CacheKeys.userType, value: user.userType!);
+    }
     if (user.fullName != null) {
       await cacheHelper.saveData(key: CacheKeys.userName, value: user.fullName!);
     }

@@ -12,6 +12,11 @@ import 'package:watad/features/auth/data/repositories/auth_repository_impl.dart'
 import 'package:watad/features/auth/domain/repositories/auth_repository.dart';
 import 'package:watad/features/auth/domain/usecases/auth_usecases.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:watad/features/contractor/home/data/datasources/contractor_home_remote_data_source.dart';
+import 'package:watad/features/contractor/home/data/repositories/contractor_home_repository_impl.dart';
+import 'package:watad/features/contractor/home/domain/repositories/contractor_home_repository.dart';
+import 'package:watad/features/contractor/home/domain/usecases/get_contractor_home_data_usecase.dart';
+import 'package:watad/features/contractor/home/presentation/cubit/contractor_home_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -65,6 +70,31 @@ Future<void> setupServiceLocator() async {
       facebookLoginUseCase: sl(),
       cacheHelper: sl(),
       secureStorage: sl(),
+    ),
+  );
+
+  //! Contractor Home Feature
+  // DataSource
+  sl.registerLazySingleton<ContractorHomeRemoteDataSource>(
+    () => ContractorHomeRemoteDataSourceImpl(apiConsumer: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<ContractorHomeRepository>(
+    () => ContractorHomeRepositoryImpl(
+      remoteDataSource: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+
+  // UseCase
+  sl.registerLazySingleton(() => GetContractorHomeDataUseCase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => ContractorHomeCubit(
+      getContractorHomeDataUseCase: sl(),
+      cacheHelper: sl(),
     ),
   );
 }
