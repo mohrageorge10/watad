@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:watad/main.dart';
+import 'package:watad/watad_app.dart';
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {

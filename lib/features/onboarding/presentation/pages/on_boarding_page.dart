@@ -8,7 +8,6 @@ import 'package:watad/features/onboarding/presentation/data/mock/on_boarding_moc
 import 'package:watad/features/onboarding/presentation/view/sections/on_boarding_content_section.dart';
 import 'package:watad/features/onboarding/presentation/view/sections/on_boarding_header_section.dart';
 
-
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
 

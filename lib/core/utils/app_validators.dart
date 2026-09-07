@@ -38,7 +38,10 @@ class AppValidators {
   }
 
   // 4. Confirm Password validation
-  static String? validateConfirmPassword(String? value, String? originalPassword) {
+  static String? validateConfirmPassword(
+    String? value,
+    String? originalPassword,
+  ) {
     if (value == null || value.isEmpty) {
       return "Please confirm your password";
     }
@@ -53,7 +56,7 @@ class AppValidators {
     if (value == null || value.trim().isEmpty) {
       return "Phone number is required";
     }
-    if (value.trim().length < 10) {
+    if (value.trim().length < 11) {
       return "Please enter a valid phone number";
     }
     return null;

@@ -28,7 +28,7 @@ class AppColors {
   static const Color deactivation = Color(0xFF9CA3AF);
 
   /// Sign Up Accent / Border - E6E6E6
-  static const Color signUp = Color(0xFFE6E6E6);
+  static const Color signUp = Color(0xFFF8FAFF);
 
   // ================= Base Neutrals =================
   static const Color white100 = Color(0xFFFFFFFF);
