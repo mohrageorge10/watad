@@ -3,6 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/view/home_view.dart';
 import '../cubit/main_layout_cubit.dart';
+import 'package:watad/core/di/service_locator.dart';
+import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({super.key});
@@ -24,7 +28,15 @@ class MainLayout extends StatelessWidget {
                 const Center(child: Text("Dashboard")), // 2. Dashboard
                 const Center(child: Text("Marketplace")), // 3. Marketplace
                 const Center(child: Text("Alerts")), // 4. Alerts
-                const Center(child: Text("Profile")), // 5. Profile
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      sl<AuthCubit>().logout();
+                      context.go(AppRoutes.welcome);
+                    },
+                    child: const Text('Logout'),
+                  ),
+                ), // 5. Profile
               ],
             ),
             bottomNavigationBar: Container(
