@@ -15,6 +15,8 @@ class AppColors {
 
   /// Main Background - EDEFFE
   static const Color background = Color(0xFFEDEFFE);
+  /// second Background - F8FAFF
+  static const Color secondBackground = Color(0xffF8FAFF);
 
   /// Small Text - 1E1E1E
   static const Color smallText = Color(0xFF1E1E1E);

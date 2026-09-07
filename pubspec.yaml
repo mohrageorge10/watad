@@ -47,6 +47,8 @@ dependencies:
   get_it:
   dartz:
   flutter_screenutil: ^5.9.3
+  fl_chart: ^1.2.0
+  intl: ^0.20.3
 
 dev_dependencies:
   flutter_test:

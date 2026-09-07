@@ -4,6 +4,7 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:watad/core/errors/exceptions.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
+import 'package:watad/core/network/api/temp_auth_interceptor.dart';
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
@@ -16,6 +17,8 @@ class DioConsumer extends ApiConsumer {
     };
     dio.options.connectTimeout = const Duration(seconds: 30);
     dio.options.receiveTimeout = const Duration(seconds: 30);
+
+    dio.interceptors.add(TempAuthInterceptor());
 
     if (kDebugMode) {
       dio.interceptors.add(

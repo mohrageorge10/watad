@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watad/core/theme/app_colors.dart';
+
 
 class OnBoardingImageWidget extends StatelessWidget {
   final String imagePath;

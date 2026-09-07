@@ -21,6 +21,6 @@ class SplashCubit extends Cubit<SplashState> {
 
     final bool isLoggedIn = await cacheHelper.containsKey(key: CacheKeys.token);
 
-    emit(SplashNavigate(isLoggedIn ? AppRoutes.home : AppRoutes.loginScreen));
+    emit(SplashNavigate(isLoggedIn ? AppRoutes.projectDashboard : AppRoutes.loginScreen));
   }
 }
