@@ -12,4 +12,6 @@ class AppRoutes {
   static const String otpScreen = '/otp';
   static const String resetPasswordScreen = '/reset-password';
   static const String roleSelection = '/role-selection';
+  static const String contractorProfile = '/contractor-profile';
+  static const String editProfile = '/edit-profile';
 }

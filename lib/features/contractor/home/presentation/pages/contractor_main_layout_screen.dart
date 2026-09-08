@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_home_page.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
+import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 
 class ContractorMainLayoutScreen extends StatefulWidget {
   const ContractorMainLayoutScreen({super.key});
@@ -51,31 +52,32 @@ class _ContractorMainLayoutScreenState
         children: [
           // Tab 0: Home (Dynamic Data-driven Home Screen)
           ContractorHomePage(
-            onNavigateToMarketplace: () => _onTabTapped(2),
+            onNavigateToMarketplace: () => _onTabTapped(1),
+            onNavigateToProfile: () => _onTabTapped(4),
           ),
 
-          // Tab 1: Dashboard Placeholder
-          const _PlaceholderTabScreen(
-            title: 'Dashboard',
-            icon: Icons.dashboard_outlined,
-          ),
-
-          // Tab 2: Marketplace Placeholder
+          // Tab 1: Marketplace Placeholder
           const _PlaceholderTabScreen(
             title: 'Marketplace',
+            icon: Icons.grid_view_rounded,
+          ),
+
+          // Tab 2: My Projects Placeholder
+          const _PlaceholderTabScreen(
+            title: 'My Projects',
             icon: Icons.shopping_bag_outlined,
           ),
 
-          // Tab 3: Alerts Placeholder
+          // Tab 3: My Bids Placeholder
           const _PlaceholderTabScreen(
-            title: 'Alerts',
-            icon: Icons.notifications_none_rounded,
+            title: 'My Bids',
+            icon: Icons.article_outlined,
           ),
 
-          // Tab 4: Profile Placeholder
-          const _PlaceholderTabScreen(
-            title: 'Profile',
-            icon: Icons.person_outline_rounded,
+          // Tab 4: Profile
+          ContractorProfilePage(
+            showBottomNavBar: false,
+            onNavigateToMyProjects: () => _onTabTapped(2),
           ),
         ],
       ),

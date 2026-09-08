@@ -14,6 +14,9 @@ import 'package:watad/features/auth/presentation/pages/sign_up_personal_info_pag
 import 'package:watad/features/auth/presentation/pages/sign_up_role_page.dart';
 import 'package:watad/features/auth/presentation/pages/welcome_page.dart';
 import 'package:watad/features/contractor/home/presentation/pages/home_gate_screen.dart';
+import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
+import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
+import 'package:watad/features/contractor/profile/presentation/pages/edit_profile_page.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
@@ -46,7 +49,7 @@ CustomTransitionPage<void> _buildAnimatedPage({
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.splash,
+  initialLocation: AppRoutes.home,
   observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(
@@ -178,6 +181,22 @@ final GoRouter appRouter = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.contractorProfile,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const ContractorProfilePage(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.editProfile,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: EditProfilePage(
+          cubit: state.extra as ContractorProfileCubit?,
+        ),
+      ),
     ),
   ],
 );

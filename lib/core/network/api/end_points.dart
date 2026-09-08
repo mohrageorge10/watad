@@ -1,6 +1,6 @@
 class EndPoints {
   static const String baseUrl =
-      "https://watad-c5c6hkgmcxe5dzeg.uaenorth-01.azurewebsites.net/api/";
+      "http://watad-api.runasp.net/api/";
   // =================== Auth ===================
   static const String signUp = "Auth/register";
   static const String confirmEmail = "Auth/confirm-email";

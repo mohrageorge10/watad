@@ -16,9 +16,11 @@ class ContractorHomeView extends StatelessWidget {
   const ContractorHomeView({
     super.key,
     this.onNavigateToMarketplace,
+    this.onNavigateToProfile,
   });
 
   final VoidCallback? onNavigateToMarketplace;
+  final VoidCallback? onNavigateToProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -60,13 +62,13 @@ class ContractorHomeView extends StatelessWidget {
                       userName: homeData.userName,
                       headline: homeData.headline,
                       onNotificationTap: () {},
-                      onProfileTap: () {},
+                      onProfileTap: onNavigateToProfile,
                     ),
 
                     // 2. Complete Profile Floating Card
                     CompleteProfileSection(
                       text: homeData.completeProfileText,
-                      onTap: () {},
+                      onTap: onNavigateToProfile,
                     ),
 
                     // 3. Active Projects Section (decides internally whether to show items or empty card)

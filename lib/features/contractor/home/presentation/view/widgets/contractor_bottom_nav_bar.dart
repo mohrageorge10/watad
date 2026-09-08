@@ -35,26 +35,26 @@ class ContractorBottomNavBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _NavItem(
-                icon: Icons.home_rounded,
+                icon: Icons.home_outlined,
                 label: 'Home',
                 isSelected: currentIndex == 0,
                 onTap: () => onTap(0),
               ),
               _NavItem(
-                icon: Icons.dashboard_outlined,
-                label: 'Dashboard',
+                icon: Icons.grid_view_rounded,
+                label: 'Marketplace',
                 isSelected: currentIndex == 1,
                 onTap: () => onTap(1),
               ),
               _NavItem(
                 icon: Icons.shopping_bag_outlined,
-                label: 'Marketplace',
+                label: 'My Projects',
                 isSelected: currentIndex == 2,
                 onTap: () => onTap(2),
               ),
               _NavItem(
-                icon: Icons.notifications_none_rounded,
-                label: 'Alerts',
+                icon: Icons.article_outlined,
+                label: 'My Bids',
                 isSelected: currentIndex == 3,
                 hasBadge: hasNewAlerts,
                 onTap: () => onTap(3),

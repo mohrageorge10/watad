@@ -17,6 +17,11 @@ import 'package:watad/features/contractor/home/data/repositories/contractor_home
 import 'package:watad/features/contractor/home/domain/repositories/contractor_home_repository.dart';
 import 'package:watad/features/contractor/home/domain/usecases/get_contractor_home_data_usecase.dart';
 import 'package:watad/features/contractor/home/presentation/cubit/contractor_home_cubit.dart';
+import 'package:watad/features/contractor/profile/data/datasources/contractor_profile_remote_data_source.dart';
+import 'package:watad/features/contractor/profile/data/repositories/contractor_profile_repository_impl.dart';
+import 'package:watad/features/contractor/profile/domain/repositories/contractor_profile_repository.dart';
+import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_profile_usecase.dart';
+import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -94,6 +99,31 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(
     () => ContractorHomeCubit(
       getContractorHomeDataUseCase: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+
+  //! Contractor Profile Feature
+  // DataSource
+  sl.registerLazySingleton<ContractorProfileRemoteDataSource>(
+    () => ContractorProfileRemoteDataSourceImpl(apiConsumer: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<ContractorProfileRepository>(
+    () => ContractorProfileRepositoryImpl(
+      remoteDataSource: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+
+  // UseCase
+  sl.registerLazySingleton(() => GetContractorProfileUseCase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => ContractorProfileCubit(
+      getContractorProfileUseCase: sl(),
       cacheHelper: sl(),
     ),
   );
