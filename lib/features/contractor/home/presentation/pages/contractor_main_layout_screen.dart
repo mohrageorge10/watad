@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_home_page.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
+import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 
 class ContractorMainLayoutScreen extends StatefulWidget {
@@ -62,10 +63,10 @@ class _ContractorMainLayoutScreenState
             icon: Icons.grid_view_rounded,
           ),
 
-          // Tab 2: My Projects Placeholder
-          const _PlaceholderTabScreen(
-            title: 'My Projects',
-            icon: Icons.shopping_bag_outlined,
+          // Tab 2: My Projects (Portfolio Projects Screen)
+          PortfolioProjectsScreen(
+            showBottomNavBar: false,
+            onBackTap: () => _onTabTapped(0),
           ),
 
           // Tab 3: My Bids Placeholder

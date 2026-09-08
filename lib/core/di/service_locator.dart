@@ -22,6 +22,11 @@ import 'package:watad/features/contractor/profile/data/repositories/contractor_p
 import 'package:watad/features/contractor/profile/domain/repositories/contractor_profile_repository.dart';
 import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_profile_usecase.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
+import 'package:watad/features/contractor/portfolio/data/datasources/portfolio_remote_data_source.dart';
+import 'package:watad/features/contractor/portfolio/data/repositories/portfolio_repository_impl.dart';
+import 'package:watad/features/contractor/portfolio/domain/repositories/portfolio_repository.dart';
+import 'package:watad/features/contractor/portfolio/domain/usecases/get_portfolio_projects_usecase.dart';
+import 'package:watad/features/contractor/portfolio/presentation/cubit/portfolio_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -124,6 +129,28 @@ Future<void> setupServiceLocator() async {
   sl.registerFactory(
     () => ContractorProfileCubit(
       getContractorProfileUseCase: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+
+  //! Contractor Portfolio Feature
+  // DataSource
+  sl.registerLazySingleton<PortfolioRemoteDataSource>(
+    () => PortfolioRemoteDataSourceImpl(apiConsumer: sl()),
+  );
+
+  // Repository
+  sl.registerLazySingleton<PortfolioRepository>(
+    () => PortfolioRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // UseCase
+  sl.registerLazySingleton(() => GetPortfolioProjectsUseCase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => PortfolioCubit(
+      getPortfolioProjectsUseCase: sl(),
       cacheHelper: sl(),
     ),
   );

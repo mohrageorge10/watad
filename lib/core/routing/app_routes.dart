@@ -14,4 +14,6 @@ class AppRoutes {
   static const String roleSelection = '/role-selection';
   static const String contractorProfile = '/contractor-profile';
   static const String editProfile = '/edit-profile';
+  static const String portfolioProjects = '/portfolio-projects';
+  static const String myProjects = '/my-projects';
 }

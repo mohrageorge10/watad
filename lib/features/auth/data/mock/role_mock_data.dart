@@ -15,19 +15,19 @@ class RoleMockData {
       id: "0",
       title: "Project Owner",
       icon: AppIcons.projectOwner,
-      userType: 1,
+      userType: 0,
     ),
     RoleModel(
       id: "1",
       title: "Engineer",
       icon: AppIcons.engineer,
-      userType: 3,
+      userType: 1,
     ),
     RoleModel(
       id: "3",
       title: "Consultant",
       icon: AppIcons.consultant,
-      userType: 4,
+      userType: 3,
     ),
   ];
 }

@@ -9,4 +9,5 @@ void main() async {
   await setupServiceLocator();
 
   runApp(const WatadApp());
+
 }

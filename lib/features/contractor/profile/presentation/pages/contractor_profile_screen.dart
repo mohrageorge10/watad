@@ -153,7 +153,7 @@ class ContractorProfileScreen extends StatelessWidget {
                           if (onNavigateToMyProjects != null) {
                             onNavigateToMyProjects!();
                           } else {
-                            cubit.selectTab(1);
+                            context.push(AppRoutes.portfolioProjects);
                           }
                         },
                       ),
@@ -161,7 +161,13 @@ class ContractorProfileScreen extends StatelessWidget {
                       // Portfolio Tab Content
                       PortfolioSection(
                         profile: profile,
-                        onViewAllTap: onNavigateToMyProjects,
+                        onViewAllTap: () {
+                          if (onNavigateToMyProjects != null) {
+                            onNavigateToMyProjects!();
+                          } else {
+                            context.push(AppRoutes.portfolioProjects);
+                          }
+                        },
                       ),
                     ] else ...[
                       // Reviews Tab Content
@@ -179,8 +185,15 @@ class ContractorProfileScreen extends StatelessWidget {
         },
       ),
       bottomNavigationBar: showBottomNavBar
-          ? const ContractorProfileBottomNavBar(
+          ? ContractorProfileBottomNavBar(
               currentIndex: 4,
+              onTap: (index) {
+                if (index == 2) {
+                  context.push(AppRoutes.portfolioProjects);
+                } else if (index == 0) {
+                  context.go(AppRoutes.home);
+                }
+              },
             )
           : null,
     );
