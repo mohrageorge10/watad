@@ -9,10 +9,12 @@ class ContractorHomePage extends StatelessWidget {
     super.key,
     this.onNavigateToMarketplace,
     this.onNavigateToProfile,
+    this.onNavigateToBids,
   });
 
   final VoidCallback? onNavigateToMarketplace;
   final VoidCallback? onNavigateToProfile;
+  final VoidCallback? onNavigateToBids;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,7 @@ class ContractorHomePage extends StatelessWidget {
       child: ContractorHomeView(
         onNavigateToMarketplace: onNavigateToMarketplace,
         onNavigateToProfile: onNavigateToProfile,
+        onNavigateToBids: onNavigateToBids,
       ),
     );
   }

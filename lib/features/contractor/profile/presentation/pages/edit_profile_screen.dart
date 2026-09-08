@@ -56,7 +56,7 @@ class EditProfileScreen extends StatelessWidget {
                 String? taxId,
               }) async {
                 if (activeCubit != null) {
-                  await activeCubit.updateProfile(
+                  final error = await activeCubit.updateProfile(
                     name: name,
                     companyName: companyName,
                     yearsOfExperience: experience,
@@ -66,10 +66,18 @@ class EditProfileScreen extends StatelessWidget {
                     commercialRegister: commercialRegister,
                     taxCard: taxId,
                   );
-                }
-                if (context.mounted) {
-                  AppToast.showSuccess(context, 'Profile updated successfully!');
-                  context.pop();
+
+                  if (context.mounted) {
+                    if (error != null) {
+                      AppToast.showError(context, error);
+                    } else {
+                      AppToast.showSuccess(
+                        context,
+                        'Profile updated successfully!',
+                      );
+                      context.pop(true);
+                    }
+                  }
                 }
               },
               onCancel: () => context.pop(),

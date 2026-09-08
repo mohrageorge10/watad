@@ -16,10 +16,28 @@ class EndPoints {
   static const String resetPassword = "Auth/reset-password";
   static const String verifyCurrentPassword =
       "Auth/change-password/verify-current";
-  static const String confirmNewPassword = "Auth/change-password/confirm";
+  // =================== Projects ===================
+  static const String contractorProjects = "Projects/contractor-projects";
+
+  // =================== Bids ===================
+  static const String contractorBids = "Bids/contractor-bids";
+
+  // =================== Contractor ===================
+  static const String contractorProfile = "Contractor/profile";
+  static const String contractorPortfolio = "Contractor/portfolio";
+}
+
+class ApiQueryParams {
+  static const String pageNumber = "pageNumber";
+  static const String pageSize = "pageSize";
+  static const String status = "status";
 }
 
 class ApiKey {
+  // ================ Headers ================
+  static const String authorization = "Authorization";
+  static String bearer(String token) => "Bearer $token";
+
   // ================ Response =============
   static const String message = "message";
   static const String isSuccess = "isSuccess";

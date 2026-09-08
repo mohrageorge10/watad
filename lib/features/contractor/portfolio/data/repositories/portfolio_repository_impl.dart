@@ -22,4 +22,14 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       return ApiResult.failure(ErrorHandler.handle(e));
     }
   }
+
+  @override
+  Future<ApiResult<List<PortfolioItemModel>>> fetchContractorPortfolio() async {
+    try {
+      final projects = await remoteDataSource.fetchContractorPortfolio();
+      return ApiResult.success(projects);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
 }

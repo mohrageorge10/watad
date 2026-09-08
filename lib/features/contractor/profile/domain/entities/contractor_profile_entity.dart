@@ -17,6 +17,7 @@ class ContractorProfileEntity extends Equatable {
   final List<String> coveredGovernorates;
   final List<String> portfolioImages;
   final String? profileImagePath;
+  final bool? isCompleted;
 
   const ContractorProfileEntity({
     required this.id,
@@ -35,7 +36,18 @@ class ContractorProfileEntity extends Equatable {
     required this.coveredGovernorates,
     required this.portfolioImages,
     this.profileImagePath,
+    this.isCompleted,
   });
+
+  bool get isProfileComplete {
+    if (isCompleted != null) return isCompleted!;
+    return companyName.trim().isNotEmpty &&
+        commercialRegister.trim().isNotEmpty &&
+        commercialRegister.trim() != '-' &&
+        taxCard.trim().isNotEmpty &&
+        taxCard.trim() != '-' &&
+        aboutMe.trim().isNotEmpty;
+  }
 
   ContractorProfileEntity copyWith({
     String? id,
@@ -55,6 +67,7 @@ class ContractorProfileEntity extends Equatable {
     List<String>? portfolioImages,
     String? profileImagePath,
     bool clearProfileImage = false,
+    bool? isCompleted,
   }) {
     return ContractorProfileEntity(
       id: id ?? this.id,
@@ -75,6 +88,7 @@ class ContractorProfileEntity extends Equatable {
       profileImagePath: clearProfileImage
           ? null
           : (profileImagePath ?? this.profileImagePath),
+      isCompleted: isCompleted ?? this.isCompleted,
     );
   }
 
@@ -96,5 +110,6 @@ class ContractorProfileEntity extends Equatable {
         coveredGovernorates,
         portfolioImages,
         profileImagePath,
+        isCompleted,
       ];
 }

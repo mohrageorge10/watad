@@ -23,15 +23,42 @@ class PortfolioProjectItemModel {
 
   factory PortfolioProjectItemModel.fromJson(Map<String, dynamic> json) {
     final badgeMap = json['badge'] as Map<String, dynamic>?;
+    final status = json['status']?.toString();
+    final badgeText = badgeMap?['text'] as String? ??
+        (json['badgeText'] as String? ?? (status ?? 'Completed'));
+    final badgeType = badgeMap?['type'] as String? ??
+        (json['badgeType'] as String? ??
+            ((status != null &&
+                    (status.toLowerCase().contains('complete') ||
+                        status.toLowerCase().contains('finish') ||
+                        status.toLowerCase().contains('done')))
+                ? 'success'
+                : 'success'));
+
     return PortfolioProjectItemModel(
-      id: json['id']?.toString() ?? '',
-      title: json['title'] as String? ?? '',
-      location: json['location'] as String? ?? '',
-      price: json['price'] as String? ?? '',
-      date: json['date'] as String? ?? '',
-      image: json['image'] as String? ?? '',
-      badgeText: badgeMap?['text'] as String? ?? (json['badgeText'] as String? ?? ''),
-      badgeType: badgeMap?['type'] as String? ?? (json['badgeType'] as String? ?? 'success'),
+      id: json['id']?.toString() ?? json['projectId']?.toString() ?? '',
+      title: json['title'] as String? ??
+          json['projectName'] as String? ??
+          json['name'] as String? ??
+          '',
+      location: json['location'] as String? ??
+          json['city'] as String? ??
+          json['address'] as String? ??
+          '',
+      price: json['price']?.toString() ??
+          json['budget']?.toString() ??
+          json['cost']?.toString() ??
+          '',
+      date: json['date'] as String? ??
+          json['completionDate'] as String? ??
+          json['createdAt'] as String? ??
+          '',
+      image: json['image'] as String? ??
+          json['imageUrl'] as String? ??
+          json['coverImage'] as String? ??
+          '',
+      badgeText: badgeText.isNotEmpty ? badgeText : 'Completed',
+      badgeType: badgeType,
     );
   }
 
@@ -48,3 +75,5 @@ class PortfolioProjectItemModel {
         },
       };
 }
+
+typedef PortfolioItemModel = PortfolioProjectItemModel;

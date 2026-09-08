@@ -3,10 +3,12 @@ import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_profile_usecase.dart';
+import 'package:watad/features/contractor/profile/domain/usecases/update_contractor_profile_usecase.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_state.dart';
 
 class ContractorProfileCubit extends Cubit<ContractorProfileState> {
   final GetContractorProfileUseCase getContractorProfileUseCase;
+  final UpdateContractorProfileUseCase? updateContractorProfileUseCase;
   final CacheHelper cacheHelper;
 
   static const String _kCachedProfileImage = 'contractor_cached_profile_image';
@@ -19,6 +21,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
 
   ContractorProfileCubit({
     required this.getContractorProfileUseCase,
+    this.updateContractorProfileUseCase,
     required this.cacheHelper,
   }) : super(ContractorProfileInitial());
 
@@ -74,7 +77,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
     }
   }
 
-  Future<void> updateProfile({
+  Future<String?> updateProfile({
     required String name,
     required String companyName,
     required String yearsOfExperience,
@@ -84,6 +87,36 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
     String? commercialRegister,
     String? taxCard,
   }) async {
+    // 1. Prepare typed payload according to API specifications
+    final int expInt = int.tryParse(yearsOfExperience.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+    final String govStr = coveredGovernorates.join(', ');
+    final String specStr = specializations.isNotEmpty ? specializations.first : '';
+
+    final Map<String, dynamic> profileData = {
+      'companyName': companyName,
+      'commercialRegister': commercialRegister ?? '',
+      'taxCard': taxCard ?? '',
+      'bio': aboutMe,
+      'specialization': specStr,
+      'coveredGovernorates': govStr,
+      'yearsOfExperience': expInt,
+    };
+
+    // 2. Call API via UseCase if available
+    if (updateContractorProfileUseCase != null) {
+      final result = await updateContractorProfileUseCase!(profileData: profileData);
+      String? errorMessage;
+      result.fold(
+        (_) => null,
+        (failure) => errorMessage = failure.errMessage,
+      );
+
+      if (errorMessage != null) {
+        return errorMessage;
+      }
+    }
+
+    // 3. Update local state and cache upon successful API call
     if (state is ContractorProfileSuccess) {
       final current = (state as ContractorProfileSuccess).profile;
       final updated = current.copyWith(
@@ -111,6 +144,8 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
 
       emit((state as ContractorProfileSuccess).copyWith(profile: updated));
     }
+
+    return null; // Null indicates success
   }
 
   Future<void> updateProfileImage(String imagePath) async {

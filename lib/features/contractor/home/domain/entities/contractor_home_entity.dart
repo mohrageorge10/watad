@@ -9,6 +9,7 @@ class ContractorHomeEntity extends Equatable {
   final int ongoingProjectsCount;
   final List<ContractorProjectEntity> activeProjects;
   final List<ContractorBidEntity> recentBids;
+  final bool isProfileComplete;
 
   const ContractorHomeEntity({
     required this.userName,
@@ -17,6 +18,7 @@ class ContractorHomeEntity extends Equatable {
     required this.ongoingProjectsCount,
     required this.activeProjects,
     required this.recentBids,
+    this.isProfileComplete = false,
   });
 
   bool get isEmptyState => activeProjects.isEmpty && recentBids.isEmpty;
@@ -29,5 +31,6 @@ class ContractorHomeEntity extends Equatable {
         ongoingProjectsCount,
         activeProjects,
         recentBids,
+        isProfileComplete,
       ];
 }

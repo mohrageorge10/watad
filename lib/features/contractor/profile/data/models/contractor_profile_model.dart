@@ -18,41 +18,48 @@ class ContractorProfileModel extends ContractorProfileEntity {
     required super.coveredGovernorates,
     required super.portfolioImages,
     super.profileImagePath,
+    super.isCompleted,
   });
 
   factory ContractorProfileModel.fromJson(Map<String, dynamic> json) {
     return ContractorProfileModel(
-      id: json['id'] as String? ?? 'contractor_1',
-      name: json['name'] as String? ?? 'Ahmed Khaled Hassan',
-      companyName: json['companyName'] as String? ?? 'Delta Construction Co.',
-      rating: (json['rating'] as num?)?.toDouble() ?? 4.8,
-      reviewsCount: json['reviewsCount'] as int? ?? 124,
-      isVerified: json['isVerified'] as bool? ?? true,
-      yearsOfExperience: json['yearsOfExperience'] as String? ?? '8+',
-      projectsCompiled: json['projectsCompiled'] as String? ?? '15+',
-      verificationStatus: json['verificationStatus'] as String? ?? '✓ Verified',
-      commercialRegister: json['commercialRegister'] as String? ?? '123456789',
-      taxCard: json['taxCard'] as String? ?? '987654321',
+      id: json['id']?.toString() ?? json['userId']?.toString() ?? '',
+      name: json['name'] as String? ?? json['fullName'] as String? ?? '',
+      companyName: json['companyName'] as String? ?? '',
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      reviewsCount: json['reviewsCount'] as int? ?? 0,
+      isVerified: json['isVerified'] as bool? ?? false,
+      yearsOfExperience: json['yearsOfExperience']?.toString() ?? '',
+      projectsCompiled: json['projectsCompiled']?.toString() ??
+          json['completedProjectsCount']?.toString() ??
+          '0',
+      verificationStatus: json['verificationStatus'] as String? ?? '',
+      commercialRegister: json['commercialRegister'] as String? ??
+          json['commercialRegistrationNumber'] as String? ??
+          '',
+      taxCard: json['taxCard'] as String? ?? json['taxNumber'] as String? ?? '',
       aboutMe: json['aboutMe'] as String? ??
-          'We are a leading construction company with extensive experience in residential and commercial projects. We are committed to delivering high-quality work, on time and within budget.',
+          json['bio'] as String? ??
+          json['description'] as String? ??
+          '',
       specializations: (json['specializations'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          const ['Residential Construction'],
+          const [],
       coveredGovernorates: (json['coveredGovernorates'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          const ['Cairo', 'Giza', 'Alexandria', '6th of October'],
+          const [],
       portfolioImages: (json['portfolioImages'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
-          const [
-            'portfolio_1.png',
-            'portfolio_2.png',
-            'portfolio_3.png',
-            'portfolio_4.png',
-          ],
-      profileImagePath: json['profileImagePath'] as String?,
+          const [],
+      profileImagePath: json['profileImagePath'] as String? ??
+          json['profileImage'] as String? ??
+          json['imageUrl'] as String?,
+      isCompleted: json['isCompleted'] as bool? ??
+          json['isProfileCompleted'] as bool? ??
+          json['isProfileComplete'] as bool?,
     );
   }
 
@@ -74,6 +81,7 @@ class ContractorProfileModel extends ContractorProfileEntity {
       'coveredGovernorates': coveredGovernorates,
       'portfolioImages': portfolioImages,
       'profileImagePath': profileImagePath,
+      'isCompleted': isCompleted,
     };
   }
 }

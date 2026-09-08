@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/cubit/contractor_home_cubit.dart';
@@ -17,10 +19,12 @@ class ContractorHomeView extends StatelessWidget {
     super.key,
     this.onNavigateToMarketplace,
     this.onNavigateToProfile,
+    this.onNavigateToBids,
   });
 
   final VoidCallback? onNavigateToMarketplace;
   final VoidCallback? onNavigateToProfile;
+  final VoidCallback? onNavigateToBids;
 
   @override
   Widget build(BuildContext context) {
@@ -65,11 +69,12 @@ class ContractorHomeView extends StatelessWidget {
                       onProfileTap: onNavigateToProfile,
                     ),
 
-                    // 2. Complete Profile Floating Card
-                    CompleteProfileSection(
-                      text: homeData.completeProfileText,
-                      onTap: onNavigateToProfile,
-                    ),
+                    // 2. Complete Profile Floating Card (only shown if profile is incomplete)
+                    if (!homeData.isProfileComplete)
+                      CompleteProfileSection(
+                        text: homeData.completeProfileText,
+                        onTap: onNavigateToProfile,
+                      ),
 
                     // 3. Active Projects Section (decides internally whether to show items or empty card)
                     ActiveProjectsSection(
@@ -90,7 +95,10 @@ class ContractorHomeView extends StatelessWidget {
                     SizedBox(height: 24.h),
                     RecentBidsSection(
                       bids: homeData.recentBids,
-                      onViewAllTap: () {},
+                      onViewAllTap: onNavigateToBids ??
+                          () {
+                            context.push(AppRoutes.contractorBids);
+                          },
                       onBidTap: (bid) {},
                       onBrowseTendersTap: onNavigateToMarketplace,
                     ),

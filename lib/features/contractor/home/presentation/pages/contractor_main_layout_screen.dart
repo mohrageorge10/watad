@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_home_page.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 
@@ -54,6 +55,7 @@ class _ContractorMainLayoutScreenState
           // Tab 0: Home (Dynamic Data-driven Home Screen)
           ContractorHomePage(
             onNavigateToMarketplace: () => _onTabTapped(1),
+            onNavigateToBids: () => _onTabTapped(3),
             onNavigateToProfile: () => _onTabTapped(4),
           ),
 
@@ -69,10 +71,9 @@ class _ContractorMainLayoutScreenState
             onBackTap: () => _onTabTapped(0),
           ),
 
-          // Tab 3: My Bids Placeholder
-          const _PlaceholderTabScreen(
-            title: 'My Bids',
-            icon: Icons.article_outlined,
+          // Tab 3: My Bids (Contractor Bids with infinite scroll)
+          const ContractorBidsScreen(
+            showBackButton: false,
           ),
 
           // Tab 4: Profile

@@ -33,4 +33,26 @@ class ContractorProfileRepositoryImpl implements ContractorProfileRepository {
       return ApiResult.failure(ErrorHandler.handle(e));
     }
   }
+
+  @override
+  Future<ApiResult<ContractorProfileEntity>> fetchContractorProfile() async {
+    try {
+      final result = await remoteDataSource.fetchContractorProfile();
+      return ApiResult.success(result);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> updateContractorProfile({
+    required Map<String, dynamic> profileData,
+  }) async {
+    try {
+      await remoteDataSource.updateContractorProfile(profileData: profileData);
+      return ApiResult.success(null);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
 }

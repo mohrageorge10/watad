@@ -18,6 +18,7 @@ import 'package:watad/features/contractor/profile/presentation/cubit/contractor_
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/edit_profile_page.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
@@ -211,6 +212,20 @@ final GoRouter appRouter = GoRouter(
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const PortfolioProjectsScreen(),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.contractorBids,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const ContractorBidsScreen(showBackButton: true),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.myBids,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const ContractorBidsScreen(showBackButton: true),
       ),
     ),
   ],

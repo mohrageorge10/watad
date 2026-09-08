@@ -5,4 +5,10 @@ abstract class ContractorProfileRepository {
   Future<ApiResult<ContractorProfileEntity>> getContractorProfile({
     required String contractorId,
   });
+
+  Future<ApiResult<ContractorProfileEntity>> fetchContractorProfile();
+
+  Future<ApiResult<void>> updateContractorProfile({
+    required Map<String, dynamic> profileData,
+  });
 }

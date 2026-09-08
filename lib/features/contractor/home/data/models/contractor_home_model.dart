@@ -10,6 +10,7 @@ class ContractorHomeModel extends ContractorHomeEntity {
     required super.ongoingProjectsCount,
     required super.activeProjects,
     required super.recentBids,
+    super.isProfileComplete = false,
   });
 
   factory ContractorHomeModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +36,7 @@ class ContractorHomeModel extends ContractorHomeEntity {
           activeProjectsList.length,
       activeProjects: activeProjectsList,
       recentBids: recentBidsList,
+      isProfileComplete: json['is_profile_complete'] as bool? ?? false,
     );
   }
 
@@ -49,6 +51,7 @@ class ContractorHomeModel extends ContractorHomeEntity {
           .toList(),
       'recent_bids':
           recentBids.map((e) => (e as ContractorBidModel).toJson()).toList(),
+      'is_profile_complete': isProfileComplete,
     };
   }
 }

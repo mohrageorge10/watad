@@ -56,4 +56,14 @@ class AppColors {
   static const Color grey900 = smallText;
 
   static const Color accent = icon;
+
+  // ================= Project Status Palette =================
+  static const Color statusPending = Color(0xFFF59E0B);
+  static const Color statusInProgress = accept;
+  static const Color statusCompleted = Color(0xFF10B981);
+  static const Color statusCancelled = alert;
+  static const Color statusOnHold = Color(0xFF6B7280);
+  static const Color statusUnderReview = Color(0xFF3B82F6);
+  static const Color statusApproved = Color(0xFF8B5CF6);
+  static const Color statusRejected = alert;
 }

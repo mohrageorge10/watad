@@ -37,6 +37,7 @@ class DioConsumer extends ApiConsumer {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
     bool isFormData = false,
   }) async {
     try {
@@ -46,6 +47,7 @@ class DioConsumer extends ApiConsumer {
             ? FormData.fromMap(data)
             : data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
       return response.data;
     } on DioException catch (e) {
@@ -59,12 +61,14 @@ class DioConsumer extends ApiConsumer {
     String path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
   }) async {
     try {
       final response = await dio.get(
         path,
         data: data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
       return response.data;
     } on DioException catch (e) {
@@ -78,12 +82,14 @@ class DioConsumer extends ApiConsumer {
     String path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
   }) async {
     try {
       final response = await dio.delete(
         path,
         data: data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
       return response.data;
     } on DioException catch (e) {
@@ -97,6 +103,7 @@ class DioConsumer extends ApiConsumer {
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
     bool isFormData = false,
   }) async {
     try {
@@ -106,6 +113,31 @@ class DioConsumer extends ApiConsumer {
             ? FormData.fromMap(data)
             : data,
         queryParameters: queryParameters,
+        options: Options(headers: headers),
+      );
+      return response.data;
+    } on DioException catch (e) {
+      handleDioException(e);
+    }
+  }
+
+  //! PUT
+  @override
+  Future<dynamic> put(
+    String path, {
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+    bool isFormData = false,
+  }) async {
+    try {
+      final response = await dio.put(
+        path,
+        data: isFormData && data is Map<String, dynamic>
+            ? FormData.fromMap(data)
+            : data,
+        queryParameters: queryParameters,
+        options: Options(headers: headers),
       );
       return response.data;
     } on DioException catch (e) {

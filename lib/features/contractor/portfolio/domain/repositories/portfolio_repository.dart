@@ -5,4 +5,6 @@ abstract class PortfolioRepository {
   Future<ApiResult<List<PortfolioProjectItemModel>>> getPortfolioProjects({
     required String contractorId,
   });
+
+  Future<ApiResult<List<PortfolioItemModel>>> fetchContractorPortfolio();
 }
