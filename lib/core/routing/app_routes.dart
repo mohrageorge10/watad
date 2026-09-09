@@ -1,5 +1,6 @@
 class AppRoutes {
   static const String splash = '/';
+  static const String home = '/home';
   static const String onBoarding = '/on-boarding';
   static const String welcome = '/welcome';
   static const String signUpScreen = '/sign-up';
@@ -16,11 +17,11 @@ class AppRoutes {
   static const String feasibilityCalculator = '/feasibility-calculator';
   static const String feasibilityReport = '/feasibility-report';
   static const String createProject = '/create-project';
-  static const String bidDetails = '/bid-details';
+  static const String ownerBidDetails = '/owner-bid-details';
   static const String bidResult = '/bid-result';
   static const String createContractForm = '/create-contract-form';
   static const String milestonesForm = '/milestones-form';
-  static const String contractDetails = '/contract-details';
+  static const String ownerContractDetails = '/owner-contract-details';
   // ============ auth Feature ============
   static const String otpScreen = '/otp';
   static const String resetPasswordScreen = '/reset-password';

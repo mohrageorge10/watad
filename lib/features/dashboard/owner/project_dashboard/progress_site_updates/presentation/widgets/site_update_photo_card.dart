@@ -21,7 +21,7 @@ class SiteUpdatePhotoCard extends StatelessWidget {
               photo.imageUrl,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => Container(
+              errorBuilder: (_, _, _) => Container(
                 color: AppColors.grey100,
                 child: Icon(Icons.image_not_supported_outlined, color: AppColors.grey400),
               ),

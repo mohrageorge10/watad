@@ -68,7 +68,7 @@ class SmartMatchingSection extends StatelessWidget {
                             ? Image.network(
                                 profile.imageUrl,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Icon(Icons.person, color: AppColors.grey500, size: 30.r),
+                                errorBuilder: (_, _, _) => Icon(Icons.person, color: AppColors.grey500, size: 30.r),
                               )
                             : Icon(Icons.person, color: AppColors.grey500, size: 30.r),
                       ),

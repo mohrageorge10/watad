@@ -131,7 +131,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       name: 'bid_details',
-      path: AppRoutes.bidDetails,
+      path: AppRoutes.ownerBidDetails,
       builder: (context, state) {
         final bidId = state.extra as String;
         return BidDetailsView(bidId: bidId);
@@ -167,7 +167,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       name: 'contract_details',
-      path: AppRoutes.contractDetails,
+      path: AppRoutes.ownerContractDetails,
       builder: (context, state) {
         final contractId = state.extra as String;
         return ContractDetailsView(contractId: contractId);

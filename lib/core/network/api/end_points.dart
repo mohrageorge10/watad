@@ -1,7 +1,5 @@
 class EndPoints {
-  static const String baseUrl =
-      "http://watad-api.runasp.net/api/";
-      "https://watad-c5c6hkgmcxe5dzeg.uaenorth-01.azurewebsites.net/api/";
+  static const String baseUrl = "http://watad-api.runasp.net/api/";
 
   // ================= Home Feature =================
   static const String currentProjectOverview =
@@ -22,7 +20,7 @@ class EndPoints {
 
   // ================= Contracts Feature =================
   static const String createContract = "contracts";
-  static String contractDetails(String id) => "contracts/$id";
+  static String contractDetails(String id) => "Contracts/$id";
   static String generateContractPdf(String projectId, String contractId) => 
       "contractor/projects/$projectId/contracts/$contractId/generate-pdf";
 
@@ -58,7 +56,6 @@ class EndPoints {
   static const String myBids = "Bids/contractor-bids";
   static const String bids = "Bids";
   static String cancelBid(String id) => "Bids/cancel-bid/$id";
-  static String bidDetails(String bidId) => "Bids/$bidId";
   static String acceptedBidContract(String projectId) =>
       "Bids/accepted/$projectId";
 
@@ -82,7 +79,6 @@ class EndPoints {
       "milestones/$milestoneId/request-inspection";
 
   // =================== Contracts ===================
-  static String contractDetails(String contractId) => "Contracts/$contractId";
   static String signContract(String contractId) => "Contracts/$contractId/sign";
 }
 

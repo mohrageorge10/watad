@@ -9,6 +9,7 @@ import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_main_layout_screen.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/view/main_layout.dart';
 
 class HomeGateScreen extends StatelessWidget {
   const HomeGateScreen({super.key});
@@ -52,7 +53,16 @@ class HomeGateScreen extends StatelessWidget {
           return const ContractorMainLayoutScreen();
         }
 
-        // 2. User is logged in as another role (Project Owner, Engineer, etc.)
+        // 2. User is logged in as Project Owner
+        final bool isOwner = userType == 1 ||
+            (userRole != null &&
+                userRole.toLowerCase().contains('owner'));
+
+        if (isOwner) {
+          return const MainLayout();
+        }
+
+        // 3. User is logged in as another role (Engineer, Specialist, etc.)
         final roleTitle = userRole ?? (userType == 1 ? 'Project Owner' : 'Specialist');
 
         return Scaffold(
