@@ -80,11 +80,11 @@ class Step5Section extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.grey200,
                           borderRadius: BorderRadius.circular(12.r),
-                          // Use a placeholder image to match screenshot
-                          image: const DecorationImage(
-                            image: NetworkImage('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'),
-                            fit: BoxFit.cover,
-                          ),
+                        ),
+                        child: Icon(
+                          Icons.home_work_outlined,
+                          color: AppColors.grey500,
+                          size: 32.r,
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -134,7 +134,6 @@ class Step5Section extends StatelessWidget {
                   _buildSummaryRow('Number of Floors', '${state.floorsCount}'),
                   _buildSummaryRow('Location', '${state.city}, ${state.governorate}'),
                   _buildSummaryRow('Finishing Level', _finishingLevelName(state.finishingLevel)),
-                  _buildSummaryRow('Finishing Cost', _formatCurrency(state.finishingCost)),
                   _buildSummaryRow('Estimated Budget', _formatCurrency(state.estimatedBudget)),
                   _buildSummaryRow(
                     'Expected Start Date',

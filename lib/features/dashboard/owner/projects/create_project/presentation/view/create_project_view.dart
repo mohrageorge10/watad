@@ -102,38 +102,44 @@ class CreateProjectView extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 16.h),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: List.generate(4, (index) {
                   final step = index + 1;
                   final isActive = state.currentStep == step;
-                  return Row(
-                    children: [
-                      Container(
-                        width: 32.w,
-                        height: 32.w,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isActive
-                              ? AppColors.primary
-                              : AppColors.grey200,
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          step.toString(),
-                          style: AppTextStyles.font14Medium.copyWith(
-                            color: isActive
-                                ? AppColors.white100
-                                : AppColors.grey800,
+                  
+                  final circle = Container(
+                    width: 40.w,
+                    height: 40.w,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: isActive
+                          ? AppColors.primary
+                          : AppColors.grey200,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      step.toString(),
+                      style: AppTextStyles.font14Medium.copyWith(
+                        color: AppColors.grey900,
+                      ),
+                    ),
+                  );
+
+                  if (step == 4) {
+                    return circle;
+                  }
+
+                  return Expanded(
+                    child: Row(
+                      children: [
+                        circle,
+                        Expanded(
+                          child: Container(
+                            height: 4.h,
+                            color: AppColors.grey200,
                           ),
                         ),
-                      ),
-                      if (step < 4)
-                        Container(
-                          width: 24.w,
-                          height: 2.h,
-                          color: AppColors.grey300,
-                        ),
-                    ],
+                      ],
+                    ),
                   );
                 }),
               ),

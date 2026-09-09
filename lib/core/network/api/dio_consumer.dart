@@ -5,6 +5,8 @@ import 'package:watad/core/errors/exceptions.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/cache/cache_helper.dart';
+import 'package:watad/core/cache/token_manager.dart';
+import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 
 class DioConsumer extends ApiConsumer {
@@ -22,7 +24,21 @@ class DioConsumer extends ApiConsumer {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = CacheHelper().getData(key: CacheKeys.token);
+          // 1. Try in-memory token first (fastest)
+          String? token = TokenManager.instance.token;
+
+          // 2. Fallback to SharedPreferences (for rememberMe sessions)
+          token ??= CacheHelper().getData(key: CacheKeys.token) as String?;
+
+          // 3. Fallback to SecureStorage (for non-rememberMe cold starts)
+          if (token == null || token.isEmpty) {
+            token = await SecureStorageHelper().read(key: CacheKeys.token);
+            // Cache it in memory for subsequent requests
+            if (token != null && token.isNotEmpty) {
+              TokenManager.instance.setToken(token);
+            }
+          }
+
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }

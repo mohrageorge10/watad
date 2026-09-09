@@ -108,7 +108,7 @@ class CurrentProjectCard extends StatelessWidget {
           SizedBox(height: 20.h),
           SizedBox(
             width: double.infinity,
-            height: 44.h,
+            height: 62.h,
             child: ElevatedButton(
               onPressed: onGoToDashboard,
               style: ElevatedButton.styleFrom(

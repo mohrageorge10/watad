@@ -6,12 +6,6 @@ class RoleMockData {
 
   static const List<RoleModel> roles = [
     RoleModel(
-      id: "2",
-      title: "Contractor",
-      icon: AppIcons.contractor,
-      userType: 2,
-    ),
-    RoleModel(
       id: "0",
       title: "Project Owner",
       icon: AppIcons.projectOwner,
@@ -24,10 +18,22 @@ class RoleMockData {
       userType: 1,
     ),
     RoleModel(
+      id: "2",
+      title: "Contractor",
+      icon: AppIcons.contractor,
+      userType: 2,
+    ),
+    RoleModel(
       id: "3",
       title: "Consultant",
       icon: AppIcons.consultant,
       userType: 3,
+    ),
+    RoleModel(
+      id: "4",
+      title: "Supplier",
+      icon: AppIcons.engineer,
+      userType: 4,
     ),
   ];
 }

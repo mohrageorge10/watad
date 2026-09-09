@@ -13,6 +13,19 @@ class EndPoints {
   static const String calculateFeasibility = "Feasibility/calculate";
   static const String saveFeasibility = "Feasibility/save";
 
+  // ================= Marketplace Feature =================
+  static String recommendedContractors(String projectId) => "Projects/$projectId/recommended-contractors";
+  static String projectBids(String projectId) => "Bids/$projectId/project-bids";
+  static String bidDetails(String bidId) => "Bids/$bidId";
+  static String acceptBid(String bidId) => "Bids/$bidId/accept";
+  static String rejectBid(String bidId) => "Bids/$bidId/reject";
+
+  // ================= Contracts Feature =================
+  static const String createContract = "contracts";
+  static String contractDetails(String id) => "contracts/$id";
+  static String generateContractPdf(String projectId, String contractId) => 
+      "contractor/projects/$projectId/contracts/$contractId/generate-pdf";
+
   // =================== Auth ===================
   static const String signUp = "Auth/register";
   static const String confirmEmail = "Auth/confirm-email";

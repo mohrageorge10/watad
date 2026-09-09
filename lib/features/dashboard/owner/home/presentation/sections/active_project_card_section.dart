@@ -8,8 +8,9 @@ import '../widgets/project_progress_bar.dart';
 
 class ActiveProjectCardSection extends StatelessWidget {
   final CurrentProjectOverview project;
+  final VoidCallback onGoToDashboard;
 
-  const ActiveProjectCardSection({super.key, required this.project});
+  const ActiveProjectCardSection({super.key, required this.project, required this.onGoToDashboard});
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +23,9 @@ class ActiveProjectCardSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.2),
-              blurRadius: 15,
-              offset: const Offset(0, 8),
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
@@ -68,6 +69,38 @@ class ActiveProjectCardSection extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            SizedBox(height: 20.h),
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 343.w,
+                height: 42.h,
+                child: ElevatedButton(
+                  onPressed: onGoToDashboard,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.white100,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+                    padding: EdgeInsets.zero, // Remove padding to allow centering within exact bounds
+                    elevation: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Go To Dashboard',
+                        style: AppTextStyles.font14Medium.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Icon(Icons.arrow_forward, color: AppColors.primary, size: 16.sp),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),

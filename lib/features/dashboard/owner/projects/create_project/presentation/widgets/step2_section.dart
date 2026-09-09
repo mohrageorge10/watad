@@ -67,36 +67,43 @@ class _Step2SectionState extends State<Step2Section> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 8.h),
-          Text("Governorate", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 8.h),
-          _buildDropdown(
-            value: _selectedGov,
-            hint: 'Select Governorate',
-            items: _egyptLocations.keys.toList(),
-            onChanged: (val) {
-              setState(() {
-                _selectedGov = val;
-                _selectedCity = null;
-              });
-              cubit.updateData(governorate: val ?? '', city: '');
-            },
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8.h),
+                  Text("Governorate", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 8.h),
+                  _buildDropdown(
+                    value: _selectedGov,
+                    hint: 'Select Governorate',
+                    items: _egyptLocations.keys.toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _selectedGov = val;
+                        _selectedCity = null;
+                      });
+                      cubit.updateData(governorate: val ?? '', city: '');
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                  Text("City", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 8.h),
+                  _buildDropdown(
+                    value: _selectedCity,
+                    hint: 'Select City',
+                    items: _cities,
+                    onChanged: (val) {
+                      setState(() => _selectedCity = val);
+                      cubit.updateData(city: val ?? '');
+                    },
+                  ),
+                  SizedBox(height: 20.h),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 20.h),
-          Text("City", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 8.h),
-          _buildDropdown(
-            value: _selectedCity,
-            hint: 'Select City',
-            items: _cities,
-            onChanged: (val) {
-              setState(() => _selectedCity = val);
-              cubit.updateData(city: val ?? '');
-            },
-          ),
-          SizedBox(height: 20.h),
-
-          const Spacer(),
           Row(
             children: [
               Expanded(

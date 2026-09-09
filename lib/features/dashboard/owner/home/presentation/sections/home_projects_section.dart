@@ -45,18 +45,9 @@ class HomeProjectsSection extends StatelessWidget {
                 );
 
               case HomeProjectsStatus.failure:
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      state.errorMessage ?? 'Something went wrong',
-                      style: AppTextStyles.font14Regular.copyWith(color: AppColors.alert),
-                    ),
-                    TextButton(
-                      onPressed: () => context.read<HomeProjectsCubit>().loadFirstPage(),
-                      child: const Text('Retry'),
-                    ),
-                  ],
+                return const AppEmptyStateWidget(
+                  title: 'No Projects Yet',
+                  message: 'Start your first project to see it here.',
                 );
 
               case HomeProjectsStatus.success:
