@@ -31,3 +31,33 @@ class PortfolioError extends PortfolioState {
   @override
   List<Object?> get props => [message];
 }
+
+class PortfolioActionLoading extends PortfolioState {}
+
+class PortfolioActionSuccess extends PortfolioState {
+  final String message;
+  final PortfolioProjectItemModel? project;
+
+  const PortfolioActionSuccess(this.message, {this.project});
+
+  @override
+  List<Object?> get props => [message, project];
+}
+
+class PortfolioActionError extends PortfolioState {
+  final String message;
+
+  const PortfolioActionError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class PortfolioProjectDetailsSuccess extends PortfolioState {
+  final PortfolioProjectItemModel project;
+
+  const PortfolioProjectDetailsSuccess(this.project);
+
+  @override
+  List<Object?> get props => [project];
+}

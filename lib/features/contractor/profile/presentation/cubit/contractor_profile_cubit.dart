@@ -1,14 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
+import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_profile_usecase.dart';
+import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_reviews_usecase.dart';
 import 'package:watad/features/contractor/profile/domain/usecases/update_contractor_profile_usecase.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_state.dart';
 
 class ContractorProfileCubit extends Cubit<ContractorProfileState> {
   final GetContractorProfileUseCase getContractorProfileUseCase;
   final UpdateContractorProfileUseCase? updateContractorProfileUseCase;
+  final GetContractorReviewsUseCase? getContractorReviewsUseCase;
   final CacheHelper cacheHelper;
 
   static const String _kCachedProfileImage = 'contractor_cached_profile_image';
@@ -22,6 +25,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
   ContractorProfileCubit({
     required this.getContractorProfileUseCase,
     this.updateContractorProfileUseCase,
+    this.getContractorReviewsUseCase,
     required this.cacheHelper,
   }) : super(ContractorProfileInitial());
 
@@ -34,17 +38,27 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
 
     final result = await getContractorProfileUseCase(contractorId: currentId);
 
-    result.fold(
-      (profile) {
+    await result.fold(
+      (profile) async {
         if (profile.name.isEmpty && profile.companyName.isEmpty) {
           emit(const ContractorProfileEmpty());
         } else {
           // Merge with any cached overrides
           final mergedProfile = _applyCachedOverrides(profile);
-          emit(ContractorProfileSuccess(profile: mergedProfile));
+
+          List<ReviewModel> reviews = const [];
+          if (getContractorReviewsUseCase != null) {
+            final reviewsResult = await getContractorReviewsUseCase!();
+            reviews = reviewsResult.fold((data) => data, (_) => const []);
+          }
+
+          emit(ContractorProfileSuccess(
+            profile: mergedProfile,
+            reviews: reviews,
+          ));
         }
       },
-      (failure) {
+      (failure) async {
         emit(ContractorProfileError(failure.errMessage));
       },
     );

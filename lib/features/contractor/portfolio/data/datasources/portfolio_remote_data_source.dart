@@ -13,6 +13,23 @@ abstract class PortfolioRemoteDataSource {
   Future<List<PortfolioProjectItemModel>> getPortfolioProjects({
     required String contractorId,
   });
+
+  Future<PortfolioProjectItemModel> addPortfolioProject({
+    required Map<String, dynamic> projectData,
+  });
+
+  Future<PortfolioProjectItemModel> updatePortfolioProject({
+    required String projectId,
+    required Map<String, dynamic> projectData,
+  });
+
+  Future<PortfolioProjectItemModel> getPortfolioProjectDetails({
+    required String projectId,
+  });
+
+  Future<bool> deletePortfolioProject({
+    required String projectId,
+  });
 }
 
 class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
@@ -26,26 +43,24 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     required this.cacheHelper,
   });
 
+  Future<Map<String, dynamic>> _getHeaders() async {
+    final token = await secureStorage.read(key: CacheKeys.token) ??
+        (cacheHelper.getData(key: CacheKeys.token) as String?);
+    return <String, dynamic>{
+      if (token != null && token.isNotEmpty)
+        ApiKey.authorization: ApiKey.bearer(token),
+    };
+  }
+
   @override
   Future<List<PortfolioItemModel>> fetchContractorPortfolio() async {
     try {
-      // 1. Retrieve authentication token securely from local storage
-      final token = await secureStorage.read(key: CacheKeys.token) ??
-          (cacheHelper.getData(key: CacheKeys.token) as String?);
-
-      // 2. Inject Bearer Token into headers
-      final headers = <String, dynamic>{
-        if (token != null && token.isNotEmpty)
-          ApiKey.authorization: ApiKey.bearer(token),
-      };
-
-      // 3. Centralized endpoint call (GET /api/Contractor/portfolio)
+      final headers = await _getHeaders();
       final response = await apiConsumer.get(
         EndPoints.contractorPortfolio,
         headers: headers,
       );
 
-      // 4. Map JSON response into List<PortfolioItemModel>
       if (response is List) {
         return response
             .map((item) =>
@@ -64,7 +79,6 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
 
       return const [];
     } on DioException {
-      // Gracefully catch DioException (401 Unauthorized, timeout, network errors)
       rethrow;
     } catch (e) {
       rethrow;
@@ -79,11 +93,140 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
         (cacheHelper.getData(key: CacheKeys.token) as String?);
 
     if (token != null && token.isNotEmpty) {
-      return await fetchContractorPortfolio();
+      try {
+        final result = await fetchContractorPortfolio();
+        if (result.isNotEmpty) return result;
+      } catch (_) {}
     }
 
     // Fallback for unauthenticated local development / testing
-    await Future.delayed(const Duration(milliseconds: 600));
+    await Future.delayed(const Duration(milliseconds: 400));
     return PortfolioProjectsMockData.projects;
+  }
+
+  @override
+  Future<PortfolioProjectItemModel> addPortfolioProject({
+    required Map<String, dynamic> projectData,
+  }) async {
+    final headers = await _getHeaders();
+    final token = headers[ApiKey.authorization];
+
+    if (token != null) {
+      try {
+        final response = await apiConsumer.post(
+          EndPoints.contractorPortfolio,
+          data: projectData,
+          headers: headers,
+        );
+
+        if (response is Map<String, dynamic>) {
+          final data = response[ApiKey.data] ?? response;
+          if (data is Map<String, dynamic>) {
+            return PortfolioProjectItemModel.fromJson(data);
+          }
+        }
+      } catch (_) {
+        rethrow;
+      }
+    }
+
+    // Local / Mock fallback
+    await Future.delayed(const Duration(milliseconds: 500));
+    return PortfolioProjectItemModel.fromJson({
+      'id': 'proj_${DateTime.now().millisecondsSinceEpoch}',
+      ...projectData,
+      'badgeText': 'Completed',
+      'badgeType': 'success',
+    });
+  }
+
+  @override
+  Future<PortfolioProjectItemModel> updatePortfolioProject({
+    required String projectId,
+    required Map<String, dynamic> projectData,
+  }) async {
+    final headers = await _getHeaders();
+    final token = headers[ApiKey.authorization];
+
+    if (token != null) {
+      try {
+        final response = await apiConsumer.put(
+          EndPoints.contractorPortfolio,
+          data: projectData,
+          headers: headers,
+        );
+
+        if (response is Map<String, dynamic>) {
+          final data = response[ApiKey.data] ?? response;
+          if (data is Map<String, dynamic>) {
+            return PortfolioProjectItemModel.fromJson(data);
+          }
+        }
+      } catch (_) {
+        rethrow;
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 400));
+    return PortfolioProjectItemModel.fromJson({
+      'id': projectId,
+      ...projectData,
+    });
+  }
+
+  @override
+  Future<PortfolioProjectItemModel> getPortfolioProjectDetails({
+    required String projectId,
+  }) async {
+    final headers = await _getHeaders();
+    final token = headers[ApiKey.authorization];
+
+    if (token != null) {
+      try {
+        final response = await apiConsumer.get(
+          EndPoints.portfolioProject(projectId),
+          headers: headers,
+        );
+
+        if (response is Map<String, dynamic>) {
+          final data = response[ApiKey.data] ?? response;
+          if (data is Map<String, dynamic>) {
+            return PortfolioProjectItemModel.fromJson(data);
+          }
+        }
+      } catch (_) {
+        rethrow;
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    final match = PortfolioProjectsMockData.projects.firstWhere(
+      (p) => p.id == projectId,
+      orElse: () => PortfolioProjectsMockData.projects.first,
+    );
+    return match;
+  }
+
+  @override
+  Future<bool> deletePortfolioProject({
+    required String projectId,
+  }) async {
+    final headers = await _getHeaders();
+    final token = headers[ApiKey.authorization];
+
+    if (token != null) {
+      try {
+        await apiConsumer.delete(
+          EndPoints.portfolioProject(projectId),
+          headers: headers,
+        );
+        return true;
+      } catch (_) {
+        rethrow;
+      }
+    }
+
+    await Future.delayed(const Duration(milliseconds: 400));
+    return true;
   }
 }

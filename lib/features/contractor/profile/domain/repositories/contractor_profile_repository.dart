@@ -1,4 +1,5 @@
 import 'package:watad/core/network/api/api_result.dart';
+import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 
 abstract class ContractorProfileRepository {
@@ -11,4 +12,6 @@ abstract class ContractorProfileRepository {
   Future<ApiResult<void>> updateContractorProfile({
     required Map<String, dynamic> profileData,
   });
+
+  Future<ApiResult<List<ReviewModel>>> fetchMyReviews();
 }

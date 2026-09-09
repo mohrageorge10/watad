@@ -83,12 +83,25 @@ class _PortfolioProjectsView extends StatelessWidget {
     if (onAddProjectTap != null) {
       onAddProjectTap!();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Add Project feature coming soon!'),
-          duration: Duration(seconds: 2),
-        ),
-      );
+      context.push(AppRoutes.addPortfolioProject).then((val) {
+        if (val == true && context.mounted) {
+          context.read<PortfolioCubit>().loadProjects();
+        }
+      });
+    }
+  }
+
+  void _handleProjectTap(BuildContext context, PortfolioProjectItemModel project) {
+    if (onProjectTap != null) {
+      onProjectTap!(project);
+    } else if (onViewDetailsTap != null) {
+      onViewDetailsTap!(project);
+    } else {
+      context.push(AppRoutes.portfolioProjectDetails, extra: project).then((val) {
+        if (val == true && context.mounted) {
+          context.read<PortfolioCubit>().loadProjects();
+        }
+      });
     }
   }
 
@@ -185,8 +198,8 @@ class _PortfolioProjectsView extends StatelessWidget {
               offset: Offset(0, -16.h),
               child: PortfolioProjectsListSection(
                 projects: projects,
-                onProjectTap: onProjectTap,
-                onViewDetailsTap: onViewDetailsTap,
+                onProjectTap: (p) => _handleProjectTap(context, p),
+                onViewDetailsTap: (p) => _handleProjectTap(context, p),
               ),
             ),
           ],

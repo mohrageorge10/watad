@@ -26,9 +26,12 @@ class ContractorProfileModel extends ContractorProfileEntity {
       id: json['id']?.toString() ?? json['userId']?.toString() ?? '',
       name: json['name'] as String? ?? json['fullName'] as String? ?? '',
       companyName: json['companyName'] as String? ?? '',
-      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      rating: (json['ratingAverage'] as num?)?.toDouble() ??
+          (json['rating'] as num?)?.toDouble() ??
+          0.0,
       reviewsCount: json['reviewsCount'] as int? ?? 0,
-      isVerified: json['isVerified'] as bool? ?? false,
+      isVerified: json['isVerified'] as bool? ??
+          (json['verificationStatus']?.toString().toLowerCase() == 'verified'),
       yearsOfExperience: json['yearsOfExperience']?.toString() ?? '',
       projectsCompiled: json['projectsCompiled']?.toString() ??
           json['completedProjectsCount']?.toString() ??
@@ -38,18 +41,14 @@ class ContractorProfileModel extends ContractorProfileEntity {
           json['commercialRegistrationNumber'] as String? ??
           '',
       taxCard: json['taxCard'] as String? ?? json['taxNumber'] as String? ?? '',
-      aboutMe: json['aboutMe'] as String? ??
-          json['bio'] as String? ??
+      aboutMe: json['bio'] as String? ??
+          json['aboutMe'] as String? ??
           json['description'] as String? ??
           '',
-      specializations: (json['specializations'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
-      coveredGovernorates: (json['coveredGovernorates'] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          const [],
+      specializations: _parseListOrDelimitedString(
+          json['specialization'] ?? json['specializations']),
+      coveredGovernorates:
+          _parseListOrDelimitedString(json['coveredGovernorates']),
       portfolioImages: (json['portfolioImages'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
@@ -61,6 +60,22 @@ class ContractorProfileModel extends ContractorProfileEntity {
           json['isProfileCompleted'] as bool? ??
           json['isProfileComplete'] as bool?,
     );
+  }
+
+  static List<String> _parseListOrDelimitedString(dynamic value) {
+    if (value is List) {
+      return value
+          .map((e) => e.toString().trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    } else if (value is String && value.isNotEmpty) {
+      return value
+          .split(',')
+          .map((e) => e.trim())
+          .where((e) => e.isNotEmpty)
+          .toList();
+    }
+    return const [];
   }
 
   Map<String, dynamic> toJson() {

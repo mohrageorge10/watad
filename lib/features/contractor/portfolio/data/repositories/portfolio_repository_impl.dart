@@ -32,4 +32,62 @@ class PortfolioRepositoryImpl implements PortfolioRepository {
       return ApiResult.failure(ErrorHandler.handle(e));
     }
   }
+
+  @override
+  Future<ApiResult<PortfolioProjectItemModel>> addPortfolioProject({
+    required Map<String, dynamic> projectData,
+  }) async {
+    try {
+      final project = await remoteDataSource.addPortfolioProject(
+        projectData: projectData,
+      );
+      return ApiResult.success(project);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<PortfolioProjectItemModel>> updatePortfolioProject({
+    required String projectId,
+    required Map<String, dynamic> projectData,
+  }) async {
+    try {
+      final project = await remoteDataSource.updatePortfolioProject(
+        projectId: projectId,
+        projectData: projectData,
+      );
+      return ApiResult.success(project);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<PortfolioProjectItemModel>> getPortfolioProjectDetails({
+    required String projectId,
+  }) async {
+    try {
+      final project = await remoteDataSource.getPortfolioProjectDetails(
+        projectId: projectId,
+      );
+      return ApiResult.success(project);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<bool>> deletePortfolioProject({
+    required String projectId,
+  }) async {
+    try {
+      final success = await remoteDataSource.deletePortfolioProject(
+        projectId: projectId,
+      );
+      return ApiResult.success(success);
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
 }

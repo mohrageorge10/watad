@@ -7,4 +7,21 @@ abstract class PortfolioRepository {
   });
 
   Future<ApiResult<List<PortfolioItemModel>>> fetchContractorPortfolio();
+
+  Future<ApiResult<PortfolioProjectItemModel>> addPortfolioProject({
+    required Map<String, dynamic> projectData,
+  });
+
+  Future<ApiResult<PortfolioProjectItemModel>> updatePortfolioProject({
+    required String projectId,
+    required Map<String, dynamic> projectData,
+  });
+
+  Future<ApiResult<PortfolioProjectItemModel>> getPortfolioProjectDetails({
+    required String projectId,
+  });
+
+  Future<ApiResult<bool>> deletePortfolioProject({
+    required String projectId,
+  });
 }

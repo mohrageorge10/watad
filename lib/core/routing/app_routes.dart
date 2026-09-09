@@ -18,4 +18,8 @@ class AppRoutes {
   static const String myProjects = '/my-projects';
   static const String contractorBids = '/contractor-bids';
   static const String myBids = '/my-bids';
+  static const String marketplace = '/marketplace';
+  static const String addPortfolioProject = '/add-portfolio-project';
+  static const String portfolioProjectDetails = '/portfolio-project-details';
+  static const String marketplaceProjectDetails = '/marketplace-project-details';
 }

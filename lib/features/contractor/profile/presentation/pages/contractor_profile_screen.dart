@@ -14,6 +14,7 @@ import 'package:watad/features/contractor/profile/presentation/view/sections/cov
 import 'package:watad/features/contractor/profile/presentation/view/sections/custom_tab_bar_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/main_profile_card_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/portfolio_section.dart';
+import 'package:watad/features/contractor/profile/presentation/view/sections/reviews_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/specialization_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/stats_card_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/contractor_profile_bottom_nav_bar.dart';
@@ -171,7 +172,10 @@ class ContractorProfileScreen extends StatelessWidget {
                       ),
                     ] else ...[
                       // Reviews Tab Content
-                      CompanyInfoSection(profile: profile),
+                      ReviewsSection(
+                        profile: profile,
+                        reviews: state.reviews,
+                      ),
                     ],
 
                     SizedBox(height: 24.h),

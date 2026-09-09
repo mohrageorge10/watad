@@ -6,6 +6,7 @@ import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/data/mock/contractor_profile_mock_data.dart';
 import 'package:watad/features/contractor/profile/data/models/contractor_profile_model.dart';
+import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 
 abstract class ContractorProfileRemoteDataSource {
   Future<ContractorProfileModel> fetchContractorProfile();
@@ -18,6 +19,8 @@ abstract class ContractorProfileRemoteDataSource {
   Future<dynamic> updateContractorProfile({
     required Map<String, dynamic> profileData,
   });
+
+  Future<List<ReviewModel>> fetchMyReviews();
 }
 
 class ContractorProfileRemoteDataSourceImpl
@@ -117,5 +120,78 @@ class ContractorProfileRemoteDataSourceImpl
       contractorId: contractorId,
       userName: userName,
     );
+  }
+
+  @override
+  Future<List<ReviewModel>> fetchMyReviews() async {
+    try {
+      final token = await secureStorage.read(key: CacheKeys.token) ??
+          (cacheHelper.getData(key: CacheKeys.token) as String?);
+
+      final headers = <String, dynamic>{
+        if (token != null && token.isNotEmpty)
+          ApiKey.authorization: ApiKey.bearer(token),
+      };
+
+      final response = await apiConsumer.get(
+        EndPoints.myReviews,
+        headers: headers,
+      );
+
+      if (response is List) {
+        return response
+            .map((e) => ReviewModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else if (response is Map<String, dynamic>) {
+        final dynamic data =
+            response[ApiKey.data] ?? response['reviews'] ?? response['items'];
+        if (data is List) {
+          return data
+              .map((e) => ReviewModel.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+      }
+
+      return _getMockReviews();
+    } on DioException {
+      return _getMockReviews();
+    } catch (_) {
+      return _getMockReviews();
+    }
+  }
+
+  List<ReviewModel> _getMockReviews() {
+    return const [
+      ReviewModel(
+        id: 'rev_1',
+        reviewerName: 'Eng. Tarek Mostafa',
+        reviewerImage: null,
+        rating: 5.0,
+        comment:
+            'Exceptional concrete pouring quality. Delivered ahead of scheduled milestone with full safety compliance.',
+        date: '2 weeks ago',
+        projectName: 'New Cairo Villa',
+      ),
+      ReviewModel(
+        id: 'rev_2',
+        reviewerName: 'Al-Rehab Developers',
+        reviewerImage: null,
+        rating: 4.8,
+        comment:
+            'Professional team with strong engineering discipline and timely execution of foundation work.',
+        date: '1 month ago',
+        projectName: 'Commercial Tower Foundation',
+      ),
+      ReviewModel(
+        id: 'rev_3',
+        reviewerName: 'Fahad Al-Otaibi',
+        reviewerImage: null,
+        rating: 4.9,
+        comment:
+            'Superb communication and technical diligence throughout the project stages. Highly recommended.',
+        date: '2 months ago',
+        projectName: 'Al-Riyadh Tower',
+      ),
+    ];
   }
 }

@@ -17,8 +17,16 @@ import 'package:watad/features/contractor/home/presentation/pages/home_gate_scre
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/edit_profile_page.dart';
+import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
+import 'package:watad/features/contractor/portfolio/presentation/pages/add_portfolio_project_screen.dart';
+import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_project_details_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
+import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
+import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_details_entity.dart';
+import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_entity.dart';
+import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_project_details_screen.dart';
+import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
@@ -227,6 +235,50 @@ final GoRouter appRouter = GoRouter(
         state: state,
         child: const ContractorBidsScreen(showBackButton: true),
       ),
+    ),
+    GoRoute(
+      path: AppRoutes.marketplace,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const MarketplaceScreen(showBottomNavBar: true),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.addPortfolioProject,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: AddPortfolioProjectScreen(
+          project: state.extra as PortfolioProjectItemModel?,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.portfolioProjectDetails,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: PortfolioProjectDetailsScreen(
+          project: state.extra as PortfolioProjectItemModel,
+        ),
+      ),
+    ),
+    GoRoute(
+      path: AppRoutes.marketplaceProjectDetails,
+      pageBuilder: (context, state) {
+        MarketplaceProjectDetailsEntity? details;
+        if (state.extra is MarketplaceProjectDetailsEntity) {
+          details = state.extra as MarketplaceProjectDetailsEntity;
+        } else if (state.extra is MarketplaceProjectEntity) {
+          details = MockMarketplaceDetailsData.getDetailsForProject(
+              state.extra as MarketplaceProjectEntity);
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: MarketplaceProjectDetailsScreen(
+            project: details,
+          ),
+        );
+      },
     ),
   ],
 );

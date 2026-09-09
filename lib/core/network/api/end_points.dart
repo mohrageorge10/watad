@@ -16,15 +16,38 @@ class EndPoints {
   static const String resetPassword = "Auth/reset-password";
   static const String verifyCurrentPassword =
       "Auth/change-password/verify-current";
-  // =================== Projects ===================
+  // =================== Projects & Marketplace ===================
   static const String contractorProjects = "Projects/contractor-projects";
+  static const String marketplaceProjects = "Projects/marketplace";
+  static String marketplaceProjectDetails(String id) => "Projects/marketplace/$id";
 
   // =================== Bids ===================
-  static const String contractorBids = "Bids/contractor-bids";
+  static const String contractorBids = "Bids/my-bids";
+  static const String myBids = "Bids/my-bids";
+  static const String bids = "Bids";
+  static String bidDetails(String bidId) => "Bids/$bidId";
 
-  // =================== Contractor ===================
+  // =================== Contractor & Portfolio ===================
   static const String contractorProfile = "Contractor/profile";
   static const String contractorPortfolio = "Contractor/portfolio";
+  static String portfolioProject(String projectId) => "Contractor/portfolio/$projectId";
+
+  // =================== Reviews ===================
+  static const String myReviews = "Reviews/my-reviews";
+
+  // =================== Project Dashboard, Milestones & Site Logs ===================
+  static String projectDashboard(String projectId) =>
+      "Contractor/projects/$projectId/dashboard";
+  static const String siteLogs = "contractor/site-logs";
+  static String milestoneLogs(String milestoneId) =>
+      "contractor/site-logs/milestone/$milestoneId";
+  static String milestoneDetails(String milestoneId) =>
+      "milestones/$milestoneId";
+  static String requestInspection(String milestoneId) =>
+      "milestones/$milestoneId/request-inspection";
+
+  // =================== Contracts ===================
+  static String contractDetails(String contractId) => "Contracts/$contractId";
 }
 
 class ApiQueryParams {
