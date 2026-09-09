@@ -4,6 +4,8 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:watad/core/errors/exceptions.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
+import 'package:watad/core/cache/cache_helper.dart';
+import 'package:watad/core/utils/cache_keys.dart';
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
@@ -16,6 +18,18 @@ class DioConsumer extends ApiConsumer {
     };
     dio.options.connectTimeout = const Duration(seconds: 30);
     dio.options.receiveTimeout = const Duration(seconds: 30);
+
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final token = CacheHelper().getData(key: CacheKeys.token);
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          return handler.next(options);
+        },
+      ),
+    );
 
     if (kDebugMode) {
       dio.interceptors.add(

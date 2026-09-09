@@ -1,6 +1,18 @@
 class EndPoints {
   static const String baseUrl =
       "http://watad-api.runasp.net/api/";
+      "https://watad-c5c6hkgmcxe5dzeg.uaenorth-01.azurewebsites.net/api/";
+
+  // ================= Home Feature =================
+  static const String currentProjectOverview =
+      "Owner/current-project-overview";
+  static const String ownerProjects = "Projects";
+  static const String ownerProfile = "Owner/profile";
+
+  // ================= Feasibility Feature =================
+  static const String calculateFeasibility = "Feasibility/calculate";
+  static const String saveFeasibility = "Feasibility/save";
+
   // =================== Auth ===================
   static const String signUp = "Auth/register";
   static const String confirmEmail = "Auth/confirm-email";
@@ -145,3 +157,4 @@ class ApiKey {
   static const String confirmNewPassword = "confirmNewPassword";
   // newPassword
 }
+

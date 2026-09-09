@@ -227,4 +227,24 @@ class AuthCubit extends Cubit<AuthState> {
       await cacheHelper.saveData(key: CacheKeys.userName, value: user.fullName!);
     }
   }
+
+  Future<void> logout() async {
+    emit(AuthLoading());
+    try {
+      await secureStorage.delete(key: CacheKeys.token);
+      await secureStorage.delete(key: CacheKeys.refreshToken);
+      await cacheHelper.removeData(key: CacheKeys.token);
+      await cacheHelper.removeData(key: CacheKeys.refreshToken);
+      await cacheHelper.removeData(key: CacheKeys.tokenExpiration);
+      await cacheHelper.removeData(key: CacheKeys.userId);
+      await cacheHelper.removeData(key: CacheKeys.userRole);
+      await cacheHelper.removeData(key: CacheKeys.userName);
+      
+      // Optionally call logout endpoint here if backend requires it.
+      
+      emit(AuthInitial()); // Reset state to initial.
+    } catch (e) {
+      emit(AuthErrorState('Logout failed'));
+    }
+  }
 }

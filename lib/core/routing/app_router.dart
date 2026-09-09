@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/view/main_layout.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
 import 'package:watad/features/auth/presentation/pages/forget_password_page.dart';
 import 'package:watad/features/auth/presentation/pages/login_page.dart';
@@ -37,6 +38,11 @@ import 'package:watad/features/contractor/contracts/presentation/pages/contract_
 import 'package:watad/features/contractor/contracts/domain/entities/contract_entity.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
+import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasibility_report.dart';
+import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
+import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
+import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
+
 
 CustomTransitionPage<void> _buildAnimatedPage({
   required GoRouterState state,
@@ -84,6 +90,25 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.onBoarding,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const OnBoardingPage()),
+    ),
+    GoRoute(
+      path: AppRoutes.projectDashboard,
+      builder: (context, state) => const MainLayout(),
+    ),
+    GoRoute(
+      path: AppRoutes.feasibilityCalculator,
+      builder: (context, state) => const FeasibilityCalculatorView(),
+    ),
+    GoRoute(
+      path: AppRoutes.feasibilityReport,
+      builder: (context, state) {
+        final report = state.extra as FeasibilityReport;
+        return FeasibilityReportView(report: report);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.createProject,
+      builder: (context, state) => const CreateProjectView(),
     ),
     GoRoute(
       path: AppRoutes.welcome,
