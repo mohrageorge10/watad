@@ -22,7 +22,13 @@ class ProjectListItem extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white100,
           borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: AppColors.signUp),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,

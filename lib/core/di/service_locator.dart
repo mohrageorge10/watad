@@ -9,7 +9,10 @@ import 'package:watad/core/network/connection/network_info.dart';
 import 'package:watad/features/dashboard/owner/home/home_injection.dart';
 import 'package:watad/features/dashboard/owner/feasibility/feasibility_injection.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/create_project_injection.dart';
+import 'package:watad/features/dashboard/owner/marketplace/marketplace_injection.dart';
+import 'package:watad/features/dashboard/owner/contracts/contracts_injection.dart';
 import 'package:watad/core/services/social_auth_service.dart';
+import 'package:watad/core/services/file_download_service.dart';
 import 'package:watad/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:watad/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:watad/features/auth/domain/repositories/auth_repository.dart';
@@ -23,6 +26,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<Dio>(() => Dio());
   sl.registerLazySingleton<DataConnectionChecker>(() => DataConnectionChecker());
   sl.registerLazySingleton<SocialAuthService>(() => SocialAuthService());
+  sl.registerLazySingleton<FileDownloadService>(() => FileDownloadService(dio: sl()));
 
   //! Network
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
@@ -36,6 +40,8 @@ Future<void> setupServiceLocator() async {
   initHomeFeature(sl);
   initFeasibilityFeature(sl);
   initCreateProjectFeature(sl);
+  initMarketplaceFeature(sl);
+  initContractsFeature(sl);
 
   //! Auth Feature
   // DataSource

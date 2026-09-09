@@ -28,14 +28,14 @@ class ProjectStatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: _backgroundColor,
-        borderRadius: BorderRadius.circular(20.r),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Text(
         status,
-        style: AppTextStyles.btnGrey600.copyWith(color: AppColors.white100),
+        style: AppTextStyles.font10MediumWhite,
       ),
     );
   }

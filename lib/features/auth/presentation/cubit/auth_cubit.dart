@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/cache/secure_storage_helper.dart';
+import 'package:watad/core/cache/token_manager.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/domain/entities/user_entity.dart';
@@ -184,8 +185,9 @@ class AuthCubit extends Cubit<AuthState> {
     required UserEntity user,
     required bool rememberMe,
   }) async {
-    // 1. Always store in SecureStorage for immediate active bearer tokens
+    // 1. Always store in memory (TokenManager) + SecureStorage for immediate active bearer tokens
     if (user.token != null && user.token!.isNotEmpty) {
+      TokenManager.instance.setToken(user.token);
       await secureStorage.write(key: CacheKeys.token, value: user.token!);
       if (rememberMe) {
         await cacheHelper.saveData(key: CacheKeys.token, value: user.token!);
@@ -228,6 +230,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(AuthLoading());
     try {
+      TokenManager.instance.clearToken();
       await secureStorage.delete(key: CacheKeys.token);
       await secureStorage.delete(key: CacheKeys.refreshToken);
       await cacheHelper.removeData(key: CacheKeys.token);

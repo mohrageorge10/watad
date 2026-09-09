@@ -38,6 +38,7 @@ class ProjectSummaryModel extends ProjectSummary {
     if (str == '1') return 'Design Phase';
     if (str == '2') return 'In Progress';
     if (str == '3') return 'Completed';
+    if (str == '6') return 'In Contracting';
     return str;
   }
 }

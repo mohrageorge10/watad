@@ -7,6 +7,9 @@ import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/features/dashboard/owner/marketplace/presentation/view/marketplace_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/presentation/view/project_dashboard_view.dart';
+import 'package:watad/features/dashboard/owner/alerts/presentation/view/alerts_view.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({super.key});
@@ -25,9 +28,9 @@ class MainLayout extends StatelessWidget {
               index: cubit.currentIndex,
               children: [
                 const HomeView(), // 1. Home
-                const Center(child: Text("Dashboard")), // 2. Dashboard
-                const Center(child: Text("Marketplace")), // 3. Marketplace
-                const Center(child: Text("Alerts")), // 4. Alerts
+                const ProjectDashboardView(), // 2. Dashboard
+                const MarketplaceView(), // 3. Marketplace
+                const AlertsView(), // 4. Alerts
                 Center(
                   child: ElevatedButton(
                     onPressed: () async {
