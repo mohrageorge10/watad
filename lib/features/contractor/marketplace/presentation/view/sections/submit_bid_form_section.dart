@@ -98,21 +98,22 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
 
     // 2. Open real native file picker
     try {
-      FilePickerResult? result;
+      List<PlatformFile> files = [];
       try {
-        result = await FilePicker.pickFiles(
+        files = await FilePicker.pickFiles(
           type: FileType.custom,
           allowedExtensions: ['pdf', 'doc', 'docx'],
         );
       } catch (_) {
-        result = await FilePicker.pickFiles();
+        files = await FilePicker.pickFiles();
       }
 
-      if (result != null && result.files.isNotEmpty) {
-        final picked = result.files.first;
+      if (files.isNotEmpty) {
+        final picked = files.first;
+        final fileSize = picked.lengthSync() ?? await picked.length();
 
         // Verify Max 20MB limit
-        if (picked.size > 20 * 1024 * 1024) {
+        if (fileSize > 20 * 1024 * 1024) {
           if (context.mounted) {
             AppToast.showError(
               context,
@@ -122,10 +123,10 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
           return;
         }
 
-        final sizeInMb = picked.size / (1024 * 1024);
+        final sizeInMb = fileSize / (1024 * 1024);
         final formattedSize = sizeInMb >= 0.1
             ? '${sizeInMb.toStringAsFixed(1)} MB'
-            : '${(picked.size / 1024).toStringAsFixed(0)} KB';
+            : '${(fileSize / 1024).toStringAsFixed(0)} KB';
 
         setState(() {
           _hasFile = true;
