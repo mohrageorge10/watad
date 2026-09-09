@@ -32,6 +32,9 @@ import 'package:watad/features/contractor/marketplace/domain/entities/marketplac
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_project_details_screen.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/submit_bid_screen.dart';
+import 'package:watad/features/contractor/contracts/presentation/pages/contract_details_sign_screen.dart';
+import 'package:watad/features/contractor/contracts/presentation/pages/contract_preview_screen.dart';
+import 'package:watad/features/contractor/contracts/domain/entities/contract_entity.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
@@ -64,36 +67,28 @@ CustomTransitionPage<void> _buildAnimatedPage({
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.home,
+  initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(
       path: AppRoutes.splash,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const SplashPage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const SplashPage()),
     ),
     GoRoute(
       path: AppRoutes.home,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const HomeGateScreen(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const HomeGateScreen()),
     ),
     GoRoute(
       path: AppRoutes.onBoarding,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const OnBoardingPage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const OnBoardingPage()),
     ),
     GoRoute(
       path: AppRoutes.welcome,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const WelcomePage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const WelcomePage()),
     ),
     GoRoute(
       path: AppRoutes.roleSelection,
@@ -110,17 +105,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.loginScreen,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const LoginPage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const LoginPage()),
     ),
     GoRoute(
       path: AppRoutes.forgetPassScreen,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const ForgetPasswordPage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const ForgetPasswordPage()),
     ),
     GoRoute(
       path: AppRoutes.otpScreen,
@@ -128,9 +119,7 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
           state: state,
-          child: OtpPage(
-            email: extra?['email'] as String?,
-          ),
+          child: OtpPage(email: extra?['email'] as String?),
         );
       },
     ),
@@ -149,10 +138,8 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.signUpScreen,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const SignUpRolePage(),
-      ),
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const SignUpRolePage()),
     ),
     GoRoute(
       path: AppRoutes.signUpPersonalInfo,
@@ -160,9 +147,7 @@ final GoRouter appRouter = GoRouter(
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
           state: state,
-          child: SignUpPersonalInfoPage(
-            role: extra?['role'] as RoleModel?,
-          ),
+          child: SignUpPersonalInfoPage(role: extra?['role'] as RoleModel?),
         );
       },
     ),
@@ -208,9 +193,7 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.editProfile,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
-        child: EditProfilePage(
-          cubit: state.extra as ContractorProfileCubit?,
-        ),
+        child: EditProfilePage(cubit: state.extra as ContractorProfileCubit?),
       ),
     ),
     GoRoute(
@@ -275,14 +258,13 @@ final GoRouter appRouter = GoRouter(
           details = state.extra as MarketplaceProjectDetailsEntity;
         } else if (state.extra is MarketplaceProjectEntity) {
           details = MockMarketplaceDetailsData.getDetailsForProject(
-              state.extra as MarketplaceProjectEntity);
+            state.extra as MarketplaceProjectEntity,
+          );
         }
 
         return _buildAnimatedPage(
           state: state,
-          child: MarketplaceProjectDetailsScreen(
-            project: details,
-          ),
+          child: MarketplaceProjectDetailsScreen(project: details),
         );
       },
     ),
@@ -296,15 +278,20 @@ final GoRouter appRouter = GoRouter(
         if (state.extra is MarketplaceProjectDetailsEntity) {
           final p = state.extra as MarketplaceProjectDetailsEntity;
           projectName = '${p.title} - ${p.location}';
-          final costDigits = p.estimatedBudget.replaceAll(RegExp(r'[^0-9,]'), '').trim();
+          final costDigits = p.estimatedBudget
+              .replaceAll(RegExp(r'[^0-9,]'), '')
+              .trim();
           if (costDigits.isNotEmpty) initialCost = costDigits;
-          final durDigits = p.expectedDuration.replaceAll(RegExp(r'[^0-9]'), '').trim();
+          final durDigits = p.expectedDuration
+              .replaceAll(RegExp(r'[^0-9]'), '')
+              .trim();
           if (durDigits.isNotEmpty) initialDuration = durDigits;
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
           projectName = map['projectName'] as String? ?? projectName;
           initialCost = map['initialCost'] as String? ?? initialCost;
-          initialDuration = map['initialDuration'] as String? ?? initialDuration;
+          initialDuration =
+              map['initialDuration'] as String? ?? initialDuration;
         }
 
         return _buildAnimatedPage(
@@ -330,11 +317,11 @@ final GoRouter appRouter = GoRouter(
           final b = state.extra as MyBidEntity;
           bidId = b.id;
           projectName = b.title;
-          final costDigits =
-              b.yourBid.replaceAll(RegExp(r'[^0-9,]'), '').trim();
+          final costDigits = b.yourBid
+              .replaceAll(RegExp(r'[^0-9,]'), '')
+              .trim();
           if (costDigits.isNotEmpty) initialCost = costDigits;
-          final durDigits =
-              b.duration.replaceAll(RegExp(r'[^0-9]'), '').trim();
+          final durDigits = b.duration.replaceAll(RegExp(r'[^0-9]'), '').trim();
           if (durDigits.isNotEmpty) initialDuration = durDigits;
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
@@ -367,8 +354,65 @@ final GoRouter appRouter = GoRouter(
 
         return _buildAnimatedPage(
           state: state,
-          child: BidDetailsScreen(
-            bid: bid,
+          child: BidDetailsScreen(bid: bid),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractDetails,
+      name: AppRoutes.contractDetails,
+      pageBuilder: (context, state) {
+        String? contractId;
+        String? bidId;
+        ContractEntity? initialContract;
+        if (state.extra is String) {
+          contractId = state.extra as String;
+        } else if (state.extra is ContractEntity) {
+          initialContract = state.extra as ContractEntity;
+          contractId = initialContract.id;
+        } else if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          contractId = map['contractId'] as String?;
+          bidId = map['bidId'] as String?;
+          if (map['contract'] is ContractEntity) {
+            initialContract = map['contract'] as ContractEntity;
+          }
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: ContractDetailsSignScreen(
+            contractId: contractId,
+            bidId: bidId,
+            initialContract: initialContract,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractPreview,
+      name: AppRoutes.contractPreview,
+      pageBuilder: (context, state) {
+        String? contractId;
+        ContractEntity? initialContract;
+        if (state.extra is String) {
+          contractId = state.extra as String;
+        } else if (state.extra is ContractEntity) {
+          initialContract = state.extra as ContractEntity;
+          contractId = initialContract.id;
+        } else if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          contractId = map['contractId'] as String?;
+          if (map['contract'] is ContractEntity) {
+            initialContract = map['contract'] as ContractEntity;
+          }
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: ContractPreviewScreen(
+            contractId: contractId,
+            initialContract: initialContract,
           ),
         );
       },

@@ -2,10 +2,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/features/contractor/bids/data/mock/mock_my_bids_data.dart';
 import 'package:watad/features/contractor/bids/data/models/my_bid_model.dart';
 import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/cancel_bid_usecase.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/get_my_bids_usecase.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/my_bids_state.dart';
 
 class MyBidsCubit extends Cubit<MyBidsState> {
-  MyBidsCubit() : super(const MyBidsInitial());
+  final GetMyBidsUseCase? getMyBidsUseCase;
+  final CancelBidUseCase? cancelBidUseCase;
+
+  MyBidsCubit({
+    this.getMyBidsUseCase,
+    this.cancelBidUseCase,
+  }) : super(const MyBidsInitial());
 
   List<MyBidModel> _allBids = [];
   String _currentFilter = 'All';
@@ -14,11 +22,42 @@ class MyBidsCubit extends Cubit<MyBidsState> {
     emit(MyBidsLoading(activeFilter: _currentFilter));
 
     try {
-      // Simulate network latency cleanly
-      await Future.delayed(const Duration(milliseconds: 200));
-
-      _allBids = MockMyBidsData.getMockBids();
-      _emitSuccess();
+      if (getMyBidsUseCase != null) {
+        final result = await getMyBidsUseCase!();
+        result.fold(
+          (bids) {
+            if (bids.isNotEmpty) {
+              _allBids = bids
+                  .map((e) => e is MyBidModel
+                      ? e
+                      : MyBidModel(
+                          id: e.id,
+                          title: e.title,
+                          location: e.location,
+                          image: e.image,
+                          status: e.status,
+                          statusColorHex: e.statusColorHex,
+                          isBookmarked: e.isBookmarked,
+                          yourBid: e.yourBid,
+                          duration: e.duration,
+                          submittedDate: e.submittedDate,
+                          rejectionReason: e.rejectionReason,
+                        ))
+                  .toList();
+            } else {
+              _allBids = MockMyBidsData.getMockBids();
+            }
+            _emitSuccess();
+          },
+          (failure) {
+            _allBids = MockMyBidsData.getMockBids();
+            _emitSuccess();
+          },
+        );
+      } else {
+        _allBids = MockMyBidsData.getMockBids();
+        _emitSuccess();
+      }
     } catch (e) {
       emit(MyBidsError(
         message: 'Failed to load bids: ${e.toString()}',
@@ -41,7 +80,7 @@ class MyBidsCubit extends Cubit<MyBidsState> {
     }
   }
 
-  void withdrawBid(String bidId) {
+  void withdrawBid(String bidId) async {
     final index = _allBids.indexWhere((b) => b.id == bidId);
     if (index != -1) {
       final current = _allBids[index];
@@ -52,6 +91,9 @@ class MyBidsCubit extends Cubit<MyBidsState> {
             'Not a suitable match for the current project requirements.',
       );
       _emitSuccess();
+    }
+    if (cancelBidUseCase != null) {
+      await cancelBidUseCase!(bidId);
     }
   }
 

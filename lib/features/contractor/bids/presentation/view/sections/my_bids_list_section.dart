@@ -137,9 +137,12 @@ class MyBidsListSection extends StatelessWidget {
                     _showWithdrawDialog(context, bid.id, bid.title);
                   },
                   onViewContractTap: () {
-                    AppToast.showInfo(
-                      context,
-                      'Viewing contract for: ${bid.title}',
+                    context.pushNamed(
+                      AppRoutes.contractDetails,
+                      extra: {
+                        'contractId': bid.id,
+                        'bidId': bid.id,
+                      },
                     );
                   },
                 );

@@ -18,14 +18,24 @@ class EndPoints {
       "Auth/change-password/verify-current";
   // =================== Projects & Marketplace ===================
   static const String contractorProjects = "Projects/contractor-projects";
+  static const String contractorRecommendedProjects =
+      "Projects/Contractor-recommended-projects";
+  static const String projects = "Projects";
   static const String marketplaceProjects = "Projects/marketplace";
+  static String projectDetails(String id) => "Projects/$id";
+  static String contractorRecommendedProjectDetails(String id) =>
+      "Projects/Contractor-recommended-project/$id";
   static String marketplaceProjectDetails(String id) => "Projects/marketplace/$id";
 
   // =================== Bids ===================
-  static const String contractorBids = "Bids/my-bids";
-  static const String myBids = "Bids/my-bids";
+  static const String submitBid = "Bids/submit-bid";
+  static const String contractorBids = "Bids/contractor-bids";
+  static const String myBids = "Bids/contractor-bids";
   static const String bids = "Bids";
+  static String cancelBid(String id) => "Bids/cancel-bid/$id";
   static String bidDetails(String bidId) => "Bids/$bidId";
+  static String acceptedBidContract(String projectId) =>
+      "Bids/accepted/$projectId";
 
   // =================== Contractor & Portfolio ===================
   static const String contractorProfile = "Contractor/profile";
@@ -48,12 +58,17 @@ class EndPoints {
 
   // =================== Contracts ===================
   static String contractDetails(String contractId) => "Contracts/$contractId";
+  static String signContract(String contractId) => "Contracts/$contractId/sign";
 }
 
 class ApiQueryParams {
   static const String pageNumber = "pageNumber";
   static const String pageSize = "pageSize";
   static const String status = "status";
+  static const String search = "Search";
+  static const String governorate = "Governorate";
+  static const String minBudget = "MinBudget";
+  static const String maxBudget = "MaxBudget";
 }
 
 class ApiKey {

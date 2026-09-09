@@ -12,6 +12,7 @@ import 'package:watad/features/contractor/home/presentation/view/sections/comple
 import 'package:watad/features/contractor/home/presentation/view/sections/contractor_header_section.dart';
 import 'package:watad/features/contractor/home/presentation/view/sections/contractor_home_shimmer_section.dart';
 import 'package:watad/features/contractor/home/presentation/view/sections/explore_marketplace_section.dart';
+import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
 import 'package:watad/features/contractor/home/presentation/view/sections/recent_bids_section.dart';
 
 class ContractorHomeView extends StatelessWidget {
@@ -97,9 +98,25 @@ class ContractorHomeView extends StatelessWidget {
                       bids: homeData.recentBids,
                       onViewAllTap: onNavigateToBids ??
                           () {
-                            context.push(AppRoutes.contractorBids);
+                            context.push(AppRoutes.myBids);
                           },
-                      onBidTap: (bid) {},
+                      onBidTap: (bid) {
+                        context.push(
+                          AppRoutes.bidDetails,
+                          extra: MyBidEntity(
+                            id: bid.id,
+                            title: bid.title,
+                            location: bid.location,
+                            image: bid.image,
+                            status: bid.badgeText,
+                            statusColorHex: bid.badgeColorHex,
+                            isBookmarked: false,
+                            yourBid: bid.amount,
+                            duration: '6 Months',
+                            submittedDate: 'Recently',
+                          ),
+                        );
+                      },
                       onBrowseTendersTap: onNavigateToMarketplace,
                     ),
 

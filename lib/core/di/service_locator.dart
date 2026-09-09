@@ -40,11 +40,24 @@ import 'package:watad/features/contractor/portfolio/presentation/cubit/portfolio
 import 'package:watad/features/contractor/bids/data/datasources/contractor_bids_remote_data_source.dart';
 import 'package:watad/features/contractor/bids/data/repositories/contractor_bids_repository_impl.dart';
 import 'package:watad/features/contractor/bids/domain/repositories/contractor_bids_repository.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/cancel_bid_usecase.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/get_bid_details_usecase.dart';
 import 'package:watad/features/contractor/bids/domain/usecases/get_contractor_bids_usecase.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/get_my_bids_usecase.dart';
+import 'package:watad/features/contractor/bids/domain/usecases/submit_bid_usecase.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/contractor_bids_cubit.dart';
+import 'package:watad/features/contractor/bids/presentation/cubit/my_bids_cubit.dart';
+import 'package:watad/features/contractor/contracts/data/datasources/contracts_remote_data_source.dart';
+import 'package:watad/features/contractor/contracts/data/repositories/contracts_repository_impl.dart';
+import 'package:watad/features/contractor/contracts/domain/repositories/contracts_repository.dart';
+import 'package:watad/features/contractor/contracts/domain/usecases/get_accepted_bid_contract_usecase.dart';
+import 'package:watad/features/contractor/contracts/domain/usecases/get_contract_details_usecase.dart';
+import 'package:watad/features/contractor/contracts/domain/usecases/sign_contract_usecase.dart';
+import 'package:watad/features/contractor/contracts/presentation/cubit/contract_cubit.dart';
 import 'package:watad/features/contractor/marketplace/data/datasources/marketplace_remote_data_source.dart';
 import 'package:watad/features/contractor/marketplace/data/repositories/marketplace_repository_impl.dart';
 import 'package:watad/features/contractor/marketplace/domain/repositories/marketplace_repository.dart';
+import 'package:watad/features/contractor/marketplace/domain/usecases/get_marketplace_project_details_usecase.dart';
 import 'package:watad/features/contractor/marketplace/domain/usecases/get_marketplace_projects_usecase.dart';
 import 'package:watad/features/contractor/marketplace/presentation/cubit/marketplace_cubit.dart';
 
@@ -230,18 +243,32 @@ Future<void> setupServiceLocator() async {
     () => ContractorBidsRepositoryImpl(remoteDataSource: sl()),
   );
 
-  // UseCase
+  // UseCases
   sl.registerLazySingleton(() => GetContractorBidsUseCase(sl()));
+  sl.registerLazySingleton(() => GetMyBidsUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitBidUseCase(sl()));
+  sl.registerLazySingleton(() => CancelBidUseCase(sl()));
+  sl.registerLazySingleton(() => GetBidDetailsUseCase(sl()));
 
-  // Cubit
+  // Cubits
   sl.registerFactory(
     () => ContractorBidsCubit(getContractorBidsUseCase: sl()),
+  );
+  sl.registerFactory(
+    () => MyBidsCubit(
+      getMyBidsUseCase: sl(),
+      cancelBidUseCase: sl(),
+    ),
   );
 
   //! Contractor Marketplace Feature
   // DataSource
   sl.registerLazySingleton<MarketplaceRemoteDataSource>(
-    () => MarketplaceRemoteDataSourceImpl(apiConsumer: sl()),
+    () => MarketplaceRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
   );
 
   // Repository
@@ -249,11 +276,41 @@ Future<void> setupServiceLocator() async {
     () => MarketplaceRepositoryImpl(remoteDataSource: sl()),
   );
 
-  // UseCase
+  // UseCases
   sl.registerLazySingleton(() => GetMarketplaceProjectsUseCase(sl()));
+  sl.registerLazySingleton(() => GetMarketplaceProjectDetailsUseCase(sl()));
 
   // Cubit
   sl.registerFactory(
     () => MarketplaceCubit(getMarketplaceProjectsUseCase: sl()),
+  );
+
+  //! Contractor Contracts Feature
+  // DataSource
+  sl.registerLazySingleton<ContractsRemoteDataSource>(
+    () => ContractsRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+
+  // Repository
+  sl.registerLazySingleton<ContractsRepository>(
+    () => ContractsRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // UseCases
+  sl.registerLazySingleton(() => GetContractDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => SignContractUseCase(sl()));
+  sl.registerLazySingleton(() => GetAcceptedBidContractUseCase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => ContractCubit(
+      getContractDetailsUseCase: sl(),
+      signContractUseCase: sl(),
+      getAcceptedBidContractUseCase: sl(),
+    ),
   );
 }

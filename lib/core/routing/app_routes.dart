@@ -25,4 +25,6 @@ class AppRoutes {
   static const String submitBid = '/submit-bid';
   static const String editBid = '/edit-bid';
   static const String bidDetails = '/bid-details';
+  static const String contractDetails = '/contract-details';
+  static const String contractPreview = '/contract-preview';
 }
