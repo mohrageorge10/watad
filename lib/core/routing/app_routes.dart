@@ -10,10 +10,17 @@ class AppRoutes {
   static const String forgetPassScreen = '/forget-password';
   // ============ owner Feature ============
   static const String projectDashboard = '/project-dashboard';
+  static const String financialSummary = '/financial-summary';
+  static const String progressSiteUpdates = '/progress-site-updates';
+  static const String changeOrders = '/change-orders';
   static const String feasibilityCalculator = '/feasibility-calculator';
   static const String feasibilityReport = '/feasibility-report';
   static const String createProject = '/create-project';
-
+  static const String bidDetails = '/bid-details';
+  static const String bidResult = '/bid-result';
+  static const String createContractForm = '/create-contract-form';
+  static const String milestonesForm = '/milestones-form';
+  static const String contractDetails = '/contract-details';
   // ============ auth Feature ============
   static const String otpScreen = '/otp';
   static const String resetPasswordScreen = '/reset-password';

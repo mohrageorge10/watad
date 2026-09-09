@@ -44,28 +44,36 @@ class _Step1SectionState extends State<Step1Section> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 8.h),
-              Text("Project Title", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-              SizedBox(height: 8.h),
-              _buildField(
-                controller: _titleController,
-                hint: 'My New Villa',
-                onChanged: (v) => cubit.updateData(title: v),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8.h),
+                      Text("Project Title", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                      SizedBox(height: 8.h),
+                      _buildField(
+                        controller: _titleController,
+                        hint: 'My New Villa',
+                        onChanged: (v) => cubit.updateData(title: v),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text("Land Area (m²)", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                      SizedBox(height: 8.h),
+                      _buildField(
+                        controller: _areaController,
+                        hint: '500',
+                        keyboardType: TextInputType.number,
+                        onChanged: (v) => cubit.updateData(landArea: double.tryParse(v) ?? 0),
+                      ),
+                      SizedBox(height: 20.h),
+                      Text("Number of Floors", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                      SizedBox(height: 12.h),
+                      _buildFloorSelector(context, state.floorsCount, cubit),
+                    ],
+                  ),
+                ),
               ),
-              SizedBox(height: 20.h),
-              Text("Land Area (m²)", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-              SizedBox(height: 8.h),
-              _buildField(
-                controller: _areaController,
-                hint: '500',
-                keyboardType: TextInputType.number,
-                onChanged: (v) => cubit.updateData(landArea: double.tryParse(v) ?? 0),
-              ),
-              SizedBox(height: 20.h),
-              Text("Number of Floors", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-              SizedBox(height: 12.h),
-              _buildFloorSelector(context, state.floorsCount, cubit),
-              const Spacer(),
               AppElevatedButton(
                 title: "Next",
                 borderRadius: 12,

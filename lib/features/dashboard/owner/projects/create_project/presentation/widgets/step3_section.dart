@@ -48,28 +48,36 @@ class _Step3SectionState extends State<Step3Section> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 8.h),
-          Text("Finishing Level", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 12.h),
-          _buildSegmentedSelector(cubit),
-          SizedBox(height: 20.h),
-          Text("Estimated Budget (EGP)", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 8.h),
-          _buildField(
-            controller: _estimatedBudgetController,
-            hint: '2,000,000',
-            keyboardType: TextInputType.number,
-            onChanged: (v) => cubit.updateData(estimatedBudget: double.tryParse(v) ?? 0),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(height: 8.h),
+                  Text("Finishing Level", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 12.h),
+                  _buildSegmentedSelector(cubit),
+                  SizedBox(height: 20.h),
+                  Text("Estimated Budget (EGP)", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 8.h),
+                  _buildField(
+                    controller: _estimatedBudgetController,
+                    hint: '2,000,000',
+                    keyboardType: TextInputType.number,
+                    onChanged: (v) => cubit.updateData(estimatedBudget: double.tryParse(v) ?? 0),
+                  ),
+                  SizedBox(height: 20.h),
+                  Text("Expected Start Date", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 8.h),
+                  _buildDatePicker(context, cubit),
+                  SizedBox(height: 20.h),
+                  Text("Expected Duration", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
+                  SizedBox(height: 8.h),
+                  _buildDurationDropdown(cubit),
+                ],
+              ),
+            ),
           ),
-          SizedBox(height: 20.h),
-          Text("Expected Start Date", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 8.h),
-          _buildDatePicker(context, cubit),
-          SizedBox(height: 20.h),
-          Text("Expected Duration", style: AppTextStyles.font14SemiBoldDark.copyWith(fontWeight: FontWeight.bold, color: AppColors.grey900)),
-          SizedBox(height: 8.h),
-          _buildDurationDropdown(cubit),
-          const Spacer(),
           Row(
             children: [
               Expanded(

@@ -19,10 +19,17 @@ import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasi
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
-
+import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_details_view.dart';
+import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_result_view.dart';
+import 'package:watad/features/dashboard/owner/contracts/presentation/view/create_contract_view.dart';
+import 'package:watad/features/dashboard/owner/contracts/presentation/view/milestones_form_view.dart';
+import 'package:watad/features/dashboard/owner/contracts/presentation/view/contract_details_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/financial_summary/presentation/view/financial_summary_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/progress_site_updates/presentation/view/progress_site_updates_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_orders_view.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.splash,
+  initialLocation: AppRoutes.projectDashboard,
   observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(
@@ -38,6 +45,18 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const MainLayout(),
     ),
     GoRoute(
+      path: AppRoutes.financialSummary,
+      builder: (context, state) => const FinancialSummaryView(),
+    ),
+    GoRoute(
+      path: AppRoutes.progressSiteUpdates,
+      builder: (context, state) => const ProgressSiteUpdatesView(),
+    ),
+    GoRoute(
+      path: AppRoutes.changeOrders,
+      builder: (context, state) => const ChangeOrdersView(),
+    ),
+    GoRoute(
       path: AppRoutes.feasibilityCalculator,
       builder: (context, state) => const FeasibilityCalculatorView(),
     ),
@@ -51,6 +70,50 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.createProject,
       builder: (context, state) => const CreateProjectView(),
+    ),
+    GoRoute(
+      name: 'bid_details',
+      path: AppRoutes.bidDetails,
+      builder: (context, state) {
+        final bidId = state.extra as String;
+        return BidDetailsView(bidId: bidId);
+      },
+    ),
+    GoRoute(
+      name: 'bid_result',
+      path: AppRoutes.bidResult,
+      builder: (context, state) {
+        final args = state.extra as Map<String, dynamic>? ?? {};
+        final isAccepted = args['isAccepted'] as bool? ?? false;
+        final bidId = args['bidId'] as String? ?? '';
+        return BidResultView(
+          isAccepted: isAccepted,
+          bidId: bidId, // We need to update BidResultView to accept bidId
+        );
+      },
+    ),
+    GoRoute(
+      name: 'create_contract_form',
+      path: AppRoutes.createContractForm,
+      builder: (context, state) {
+        final args = state.extra as Map<String, dynamic>? ?? {};
+        return CreateContractView(
+          bidId: args['bidId'] ?? '',
+        );
+      },
+    ),
+    GoRoute(
+      name: 'milestones_form',
+      path: AppRoutes.milestonesForm,
+      builder: (context, state) => const MilestonesFormView(),
+    ),
+    GoRoute(
+      name: 'contract_details',
+      path: AppRoutes.contractDetails,
+      builder: (context, state) {
+        final contractId = state.extra as String;
+        return ContractDetailsView(contractId: contractId);
+      },
     ),
     GoRoute(
       path: AppRoutes.welcome,

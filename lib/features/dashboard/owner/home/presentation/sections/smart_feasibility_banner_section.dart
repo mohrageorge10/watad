@@ -19,8 +19,8 @@ class SmartFeasibilityBannerSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.r),
           boxShadow: [
             BoxShadow(
-              color: AppColors.grey300.withValues(alpha: 0.3),
-              blurRadius: 16,
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
