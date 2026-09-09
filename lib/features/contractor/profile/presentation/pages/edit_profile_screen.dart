@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
@@ -79,61 +79,15 @@ class EditProfileScreen extends StatelessWidget {
                       );
 
                       // Prompt dialog to add first portfolio project
-                      final wantToAdd = await showDialog<bool>(
-                        context: context,
-                        builder: (ctx) => AlertDialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          title: Text(
-                            'إضافة سابقة أعمال',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                          content: Text(
-                            'هل ترغب في إضافة أول مشروع لك في سابقة الأعمال؟',
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: AppColors.grey600,
-                              height: 1.4,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(ctx).pop(false),
-                              child: Text(
-                                'تخطي الآن',
-                                style: TextStyle(
-                                  color: AppColors.grey600,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => Navigator.of(ctx).pop(true),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                              ),
-                              child: Text(
-                                'إضافة مشروع',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      final wantToAdd = await AppConfirmationDialog.show(
+                        context,
+                        title: 'إضافة سابقة أعمال',
+                        message: 'هل ترغب في إضافة أول مشروع لك في سابقة الأعمال؟',
+                        icon: Icons.work_outline_rounded,
+                        iconColor: AppColors.primary,
+                        cancelText: 'تخطي الآن',
+                        confirmText: 'إضافة مشروع',
+                        confirmButtonColor: AppColors.primary,
                       );
 
                       if (context.mounted) {

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
@@ -51,59 +52,15 @@ class _PortfolioProjectDetailsScreenState
   }
 
   Future<void> _confirmDelete() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
-        title: Text(
-          'حذف المشروع',
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
-          ),
-        ),
-        content: Text(
-          'هل أنت متأكد من رغبتك في حذف هذا المشروع من سابقة أعمالك نهائياً؟',
-          textAlign: TextAlign.right,
-          style: TextStyle(
-            fontSize: 14.sp,
-            color: AppColors.grey600,
-            height: 1.4,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(
-              'إلغاء',
-              style: TextStyle(
-                color: AppColors.grey600,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade600,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-            ),
-            child: Text(
-              'حذف',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+    final confirm = await AppConfirmationDialog.show(
+      context,
+      title: 'حذف المشروع',
+      message: 'هل أنت متأكد من رغبتك في حذف هذا المشروع من سابقة أعمالك نهائياً؟',
+      icon: Icons.delete_forever_rounded,
+      iconColor: const Color(0xFFFF3B30),
+      cancelText: 'إلغاء',
+      confirmText: 'حذف',
+      confirmButtonColor: const Color(0xFFFF3B30),
     );
 
     if (confirm == true && mounted) {

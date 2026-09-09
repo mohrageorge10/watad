@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_home_page.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
-import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/my_bids_management_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
@@ -71,8 +71,9 @@ class _ContractorMainLayoutScreenState
             onBackTap: () => _onTabTapped(0),
           ),
 
-          // Tab 3: My Bids (Contractor Bids with infinite scroll)
-          const ContractorBidsScreen(
+          // Tab 3: My Bids (My Bids Management Screen)
+          const MyBidsManagementScreen(
+            showBottomNavBar: false,
             showBackButton: false,
           ),
 

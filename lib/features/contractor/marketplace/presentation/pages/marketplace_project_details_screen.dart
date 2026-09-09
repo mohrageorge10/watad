@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_details_entity.dart';
@@ -45,10 +47,7 @@ class MarketplaceProjectDetailsScreen extends StatelessWidget {
                   project: details,
                   onSubmitBidTap: onSubmitBidTap ??
                       () {
-                        AppToast.showSuccess(
-                          context,
-                          'Bid submission flow initiated for ${details.title}',
-                        );
+                        context.push(AppRoutes.submitBid, extra: details);
                       },
                   onAttachmentTap: (attachment) {
                     AppToast.showSuccess(

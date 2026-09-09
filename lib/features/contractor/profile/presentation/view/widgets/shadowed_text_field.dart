@@ -24,6 +24,10 @@ class ShadowedTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final String? Function(String?)? validator;
   final bool readOnly;
+  final String? suffixText;
+  final Color? suffixColor;
+  final Color? valueColor;
+  final TextStyle? textStyle;
 
   const ShadowedTextField({
     super.key,
@@ -40,6 +44,10 @@ class ShadowedTextField extends StatelessWidget {
     this.onTap,
     this.validator,
     this.readOnly = false,
+    this.suffixText,
+    this.suffixColor,
+    this.valueColor,
+    this.textStyle,
   });
 
   @override
@@ -138,18 +146,19 @@ class ShadowedTextField extends StatelessWidget {
               ? TextInputType.multiline
               : TextInputType.text),
       inputFormatters: inputType == ShadowedInputType.number
-          ? [FilteringTextInputFormatter.digitsOnly]
+          ? [FilteringTextInputFormatter.allow(RegExp(r'[0-9,.]'))]
           : null,
       maxLines: effectiveMaxLines,
       readOnly: readOnly,
       onTap: onTap,
       onChanged: onChanged,
       validator: validator,
-      style: TextStyle(
-        color: const Color(0xFF1D1D1F),
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w600,
-      ),
+      style: textStyle ??
+          TextStyle(
+            color: valueColor ?? const Color(0xFF1D1D1F),
+            fontSize: 15.sp,
+            fontWeight: valueColor != null ? FontWeight.bold : FontWeight.w600,
+          ),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(
           horizontal: 16.w,
@@ -163,6 +172,12 @@ class ShadowedTextField extends StatelessWidget {
           color: const Color(0xFF8E8E93),
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
+        ),
+        suffixText: suffixText,
+        suffixStyle: TextStyle(
+          color: suffixColor ?? const Color(0xFF8E8E93),
+          fontSize: 14.sp,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

@@ -22,4 +22,7 @@ class AppRoutes {
   static const String addPortfolioProject = '/add-portfolio-project';
   static const String portfolioProjectDetails = '/portfolio-project-details';
   static const String marketplaceProjectDetails = '/marketplace-project-details';
+  static const String submitBid = '/submit-bid';
+  static const String editBid = '/edit-bid';
+  static const String bidDetails = '/bid-details';
 }

@@ -21,12 +21,17 @@ import 'package:watad/features/contractor/portfolio/data/models/portfolio_projec
 import 'package:watad/features/contractor/portfolio/presentation/pages/add_portfolio_project_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_project_details_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
+import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/bid_details_screen.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/edit_bid_screen.dart';
+import 'package:watad/features/contractor/bids/presentation/pages/my_bids_management_screen.dart';
 import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_details_entity.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_entity.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_project_details_screen.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
+import 'package:watad/features/contractor/marketplace/presentation/pages/submit_bid_screen.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
 import 'package:watad/features/splash/presentation/pages/splash_page.dart';
 
@@ -231,9 +236,10 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.myBids,
+      name: AppRoutes.myBids,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
-        child: const ContractorBidsScreen(showBackButton: true),
+        child: const MyBidsManagementScreen(showBottomNavBar: true),
       ),
     ),
     GoRoute(
@@ -276,6 +282,93 @@ final GoRouter appRouter = GoRouter(
           state: state,
           child: MarketplaceProjectDetailsScreen(
             project: details,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.submitBid,
+      pageBuilder: (context, state) {
+        String projectName = 'Villa Construction Project - New Cairo';
+        String initialCost = '2,450,000';
+        String initialDuration = '6';
+
+        if (state.extra is MarketplaceProjectDetailsEntity) {
+          final p = state.extra as MarketplaceProjectDetailsEntity;
+          projectName = '${p.title} - ${p.location}';
+          final costDigits = p.estimatedBudget.replaceAll(RegExp(r'[^0-9,]'), '').trim();
+          if (costDigits.isNotEmpty) initialCost = costDigits;
+          final durDigits = p.expectedDuration.replaceAll(RegExp(r'[^0-9]'), '').trim();
+          if (durDigits.isNotEmpty) initialDuration = durDigits;
+        } else if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          projectName = map['projectName'] as String? ?? projectName;
+          initialCost = map['initialCost'] as String? ?? initialCost;
+          initialDuration = map['initialDuration'] as String? ?? initialDuration;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: SubmitBidScreen(
+            projectName: projectName,
+            initialCost: initialCost,
+            initialDuration: initialDuration,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.editBid,
+      name: AppRoutes.editBid,
+      pageBuilder: (context, state) {
+        String bidId = '';
+        String projectName = 'Villa Construction Project - New Cairo';
+        String initialCost = '2,450,000';
+        String initialDuration = '6';
+
+        if (state.extra is MyBidEntity) {
+          final b = state.extra as MyBidEntity;
+          bidId = b.id;
+          projectName = b.title;
+          final costDigits =
+              b.yourBid.replaceAll(RegExp(r'[^0-9,]'), '').trim();
+          if (costDigits.isNotEmpty) initialCost = costDigits;
+          final durDigits =
+              b.duration.replaceAll(RegExp(r'[^0-9]'), '').trim();
+          if (durDigits.isNotEmpty) initialDuration = durDigits;
+        } else if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          bidId = map['bidId'] as String? ?? bidId;
+          projectName = map['projectName'] as String? ?? projectName;
+          initialCost = map['initialCost'] as String? ?? initialCost;
+          initialDuration =
+              map['initialDuration'] as String? ?? initialDuration;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: EditBidScreen(
+            bidId: bidId,
+            projectName: projectName,
+            initialCost: initialCost,
+            initialDuration: initialDuration,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.bidDetails,
+      name: AppRoutes.bidDetails,
+      pageBuilder: (context, state) {
+        MyBidEntity? bid;
+        if (state.extra is MyBidEntity) {
+          bid = state.extra as MyBidEntity;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: BidDetailsScreen(
+            bid: bid,
           ),
         );
       },
