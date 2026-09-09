@@ -25,4 +25,19 @@ class AppRoutes {
   static const String otpScreen = '/otp';
   static const String resetPasswordScreen = '/reset-password';
   static const String roleSelection = '/role-selection';
+  static const String contractorProfile = '/contractor-profile';
+  static const String editProfile = '/edit-profile';
+  static const String portfolioProjects = '/portfolio-projects';
+  static const String myProjects = '/my-projects';
+  static const String contractorBids = '/contractor-bids';
+  static const String myBids = '/my-bids';
+  static const String marketplace = '/marketplace';
+  static const String addPortfolioProject = '/add-portfolio-project';
+  static const String portfolioProjectDetails = '/portfolio-project-details';
+  static const String marketplaceProjectDetails = '/marketplace-project-details';
+  static const String submitBid = '/submit-bid';
+  static const String editBid = '/edit-bid';
+  static const String bidDetails = '/bid-details';
+  static const String contractDetails = '/contract-details';
+  static const String contractPreview = '/contract-preview';
 }
