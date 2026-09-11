@@ -127,6 +127,7 @@ Future<void> setupServiceLocator() async {
       facebookLoginUseCase: sl(),
       cacheHelper: sl(),
       secureStorage: sl(),
+      socialAuthService: sl(),
     ),
   );
 

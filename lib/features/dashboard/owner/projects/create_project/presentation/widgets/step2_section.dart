@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/cubit/create_project_cubit.dart';
@@ -127,9 +128,7 @@ class _Step2SectionState extends State<Step2Section> {
                   borderRadius: 30,
                   onPressed: () {
                     if (_selectedGov == null || _selectedCity == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please select governorate and city')),
-                      );
+                      AppToast.showError(context, 'Please select governorate and city');
                       return;
                     }
                     cubit.nextStep();

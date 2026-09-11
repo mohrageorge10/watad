@@ -20,12 +20,6 @@ class SplashCubit extends Cubit<SplashState> {
   Future<void> decideNextRoute() async {
     emit(SplashLoading());
 
-    // 0. Load token from SecureStorage into TokenManager (for cold starts)
-    final String? savedToken = await secureStorage.read(key: CacheKeys.token);
-    if (savedToken != null && savedToken.isNotEmpty) {
-      TokenManager.instance.setToken(savedToken);
-    }
-
     // 1. Check if user has seen Onboarding
     final bool hasSeenOnboarding =
         cacheHelper.getData(key: CacheKeys.hasSeenOnboarding) ?? false;
@@ -35,29 +29,50 @@ class SplashCubit extends Cubit<SplashState> {
       return;
     }
 
-    // 2. Check if token is stored (check memory first, then SharedPrefs)
-    final String? token = TokenManager.instance.token ?? cacheHelper.getData(key: CacheKeys.token);
+    // 2. Check Remember Me: if user chose not to stay logged in, clear session
+    final bool rememberMe =
+        cacheHelper.getData(key: CacheKeys.rememberMe) ?? true;
+    if (!rememberMe) {
+      TokenManager.instance.clearToken();
+      await secureStorage.delete(key: CacheKeys.token);
+      await cacheHelper.removeData(key: CacheKeys.token);
+      emit(SplashNavigate(AppRoutes.welcome));
+      return;
+    }
+
+    // 3. Load token from memory or secure storage
+    String? token = TokenManager.instance.token;
+    if (token == null || token.isEmpty) {
+      token = await secureStorage.read(key: CacheKeys.token) ??
+          (cacheHelper.getData(key: CacheKeys.token) as String?);
+      if (token != null && token.isNotEmpty) {
+        TokenManager.instance.setToken(token);
+      }
+    }
 
     if (token == null || token.isEmpty) {
       emit(SplashNavigate(AppRoutes.welcome));
       return;
     }
 
-    // 3. Check expiration date if available
+    // 4. Check expiration date if available
     final String? expirationStr =
         cacheHelper.getData(key: CacheKeys.tokenExpiration);
 
     if (expirationStr != null && expirationStr.isNotEmpty) {
       final DateTime? expiration = DateTime.tryParse(expirationStr);
       if (expiration != null && DateTime.now().isAfter(expiration)) {
-        // Token has expired -> clear stored token and send to welcome
+        // Token has expired -> thoroughly clean all token storages
+        TokenManager.instance.clearToken();
+        await secureStorage.delete(key: CacheKeys.token);
         await cacheHelper.removeData(key: CacheKeys.token);
+        await cacheHelper.removeData(key: CacheKeys.tokenExpiration);
         emit(SplashNavigate(AppRoutes.welcome));
         return;
       }
     }
 
-    // Token is valid and unexpired
-    emit(SplashNavigate(AppRoutes.projectDashboard));
+    // Token is valid and unexpired -> navigate to HomeGateScreen to route by role
+    emit(SplashNavigate(AppRoutes.home));
   }
 }

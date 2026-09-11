@@ -1,6 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:watad/core/errors/error_model.dart';
 import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/data/models/auth_response_model.dart';
+import 'package:watad/features/auth/data/models/user_data_model.dart';
 
 void main() {
   group('Auth Models Tests', () {
@@ -144,6 +146,58 @@ void main() {
         final json = model.toJson();
         expect(json['accessToken'], 'facebook_access_token_xyz');
         expect(json['userType'], 3);
+      });
+    });
+
+    group('ErrorModel Parsing', () {
+      test('correctly extracts ASP.NET Core ValidationProblemDetails errors map', () {
+        final aspNetJson = {
+          'type': 'https://tools.ietf.org/html/rfc7231#section-6.5.1',
+          'title': 'One or more validation errors occurred.',
+          'status': 400,
+          'errors': {
+            'Email': ['The Email field is required.'],
+            'Password': ['Passwords must have at least one non alphanumeric character.'],
+          },
+        };
+
+        final error = ErrorModel.fromJson(aspNetJson);
+        expect(error.status, 400);
+        expect(
+          error.errorMessage,
+          'The Email field is required., Passwords must have at least one non alphanumeric character.',
+        );
+      });
+
+      test('falls back to title when errors map is empty', () {
+        final aspNetJson = {
+          'title': 'Resource not found or unauthorized',
+          'status': 404,
+        };
+
+        final error = ErrorModel.fromJson(aspNetJson);
+        expect(error.status, 404);
+        expect(error.errorMessage, 'Resource not found or unauthorized');
+      });
+    });
+
+    group('UserDataModel Role/UserType Mapping', () {
+      test('maps string UserType "Owner" to 0 and "Contractor" to 2', () {
+        final ownerJson = {
+          'userType': 'Owner',
+          'email': 'owner@watad.org',
+        };
+        final ownerModel = UserDataModel.fromJson(ownerJson);
+        expect(ownerModel.userType, 0);
+        expect(ownerModel.role, 'Project Owner');
+
+        final contractorJson = {
+          'userType': 'Contractor',
+          'email': 'contractor@watad.org',
+        };
+        final contractorModel = UserDataModel.fromJson(contractorJson);
+        expect(contractorModel.userType, 2);
+        expect(contractorModel.role, 'Contractor');
       });
     });
   });

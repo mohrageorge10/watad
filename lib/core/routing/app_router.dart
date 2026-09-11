@@ -80,7 +80,7 @@ CustomTransitionPage<void> _buildAnimatedPage({
 }
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.projectDashboard,
+  initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(

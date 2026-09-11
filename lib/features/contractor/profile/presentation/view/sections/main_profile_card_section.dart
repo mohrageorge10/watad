@@ -5,8 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/shared/widgets/permission_confirmation_dialog.dart';
+import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/permission_confirmation_dialog.dart';
 
 class MainProfileCardSection extends StatelessWidget {
   final ContractorProfileEntity profile;
@@ -138,8 +139,9 @@ class MainProfileCardSection extends StatelessWidget {
     ImageSource source,
   ) async {
     final isCamera = source == ImageSource.camera;
-    final permissionKey =
-        isCamera ? 'camera_permission_granted' : 'gallery_permission_granted';
+    final permissionKey = isCamera
+        ? CacheKeys.cameraPermissionGranted
+        : CacheKeys.galleryPermissionGranted;
 
     // 1. Check if user has already granted permission previously
     CacheHelper? cache;

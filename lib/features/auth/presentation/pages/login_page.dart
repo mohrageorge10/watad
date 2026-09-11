@@ -114,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                     ? state.response.message
                     : 'Welcome back to Watad!';
                 AppToast.showSuccess(context, msg);
-                context.go(AppRoutes.projectDashboard);
+                context.go(AppRoutes.home);
               } else if (state is AuthErrorState) {
                 AppToast.showError(context, state.message);
               }

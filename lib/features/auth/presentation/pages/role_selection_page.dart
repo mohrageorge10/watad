@@ -95,7 +95,7 @@ class _RoleSelectionPageState extends State<RoleSelectionPage> {
                     ? state.response.message
                     : 'Logged in successfully as ${_selectedRole!.title}';
                 AppToast.showSuccess(context, msg);
-                context.go(AppRoutes.projectDashboard);
+                context.go(AppRoutes.home);
               } else if (state is AuthErrorState) {
                 AppToast.showError(context, state.message);
               }
