@@ -1,44 +1,87 @@
 class AppRoutes {
+  // ============ Common & Gateways ============
   static const String splash = '/';
   static const String home = '/home';
   static const String onBoarding = '/on-boarding';
   static const String welcome = '/welcome';
-  static const String signUpScreen = '/sign-up';
-  static const String signUpPersonalInfo = '/sign-up-personal-info';
-  static const String signUpPassword = '/sign-up-password';
-  static const String signUpConfirmation = '/sign-up-confirmation';
-  static const String loginScreen = '/login';
-  static const String forgetPassScreen = '/forget-password';
-  // ============ owner Feature ============
-  static const String projectDashboard = '/project-dashboard';
-  static const String financialSummary = '/financial-summary';
-  static const String progressSiteUpdates = '/progress-site-updates';
-  static const String changeOrders = '/change-orders';
-  static const String feasibilityCalculator = '/feasibility-calculator';
-  static const String feasibilityReport = '/feasibility-report';
-  static const String createProject = '/create-project';
+
+  // ============ Auth Feature ============
+  static const String authLogin = '/login';
+  static const String authRoleSelection = '/role-selection';
+  static const String authSignUp = '/sign-up';
+  static const String authSignUpPersonalInfo = '/sign-up-personal-info';
+  static const String authSignUpPassword = '/sign-up-password';
+  static const String authSignUpConfirmation = '/sign-up-confirmation';
+  static const String authForgetPassword = '/forget-password';
+  static const String authOtp = '/otp';
+  static const String authResetPassword = '/reset-password';
+
+  // ============ Owner Feature ============
+  static const String ownerDashboard = '/project-dashboard';
+  static const String ownerCreateProject = '/create-project';
+  static const String ownerFinancialSummary = '/financial-summary';
+  static const String ownerProgressSiteUpdates = '/progress-site-updates';
+  static const String ownerChangeOrders = '/change-orders';
+  static const String ownerFeasibilityCalculator = '/feasibility-calculator';
+  static const String ownerFeasibilityReport = '/feasibility-report';
   static const String ownerBidDetails = '/owner-bid-details';
-  static const String bidResult = '/bid-result';
-  static const String createContractForm = '/create-contract-form';
-  static const String milestonesForm = '/milestones-form';
+  static const String ownerBidResult = '/bid-result';
+  static const String ownerCreateContractForm = '/create-contract-form';
+  static const String ownerMilestonesForm = '/milestones-form';
   static const String ownerContractDetails = '/owner-contract-details';
-  // ============ auth Feature ============
-  static const String otpScreen = '/otp';
-  static const String resetPasswordScreen = '/reset-password';
-  static const String roleSelection = '/role-selection';
+
+  // ============ Contractor Feature ============
   static const String contractorProfile = '/contractor-profile';
-  static const String editProfile = '/edit-profile';
-  static const String portfolioProjects = '/portfolio-projects';
-  static const String myProjects = '/my-projects';
+  static const String contractorEditProfile = '/edit-profile';
+  static const String contractorPortfolioProjects = '/portfolio-projects';
+  static const String contractorMyProjects = '/my-projects';
+  static const String contractorAddPortfolioProject = '/add-portfolio-project';
+  static const String contractorPortfolioProjectDetails = '/portfolio-project-details';
+  static const String contractorMarketplace = '/marketplace';
+  static const String contractorMarketplaceProjectDetails = '/marketplace-project-details';
+  static const String contractorSubmitBid = '/submit-bid';
   static const String contractorBids = '/contractor-bids';
-  static const String myBids = '/my-bids';
-  static const String marketplace = '/marketplace';
-  static const String addPortfolioProject = '/add-portfolio-project';
-  static const String portfolioProjectDetails = '/portfolio-project-details';
-  static const String marketplaceProjectDetails = '/marketplace-project-details';
-  static const String submitBid = '/submit-bid';
-  static const String editBid = '/edit-bid';
-  static const String bidDetails = '/bid-details';
-  static const String contractDetails = '/contract-details';
-  static const String contractPreview = '/contract-preview';
+  static const String contractorMyBids = '/my-bids';
+  static const String contractorBidDetails = '/bid-details';
+  static const String contractorEditBid = '/edit-bid';
+  static const String contractorContractDetails = '/contract-details';
+  static const String contractorContractPreview = '/contract-preview';
+
+  // ============ Aliases (Backward Compatibility) ============
+  static const String loginScreen = authLogin;
+  static const String roleSelection = authRoleSelection;
+  static const String signUpScreen = authSignUp;
+  static const String signUpPersonalInfo = authSignUpPersonalInfo;
+  static const String signUpPassword = authSignUpPassword;
+  static const String signUpConfirmation = authSignUpConfirmation;
+  static const String forgetPassScreen = authForgetPassword;
+  static const String otpScreen = authOtp;
+  static const String resetPasswordScreen = authResetPassword;
+
+  static const String projectDashboard = ownerDashboard;
+  static const String createProject = ownerCreateProject;
+  static const String financialSummary = ownerFinancialSummary;
+  static const String progressSiteUpdates = ownerProgressSiteUpdates;
+  static const String changeOrders = ownerChangeOrders;
+  static const String feasibilityCalculator = ownerFeasibilityCalculator;
+  static const String feasibilityReport = ownerFeasibilityReport;
+  static const String bidResult = ownerBidResult;
+  static const String createContractForm = ownerCreateContractForm;
+  static const String milestonesForm = ownerMilestonesForm;
+
+  static const String editProfile = contractorEditProfile;
+  static const String portfolioProjects = contractorPortfolioProjects;
+  static const String myProjects = contractorMyProjects;
+  static const String addPortfolioProject = contractorAddPortfolioProject;
+  static const String portfolioProjectDetails = contractorPortfolioProjectDetails;
+  static const String marketplace = contractorMarketplace;
+  static const String marketplaceProjectDetails = contractorMarketplaceProjectDetails;
+  static const String submitBid = contractorSubmitBid;
+  static const String myBids = contractorMyBids;
+  static const String bidDetails = contractorBidDetails;
+  static const String editBid = contractorEditBid;
+  static const String contractDetails = contractorContractDetails;
+  static const String contractPreview = contractorContractPreview;
 }
+
+

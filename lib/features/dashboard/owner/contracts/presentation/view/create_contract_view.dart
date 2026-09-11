@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/di/service_locator.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
@@ -228,7 +229,7 @@ class _CreateContractBody extends StatelessWidget {
         SizedBox(height: 12.h),
         GestureDetector(
           onTap: () async {
-            final result = await context.pushNamed('milestones_form');
+            final result = await context.pushNamed(AppRoutes.milestonesForm);
             if (result != null) {
               cubit.addMilestone(result as dynamic);
             }

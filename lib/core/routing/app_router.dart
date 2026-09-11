@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
+import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/main_layout/presentation/view/main_layout.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
 import 'package:watad/features/auth/presentation/pages/forget_password_page.dart';
@@ -82,104 +84,198 @@ CustomTransitionPage<void> _buildAnimatedPage({
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
+  errorPageBuilder: (context, state) => _buildAnimatedPage(
+    state: state,
+    child: Scaffold(
+      backgroundColor: AppColors.secondBackground,
+      appBar: AppBar(
+        title: const Text('Page Not Found'),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            if (context.canPop()) {
+              context.pop();
+            } else {
+              context.go(AppRoutes.home);
+            }
+          },
+        ),
+      ),
+      body: AppEmptyStateWidget(
+        title: 'Page Not Found',
+        message:
+            'The requested route "${state.uri.toString()}" does not exist.',
+        buttonTitle: 'Go Home',
+        onButtonPressed: () => context.go(AppRoutes.home),
+      ),
+    ),
+  ),
   routes: [
     GoRoute(
       path: AppRoutes.splash,
+      name: AppRoutes.splash,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const SplashPage()),
     ),
     GoRoute(
       path: AppRoutes.home,
+      name: AppRoutes.home,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const HomeGateScreen()),
     ),
     GoRoute(
       path: AppRoutes.onBoarding,
+      name: AppRoutes.onBoarding,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const OnBoardingPage()),
     ),
     GoRoute(
       path: AppRoutes.projectDashboard,
-      builder: (context, state) => const MainLayout(),
+      name: AppRoutes.projectDashboard,
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const MainLayout()),
     ),
     GoRoute(
       path: AppRoutes.financialSummary,
-      builder: (context, state) => const FinancialSummaryView(),
+      name: AppRoutes.financialSummary,
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const FinancialSummaryView()),
     ),
     GoRoute(
       path: AppRoutes.progressSiteUpdates,
-      builder: (context, state) => const ProgressSiteUpdatesView(),
+      name: AppRoutes.progressSiteUpdates,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const ProgressSiteUpdatesView(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.changeOrders,
-      builder: (context, state) => const ChangeOrdersView(),
+      name: AppRoutes.changeOrders,
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const ChangeOrdersView()),
     ),
     GoRoute(
       path: AppRoutes.feasibilityCalculator,
-      builder: (context, state) => const FeasibilityCalculatorView(),
+      name: AppRoutes.feasibilityCalculator,
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const FeasibilityCalculatorView(),
+      ),
     ),
     GoRoute(
       path: AppRoutes.feasibilityReport,
-      builder: (context, state) {
-        final report = state.extra as FeasibilityReport;
-        return FeasibilityReportView(report: report);
+      name: AppRoutes.feasibilityReport,
+      pageBuilder: (context, state) {
+        if (state.extra is FeasibilityReport) {
+          final report = state.extra as FeasibilityReport;
+          return _buildAnimatedPage(
+            state: state,
+            child: FeasibilityReportView(report: report),
+          );
+        }
+        return _buildAnimatedPage(
+          state: state,
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Feasibility Report')),
+            body: AppEmptyStateWidget(
+              title: 'No Report Data',
+              message: 'Unable to load feasibility report details.',
+              buttonTitle: 'Back to Calculator',
+              onButtonPressed: () =>
+                  context.go(AppRoutes.feasibilityCalculator),
+            ),
+          ),
+        );
       },
     ),
     GoRoute(
       path: AppRoutes.createProject,
-      builder: (context, state) => const CreateProjectView(),
+      name: AppRoutes.createProject,
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const CreateProjectView()),
     ),
     GoRoute(
-      name: 'bid_details',
       path: AppRoutes.ownerBidDetails,
-      builder: (context, state) {
-        final bidId = state.extra as String;
-        return BidDetailsView(bidId: bidId);
+      name: AppRoutes.ownerBidDetails,
+      pageBuilder: (context, state) {
+        String bidId = '';
+        if (state.extra is String) {
+          bidId = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          bidId =
+              (state.extra as Map<String, dynamic>)['bidId'] as String? ?? '';
+        }
+        return _buildAnimatedPage(
+          state: state,
+          child: BidDetailsView(bidId: bidId),
+        );
       },
     ),
     GoRoute(
-      name: 'bid_result',
       path: AppRoutes.bidResult,
-      builder: (context, state) {
+      name: AppRoutes.bidResult,
+      pageBuilder: (context, state) {
         final args = state.extra as Map<String, dynamic>? ?? {};
         final isAccepted = args['isAccepted'] as bool? ?? false;
         final bidId = args['bidId'] as String? ?? '';
-        return BidResultView(
-          isAccepted: isAccepted,
-          bidId: bidId, // We need to update BidResultView to accept bidId
+        return _buildAnimatedPage(
+          state: state,
+          child: BidResultView(
+            isAccepted: isAccepted,
+            bidId: bidId,
+          ),
         );
       },
     ),
     GoRoute(
-      name: 'create_contract_form',
       path: AppRoutes.createContractForm,
-      builder: (context, state) {
+      name: AppRoutes.createContractForm,
+      pageBuilder: (context, state) {
         final args = state.extra as Map<String, dynamic>? ?? {};
-        return CreateContractView(
-          bidId: args['bidId'] ?? '',
+        final bidId = args['bidId'] as String? ?? '';
+        return _buildAnimatedPage(
+          state: state,
+          child: CreateContractView(
+            bidId: bidId,
+          ),
         );
       },
     ),
     GoRoute(
-      name: 'milestones_form',
       path: AppRoutes.milestonesForm,
-      builder: (context, state) => const MilestonesFormView(),
+      name: AppRoutes.milestonesForm,
+      pageBuilder: (context, state) =>
+          _buildAnimatedPage(state: state, child: const MilestonesFormView()),
     ),
     GoRoute(
-      name: 'contract_details',
       path: AppRoutes.ownerContractDetails,
-      builder: (context, state) {
-        final contractId = state.extra as String;
-        return ContractDetailsView(contractId: contractId);
+      name: AppRoutes.ownerContractDetails,
+      pageBuilder: (context, state) {
+        String contractId = '';
+        if (state.extra is String) {
+          contractId = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          contractId =
+              (state.extra as Map<String, dynamic>)['contractId'] as String? ??
+                  '';
+        }
+        return _buildAnimatedPage(
+          state: state,
+          child: ContractDetailsView(contractId: contractId),
+        );
       },
     ),
     GoRoute(
       path: AppRoutes.welcome,
+      name: AppRoutes.welcome,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const WelcomePage()),
     ),
     GoRoute(
       path: AppRoutes.roleSelection,
+      name: AppRoutes.roleSelection,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -193,16 +289,19 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.loginScreen,
+      name: AppRoutes.loginScreen,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const LoginPage()),
     ),
     GoRoute(
       path: AppRoutes.forgetPassScreen,
+      name: AppRoutes.forgetPassScreen,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const ForgetPasswordPage()),
     ),
     GoRoute(
       path: AppRoutes.otpScreen,
+      name: AppRoutes.otpScreen,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -213,6 +312,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.resetPasswordScreen,
+      name: AppRoutes.resetPasswordScreen,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -226,11 +326,13 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.signUpScreen,
+      name: AppRoutes.signUpScreen,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const SignUpRolePage()),
     ),
     GoRoute(
       path: AppRoutes.signUpPersonalInfo,
+      name: AppRoutes.signUpPersonalInfo,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -241,6 +343,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.signUpPassword,
+      name: AppRoutes.signUpPassword,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -256,6 +359,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.signUpConfirmation,
+      name: AppRoutes.signUpConfirmation,
       pageBuilder: (context, state) {
         final extra = state.extra as Map<String, dynamic>?;
         return _buildAnimatedPage(
@@ -272,6 +376,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.contractorProfile,
+      name: AppRoutes.contractorProfile,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const ContractorProfilePage(),
@@ -279,6 +384,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.editProfile,
+      name: AppRoutes.editProfile,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: EditProfilePage(cubit: state.extra as ContractorProfileCubit?),
@@ -286,6 +392,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.portfolioProjects,
+      name: AppRoutes.portfolioProjects,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const PortfolioProjectsScreen(),
@@ -293,6 +400,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.myProjects,
+      name: AppRoutes.myProjects,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const PortfolioProjectsScreen(),
@@ -300,6 +408,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.contractorBids,
+      name: AppRoutes.contractorBids,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const ContractorBidsScreen(showBackButton: true),
@@ -315,6 +424,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.marketplace,
+      name: AppRoutes.marketplace,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: const MarketplaceScreen(showBottomNavBar: true),
@@ -322,6 +432,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.addPortfolioProject,
+      name: AppRoutes.addPortfolioProject,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
         child: AddPortfolioProjectScreen(
@@ -331,15 +442,37 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.portfolioProjectDetails,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: PortfolioProjectDetailsScreen(
-          project: state.extra as PortfolioProjectItemModel,
-        ),
-      ),
+      name: AppRoutes.portfolioProjectDetails,
+      pageBuilder: (context, state) {
+        if (state.extra is PortfolioProjectItemModel) {
+          return _buildAnimatedPage(
+            state: state,
+            child: PortfolioProjectDetailsScreen(
+              project: state.extra as PortfolioProjectItemModel,
+            ),
+          );
+        }
+        return _buildAnimatedPage(
+          state: state,
+          child: Scaffold(
+            backgroundColor: AppColors.secondBackground,
+            appBar: AppBar(
+              title: const Text('Project Details'),
+              centerTitle: true,
+            ),
+            body: AppEmptyStateWidget(
+              title: 'Project Not Found',
+              message: 'No project data provided.',
+              buttonTitle: 'Back to Portfolio',
+              onButtonPressed: () => context.go(AppRoutes.portfolioProjects),
+            ),
+          ),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.marketplaceProjectDetails,
+      name: AppRoutes.marketplaceProjectDetails,
       pageBuilder: (context, state) {
         MarketplaceProjectDetailsEntity? details;
         if (state.extra is MarketplaceProjectDetailsEntity) {
@@ -358,6 +491,7 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.submitBid,
+      name: AppRoutes.submitBid,
       pageBuilder: (context, state) {
         String projectName = 'Villa Construction Project - New Cairo';
         String initialCost = '2,450,000';

@@ -1,0 +1,1139 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Watad API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Auth/register": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/confirm-email": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmEmailCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/resend-confirmation-otp": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmationOtpCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/login": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/google-login": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/facebook-login": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FacebookLoginCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/refresh-token": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/revoke-token": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeRefreshTokenCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeRefreshTokenCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/forget-password": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgetPasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/verify-otp": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/reset-password": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/change-password/verify-current": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCurrentPasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Auth/change-password/confirm": {
+      "post": {
+        "tags": ["Auth"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmChangePasswordCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/submit-bid": {
+      "post": {
+        "tags": ["Bids"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubmitBidDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/contractor-bids": {
+      "get": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "pageNumber", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 1 } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/cancel-bid/{id}": {
+      "delete": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/accepted/{projectId}": {
+      "get": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/{id}/project-bids": {
+      "get": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "sortBy", "in": "query", "schema": { "type": "string" } },
+          { "name": "maxCost", "in": "query", "schema": { "type": "number", "format": "double" } },
+          { "name": "maxDurationDays", "in": "query", "schema": { "type": "integer", "format": "int32" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/{bidId}": {
+      "get": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "bidId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/{bidId}/accept": {
+      "post": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "bidId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Bids/{bidId}/reject": {
+      "post": {
+        "tags": ["Bids"],
+        "parameters": [
+          { "name": "bidId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders": {
+      "post": {
+        "tags": ["ChangeOrders"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateChangeOrderRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/{id}/decide": {
+      "put": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideChangeOrderRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/{id}": {
+      "get": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "put": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChangeOrderRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/project/{projectId}/pending": {
+      "get": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/project/{projectId}/history": {
+      "get": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/{id}/estimate": {
+      "put": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvideEstimationRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/ChangeOrders/project/{projectId}/pending-estimation": {
+      "get": {
+        "tags": ["ChangeOrders"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/projects/{projectId}/copilot/sessions": {
+      "get": {
+        "tags": ["ConstructionCopilot"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/projects/{projectId}/copilot/sessions/{sessionId}/messages": {
+      "get": {
+        "tags": ["ConstructionCopilot"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "sessionId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/projects/{projectId}/copilot/ask": {
+      "post": {
+        "tags": ["ConstructionCopilot"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CopilotChatRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contractor/profile": {
+      "get": { "tags": ["Contractor"], "responses": { "200": { "description": "OK" } } },
+      "put": {
+        "tags": ["Contractor"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContractorProfileCommand"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contractor/portfolio": {
+      "get": { "tags": ["Contractor"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Contractor/portfolio/{projectId}": {
+      "get": {
+        "tags": ["Contractor"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["Contractor"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contractor/Add-portfolioproject": {
+      "post": {
+        "tags": ["Contractor"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "UserId": { "type": "string" },
+                  "Title": { "type": "string" },
+                  "Description": { "type": "string" },
+                  "Location": { "type": "string" },
+                  "ProjectCost": { "type": "number", "format": "double" },
+                  "CompletionDate": { "type": "string", "format": "date-time" },
+                  "Photos": { "type": "array", "items": { "type": "string", "format": "binary" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contractor/{projectId}/update-portfolioproject": {
+      "put": {
+        "tags": ["Contractor"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ProjectId": { "type": "string", "format": "uuid" },
+                  "UserId": { "type": "string" },
+                  "Title": { "type": "string" },
+                  "Description": { "type": "string" },
+                  "Location": { "type": "string" },
+                  "ProjectCost": { "type": "number", "format": "double" },
+                  "CompletionDate": { "type": "string", "format": "date-time" },
+                  "NewPhotos": { "type": "array", "items": { "type": "string", "format": "binary" } },
+                  "ExistingMediaUrls": { "type": "array", "items": { "type": "string" } }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contractor/projects/{projectId}/dashboard": {
+      "get": {
+        "tags": ["Contractor"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contracts": {
+      "post": {
+        "tags": ["Contracts"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContractRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "get": {
+        "tags": ["Contracts"],
+        "parameters": [
+          { "name": "Status", "in": "query", "schema": { "type": "string" } },
+          { "name": "SearchTerm", "in": "query", "schema": { "type": "string" } },
+          { "name": "PageNumber", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "PageSize", "in": "query", "schema": { "type": "integer", "format": "int32" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contracts/{id}": {
+      "get": {
+        "tags": ["Contracts"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "put": {
+        "tags": ["Contracts"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContractRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["Contracts"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Contracts/{contractId}/generate-pdf": {
+      "post": {
+        "tags": ["Contracts"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "contractId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/contractor/site-logs": {
+      "post": {
+        "tags": ["DailySiteLogs"],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "MilestoneId": { "type": "string", "format": "uuid" },
+                  "MediaFile": { "type": "string", "format": "binary" },
+                  "MediaType": { "$ref": "#/components/schemas/MediaType" },
+                  "Latitude": { "type": "number", "format": "double" },
+                  "Longitude": { "type": "number", "format": "double" },
+                  "WorkersCount": { "type": "integer", "format": "int32" },
+                  "EquipmentUsed": { "type": "string" },
+                  "WorkSummary": { "type": "string" },
+                  "Notes": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/contractor/site-logs/milestone/{milestoneId}": {
+      "get": {
+        "tags": ["DailySiteLogs"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "pageNumber", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 1 } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/contractor/site-logs/project/{projectId}/archive": {
+      "get": {
+        "tags": ["DailySiteLogs"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "MilestoneId", "in": "query", "schema": { "type": "string", "format": "uuid" } },
+          { "name": "AiStatus", "in": "query", "schema": { "type": "string" } },
+          { "name": "StartDate", "in": "query", "schema": { "type": "string", "format": "date-time" } },
+          { "name": "EndDate", "in": "query", "schema": { "type": "string", "format": "date-time" } },
+          { "name": "PageNumber", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "PageSize", "in": "query", "schema": { "type": "integer", "format": "int32" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/contractor/site-logs/project/{projectId}/logs/{siteLogId}": {
+      "get": {
+        "tags": ["DailySiteLogs"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "siteLogId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Feasibility/calculate": {
+      "post": {
+        "tags": ["Feasibility"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalculateFeasibilityRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Feasibility/save": {
+      "post": {
+        "tags": ["Feasibility"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveFeasibilityReportRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Feasibility/reports": {
+      "get": {
+        "tags": ["Feasibility"],
+        "parameters": [
+          { "name": "pageNumber", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 1 } },
+          { "name": "pageSize", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Feasibility/reports/{id}": {
+      "get": {
+        "tags": ["Feasibility"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["Feasibility"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestone-inspections/{inspectionId}": {
+      "get": {
+        "tags": ["MilestoneInspections"],
+        "parameters": [
+          { "name": "inspectionId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestone-inspections/centraldashboard/{projectId}/site-inspections": {
+      "get": {
+        "tags": ["MilestoneInspections"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "name": "take", "in": "query", "schema": { "type": "integer", "format": "int32", "default": 5 } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/project/{projectId}": {
+      "get": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/contractor-details": {
+      "get": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/extend-deadline": {
+      "post": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExtendMilestoneDeadlineRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/review": {
+      "post": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/approve-payment": {
+      "post": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApprovePaymentReleaseRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/reject": {
+      "post": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectMilestoneRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/milestones/{milestoneId}/request-inspection": {
+      "post": {
+        "tags": ["Milestones"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestMilestoneInspectionRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Notifications": {
+      "get": {
+        "tags": ["Notifications"],
+        "parameters": [
+          { "name": "PageNumber", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "PageSize", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "Category", "in": "query", "schema": { "type": "string" } },
+          { "name": "Type", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Notifications/unread-count": {
+      "get": { "tags": ["Notifications"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Notifications/{id}/read": {
+      "put": {
+        "tags": ["Notifications"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Notifications/read-all": {
+      "put": { "tags": ["Notifications"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Owner/profile": {
+      "get": { "tags": ["Owner"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Owner/maindashboard-summary": {
+      "get": { "tags": ["Owner"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Owner/home-overview": {
+      "get": { "tags": ["Owner"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Owner/current-project-overview": {
+      "get": { "tags": ["Owner"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Owner/centraldashboard/{projectId}/progress-bargraph": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Owner/centraldashboard/{projectId}/timeline-overview": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Owner/centraldashboard/{projectId}/financial-overview": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Owner/progress-overview": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "projectId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Owner/milestone-details/{milestoneId}": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "milestoneId", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Owner/contractor/{contractorUserId}/public-profile": {
+      "get": {
+        "tags": ["Owner"],
+        "parameters": [
+          { "name": "contractorUserId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Payments/my-payments": {
+      "get": { "tags": ["Payments"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Payments/{id}": {
+      "get": {
+        "tags": ["Payments"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Payments/{id}/receipt-pdf": {
+      "get": {
+        "tags": ["Payments"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/Contractor-recommended-projects": {
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "Search", "in": "query", "schema": { "type": "string" } },
+          { "name": "Governorate", "in": "query", "schema": { "type": "string" } },
+          { "name": "City", "in": "query", "schema": { "type": "string" } },
+          { "name": "MinBudget", "in": "query", "schema": { "type": "number", "format": "double" } },
+          { "name": "MaxBudget", "in": "query", "schema": { "type": "number", "format": "double" } },
+          { "name": "PageNumber", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "PageSize", "in": "query", "schema": { "type": "integer", "format": "int32" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/Contractor-recommended-project/{id}": {
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects": {
+      "post": {
+        "tags": ["Projects"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "Status", "in": "query", "schema": { "$ref": "#/components/schemas/ProjectStatus" } },
+          { "name": "PageNumber", "in": "query", "schema": { "type": "integer", "format": "int32" } },
+          { "name": "PageSize", "in": "query", "schema": { "type": "integer", "format": "int32" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/{id}/publish": {
+      "put": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishProjectDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/{id}": {
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      },
+      "put": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/{id}/recommended-contractors": {
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Projects/contractor-projects": {
+      "get": {
+        "tags": ["Projects"],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "$ref": "#/components/schemas/ProjectStatus" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Reviews": {
+      "post": {
+        "tags": ["Reviews"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateReviewRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Reviews/{id}": {
+      "put": {
+        "tags": ["Reviews"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateReviewRequestDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" } }
+      },
+      "delete": {
+        "tags": ["Reviews"],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/Reviews/my-reviews": {
+      "get": { "tags": ["Reviews"], "responses": { "200": { "description": "OK" } } }
+    },
+    "/api/Reviews/contractor/{contractorId}": {
+      "get": {
+        "tags": ["Reviews"],
+        "parameters": [
+          { "name": "contractorId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "FinishingLevel": { "enum": [0, 1, 2], "type": "integer" },
+      "MediaType": { "enum": [0, 1], "type": "integer" },
+      "ProjectStatus": { "enum": [1, 2, 3, 4, 5, 6, 7, 8], "type": "integer" },
+      "RejectionReason": { "enum": [0, 1, 2], "type": "integer" },
+      "UserType": { "enum": [0, 1, 2, 3, 4, 5], "type": "integer" }
+    }
+  }
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
@@ -112,7 +113,7 @@ class BidsMarketSection extends StatelessWidget {
                       bid: bid,
                       index: index,
                       onTap: () async {
-                        await context.pushNamed('bid_details', extra: bid.id);
+                        await context.pushNamed(AppRoutes.ownerBidDetails, extra: bid.id);
                         if (context.mounted) {
                           context.read<MarketplaceCubit>().initMarketplace();
                         }
