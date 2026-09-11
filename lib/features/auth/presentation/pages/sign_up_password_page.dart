@@ -62,7 +62,7 @@ class _SignUpPasswordPageState extends State<SignUpPasswordPage> {
             phoneNumber: widget.phone ?? '',
             password: _passwordController.text,
             confirmPassword: _confirmPasswordController.text,
-            userType: widget.role?.userType ?? 1,
+            userType: widget.role?.userType ?? 0,
           ),
         );
   }

@@ -28,6 +28,9 @@ void main() {
       test('returns null when email format is valid', () {
         expect(AppValidators.validateEmail('user@example.com'), isNull);
         expect(AppValidators.validateEmail('mohra.george@watad.org'), isNull);
+        expect(AppValidators.validateEmail('engineer@watad.eg'), isNull);
+        expect(AppValidators.validateEmail('user+test@company.co'), isNull);
+        expect(AppValidators.validateEmail('dev@startup.io'), isNull);
       });
     });
 

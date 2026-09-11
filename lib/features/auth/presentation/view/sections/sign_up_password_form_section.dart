@@ -35,7 +35,7 @@ class SignUpPasswordFormSection extends StatelessWidget {
             textInputAction: TextInputAction.next,
             validator: AppValidators.validatePassword,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            suffixIcon: Icon(
+            prefixIcon: Icon(
               Icons.lock_outline_rounded,
               color: AppColors.grey500,
               size: 22.sp,
@@ -52,7 +52,7 @@ class SignUpPasswordFormSection extends StatelessWidget {
               passwordController.text,
             ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            suffixIcon: Icon(
+            prefixIcon: Icon(
               Icons.lock_outline_rounded,
               color: AppColors.grey500,
               size: 22.sp,
@@ -77,7 +77,7 @@ class SignUpPasswordFormSection extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildBulletItem('At least 6 characters'),
+              _buildBulletItem('At least 8 characters'),
               SizedBox(height: 8.h),
               _buildBulletItem('Should include numbers & special characters'),
             ],

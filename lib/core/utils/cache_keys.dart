@@ -7,4 +7,5 @@ class CacheKeys {
   static const String userRole = 'user_role';
   static const String userType = 'user_type';
   static const String userName = 'user_name';
+  static const String rememberMe = 'remember_me';
 }

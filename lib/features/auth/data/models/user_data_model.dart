@@ -24,16 +24,60 @@ class UserDataModel {
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) {
+    int? parseUserType(dynamic val) {
+      if (val is int) return val;
+      if (val == null) return null;
+      final parsed = int.tryParse(val.toString());
+      if (parsed != null) return parsed;
+      final lower = val.toString().trim().toLowerCase();
+      switch (lower) {
+        case 'owner':
+        case 'project owner':
+        case 'projectowner':
+          return 0;
+        case 'engineer':
+          return 1;
+        case 'contractor':
+          return 2;
+        case 'consultant':
+          return 3;
+        case 'supplier':
+          return 4;
+        default:
+          return null;
+      }
+    }
+
+    final parsedUserType = parseUserType(json['userType'] ?? json['UserType']);
+    String? resolvedRole = (json['role'] ?? json['Role'] ?? json['userRole']) as String?;
+    if (resolvedRole == null && parsedUserType != null) {
+      switch (parsedUserType) {
+        case 0:
+          resolvedRole = 'Project Owner';
+          break;
+        case 1:
+          resolvedRole = 'Engineer';
+          break;
+        case 2:
+          resolvedRole = 'Contractor';
+          break;
+        case 3:
+          resolvedRole = 'Consultant';
+          break;
+        case 4:
+          resolvedRole = 'Supplier';
+          break;
+      }
+    }
+
     return UserDataModel(
-      userId: json['userId'] as String?,
-      fullName: json['fullName'] as String?,
+      userId: (json['userId'] ?? json['id'] ?? json['nameid']) as String?,
+      fullName: (json['fullName'] ?? json['name'] ?? json['userName']) as String?,
       email: json['email'] as String?,
-      userType: json['userType'] is int
-          ? json['userType'] as int
-          : int.tryParse(json['userType']?.toString() ?? ''),
-      role: json['role'] as String?,
+      userType: parsedUserType,
+      role: resolvedRole,
       token: (json['token'] ?? json['resetToken']) as String?,
-      expirationDate: json['expirationDate'] as String?,
+      expirationDate: (json['expirationDate'] ?? json['expiration']) as String?,
       refreshToken: json['refreshToken'] as String?,
       refreshTokenExpiration: json['refreshTokenExpiration'] as String?,
     );

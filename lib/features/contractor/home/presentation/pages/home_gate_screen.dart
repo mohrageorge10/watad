@@ -53,8 +53,8 @@ class HomeGateScreen extends StatelessWidget {
           return const ContractorMainLayoutScreen();
         }
 
-        // 2. User is logged in as Project Owner
-        final bool isOwner = userType == 1 ||
+        // 2. User is logged in as Project Owner (userType == 0 or role == 'Owner')
+        final bool isOwner = userType == 0 ||
             (userRole != null &&
                 userRole.toLowerCase().contains('owner'));
 
@@ -62,8 +62,17 @@ class HomeGateScreen extends StatelessWidget {
           return const MainLayout();
         }
 
-        // 3. User is logged in as another role (Engineer, Specialist, etc.)
-        final roleTitle = userRole ?? (userType == 1 ? 'Project Owner' : 'Specialist');
+        // 3. User is logged in as another role (Engineer, Consultant, Supplier, etc.)
+        final roleTitle = userRole ??
+            (userType == 0
+                ? 'Project Owner'
+                : userType == 1
+                    ? 'Engineer'
+                    : userType == 3
+                        ? 'Consultant'
+                        : userType == 4
+                            ? 'Supplier'
+                            : 'Specialist');
 
         return Scaffold(
           backgroundColor: const Color(0xFFF6F8FA),

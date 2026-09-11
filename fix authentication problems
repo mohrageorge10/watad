@@ -1,0 +1,76 @@
+# Walkthrough - توثيق إصلاح منظومة الـ Authentication والـ Session والـ Routing في تطبيق وتد
+
+تم بنجاح فحص وإصلاح كافة المشاكل والثغرات المكتشفة في منظومة الـ Authentication والـ Routing والـ Session Management مع الحفاظ الكامل على معايير الـ Clean Architecture وتشغيل شبكة الاختبارات بنجاح 100% (55 اختباراً ناجحاً).
+
+---
+
+## 1. التعديلات التي تم إنجازها (Changes Made)
+
+### أ. تصحيح مسارات التوجيه في الـ GoRouter
+* **[app_router.dart](file:///e:/Grad%20Project/watad/lib/core/routing/app_router.dart)**:
+  - تعديل `initialLocation` من `AppRoutes.projectDashboard` إلى `AppRoutes.splash`.
+  - الآن يبدأ التطبيق من شاشة الـ Splash لفحص حالة الـ Onboarding والتوكن وصلاحيته بشكل طبيعي.
+
+### ب. تصحيح التوجيه بعد تسجيل الدخول (Role-Based Routing)
+* **[login_page.dart](file:///e:/Grad%20Project/watad/lib/features/auth/presentation/pages/login_page.dart)**:
+  - استبدال التوجيه لداشبورد المالك بـ `context.go(AppRoutes.home)` لتتولى [HomeGateScreen](file:///e:/Grad%20Project/watad/lib/features/contractor/home/presentation/pages/home_gate_screen.dart) التوجيه السليم لكل دور.
+* **[role_selection_page.dart](file:///e:/Grad%20Project/watad/lib/features/auth/presentation/pages/role_selection_page.dart)**:
+  - تعديل التوجيه بعد تسجيل الدخول بالسوشيال ميديا إلى `context.go(AppRoutes.home)`.
+* **[splash_cubit.dart](file:///e:/Grad%20Project/watad/lib/features/splash/presentation/cubit/splash_cubit.dart)**:
+  - تعديل التوجيه بعد التحقق من صحة التوكن إلى `AppRoutes.home`.
+
+### ج. مطابقة وتوحيد الـ `userType` والأدوار مع الباك إند
+* **[user_data_model.dart](file:///e:/Grad%20Project/watad/lib/features/auth/data/models/user_data_model.dart)**:
+  - دعم قراءة `userType` سواء رجع من السيرفر كـ `int` أو كـ `String` من الـ JWT (مثل `"Owner"`, `"Contractor"`, `"Engineer"`).
+  - مطابقة الترقيم المعتمد:
+    - `0`: Project Owner
+    - `1`: Engineer
+    - `2`: Contractor
+    - `3`: Consultant
+    - `4`: Supplier
+* **[home_gate_screen.dart](file:///e:/Grad%20Project/watad/lib/features/contractor/home/presentation/pages/home_gate_screen.dart)**:
+  - تصحيح شرط فحص المالك ليكون `userType == 0` أو احتواء الرول على كلمة `"owner"`.
+* **[sign_up_password_page.dart](file:///e:/Grad%20Project/watad/lib/features/auth/presentation/pages/sign_up_password_page.dart)**:
+  - تعديل القيمة الافتراضية للـ `userType` في حال عدم تحديد رول لتكون `0` (Owner).
+
+### د. إصلاح الـ Validators وتطابق الـ UI
+* **[app_constants.dart](file:///e:/Grad%20Project/watad/lib/core/constants/app_constants.dart)**:
+  - تعديل الـ `emailRegex` ليدعم النطاقات الثنائية مثل `.eg`, `.co`, `.io`, `.ai` وعلامات الزائد `+`.
+* **[sign_up_password_form_section.dart](file:///e:/Grad%20Project/watad/lib/features/auth/presentation/view/sections/sign_up_password_form_section.dart)**:
+  - تعديل النص الإرشادي للحد الأدنى للباسورد إلى `At least 8 characters` ليتطابق مع الـ Validator والباك إند.
+  - نقل أيقونة القفل إلى `prefixIcon` لمنع تعارضها مع زر التبديل `suffixIcon`.
+
+### هـ. استخراج تفاصيل أخطاء الباك إند (ASP.NET ValidationProblemDetails)
+* **[error_model.dart](file:///e:/Grad%20Project/watad/lib/core/errors/error_model.dart)** & **[error_handler.dart](file:///e:/Grad%20Project/watad/lib/core/errors/error_handler.dart)**:
+  - دعم استخراج رسائل أخطاء التحقق المتداخلة من قاموس `errors` وقوائم الأخطاء وحقل `title` الصادرة من خوادم ASP.NET Core لعرض الخطأ الحقيقي للمستخدم بدلاً من الرسالة العامة.
+
+### و. إدارة الجلسة والـ Remember Me والـ Logout الشامل
+* **[cache_keys.dart](file:///e:/Grad%20Project/watad/lib/core/utils/cache_keys.dart)**:
+  - إضافة مفتاح `rememberMe`.
+* **[auth_cubit.dart](file:///e:/Grad%20Project/watad/lib/features/auth/presentation/cubit/auth_cubit.dart)** & **[service_locator.dart](file:///e:/Grad%20Project/watad/lib/core/di/service_locator.dart)**:
+  - حفظ خيار `rememberMe` في الكاش.
+  - تنظيف كامل لجميع مفاتيح الكاش والـ SecureStorage عند الـ `logout` مع استدعاء `SocialAuthService.signOut()`.
+* **[splash_cubit.dart](file:///e:/Grad%20Project/watad/lib/features/splash/presentation/cubit/splash_cubit.dart)**:
+  - فحص `rememberMe` عند بدء التطبيق وإلغاء تسجيل الدخول التلقائي في حال عدم تفعيل "تذكرني".
+  - مسح التوكن من الـ `SecureStorage` والـ `TokenManager` والـ `CacheHelper` فور انتهاء صلاحية التوكن لمنع مشكلة الجلسات الشبحية (Zombie Sessions).
+
+---
+
+## 2. نتائج الاختبار والتحقق (Verification Results)
+
+### أ. تشغيل شبكة الاختبارات كاملة (Unit + Widget + Integration)
+```bash
+flutter test test/unit/ test/widget/ test/integration/
+```
+**النتيجة**:
+```
+00:09 +55: All tests passed!
+```
+- تم اجتياز جميع الاختبارات القديمة (52 اختباراً) بالإضافة إلى 3 اختبارات جديدة خاصة بالتحقق من الإيميل والدومين المصري `.eg` وتفكيك أخطاء ASP.NET بنجاح تام.
+
+### ب. فحص الـ Static Analysis
+```bash
+flutter analyze
+```
+**النتيجة**:
+- لا توجد أي أخطاء برمجية (`0 errors`).
