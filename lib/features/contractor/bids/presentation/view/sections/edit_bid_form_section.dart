@@ -7,6 +7,7 @@ import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/submit_bid_uploaded_file_tile.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/shadowed_text_field.dart';
 
@@ -72,7 +73,7 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
   }
 
   Future<void> _pickFile() async {
-    const permissionKey = 'has_storage_permission_granted';
+    const permissionKey = CacheKeys.storagePermissionGranted;
     final cache = sl.isRegistered<CacheHelper>() ? sl<CacheHelper>() : null;
     final bool alreadyGranted =
         cache?.getData(key: permissionKey) as bool? ?? false;

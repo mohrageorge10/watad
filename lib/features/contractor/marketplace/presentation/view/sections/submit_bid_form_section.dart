@@ -9,7 +9,8 @@ import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/submit_bid_project_context_card.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/submit_bid_upload_zone.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/submit_bid_uploaded_file_tile.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/permission_confirmation_dialog.dart';
+import 'package:watad/core/shared/widgets/permission_confirmation_dialog.dart';
+import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/shadowed_text_field.dart';
 
 class SubmitBidFormSection extends StatefulWidget {
@@ -59,7 +60,7 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
   }
 
   Future<void> _handleFilePick(BuildContext context) async {
-    const permissionKey = 'storage_permission_granted';
+    const permissionKey = CacheKeys.storagePermissionGranted;
 
     CacheHelper? cache;
     try {
