@@ -4,7 +4,7 @@ class AppConstants {
   static const int nameMinLength = 3;
 
   // ================= Regular Expressions =================
-  static const String emailRegex = r'^[\w-\.]+@([\w-]+\.)+[a-zA-Z]{3,}$';
+  static const String emailRegex = r'^[\w\.\+-]+@([\w-]+\.)+[a-zA-Z]{2,}$';
   static const String passwordRegex =
       r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
 
@@ -119,7 +120,7 @@ class BidResultView extends StatelessWidget {
                   context.pop();
                 } else {
                   context.pushNamed(
-                    'create_contract_form', 
+                    AppRoutes.createContractForm, 
                     extra: {'bidId': bidId},
                   );
                 }

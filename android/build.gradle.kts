@@ -20,7 +20,7 @@ subprojects {
     afterEvaluate {
         if (project.pluginManager.hasPlugin("com.android.library")) {
             project.extensions.configure<com.android.build.gradle.LibraryExtension>("android") {
-                compileSdk = 35
+                compileSdk = 36
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
                     targetCompatibility = JavaVersion.VERSION_17

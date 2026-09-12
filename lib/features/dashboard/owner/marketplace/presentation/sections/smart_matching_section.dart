@@ -21,7 +21,18 @@ class SmartMatchingSection extends StatelessWidget {
         }
 
         if (state.contractorsState == RequestState.error) {
-          return Center(child: Text(state.contractorsErrorMessage));
+          return Center(
+            child: AppEmptyStateWidget(
+              title: 'Failed to load contractors',
+              message: state.contractorsErrorMessage.isNotEmpty
+                  ? state.contractorsErrorMessage
+                  : 'An error occurred while finding matching contractors.',
+              buttonTitle: 'Try Again',
+              onButtonPressed: () {
+                context.read<MarketplaceCubit>().initMarketplace();
+              },
+            ),
+          );
         }
 
         if (state.contractorsState == RequestState.empty || state.contractors.isEmpty) {
@@ -68,7 +79,7 @@ class SmartMatchingSection extends StatelessWidget {
                             ? Image.network(
                                 profile.imageUrl,
                                 fit: BoxFit.cover,
-                                errorBuilder: (_, __, ___) => Icon(Icons.person, color: AppColors.grey500, size: 30.r),
+                                errorBuilder: (_, _, _) => Icon(Icons.person, color: AppColors.grey500, size: 30.r),
                               )
                             : Icon(Icons.person, color: AppColors.grey500, size: 30.r),
                       ),

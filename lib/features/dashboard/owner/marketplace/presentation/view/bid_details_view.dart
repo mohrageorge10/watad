@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:watad/core/di/service_locator.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/cubit/bid_details_cubit.dart';
@@ -33,12 +35,12 @@ class BidDetailsView extends StatelessWidget {
         listenWhen: (previous, current) => previous.actionState != current.actionState,
         listener: (context, state) {
           if (state.actionState == ActionState.success) {
-            context.pushNamed('bid_result', extra: {
+            context.pushNamed(AppRoutes.bidResult, extra: {
               'isAccepted': state.isAccepted,
               'bidId': bidId,
             });
           } else if (state.actionState == ActionState.error) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.actionErrorMessage)));
+            AppToast.showError(context, state.actionErrorMessage);
           }
         },
         builder: (context, state) {

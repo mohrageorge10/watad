@@ -74,7 +74,7 @@ class CurrentProjectCard extends StatelessWidget {
                         width: 72.w,
                         height: 72.w,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholderImage(),
+                        errorBuilder: (_, _, _) => _placeholderImage(),
                       )
                     : _placeholderImage(),
               ),

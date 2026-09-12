@@ -11,12 +11,12 @@ import 'domain/usecases/get_owner_profile_usecase.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_profile_cubit.dart';
 
 
-///
-/// Future<void> setupServiceLocator() async {
-///   sl.registerLazySingleton<Dio>(() => Dio());
-///   ...
-///   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
-/// }
+//
+// Future<void> setupServiceLocator() async {
+//   sl.registerLazySingleton<Dio>(() => Dio());
+//   ...
+//   sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
+// }
 void initHomeFeature(GetIt sl) {
   //! Data sources
   sl.registerLazySingleton<HomeRemoteDataSource>(

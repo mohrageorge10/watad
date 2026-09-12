@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:watad/core/errors/error_model.dart';
 import 'package:watad/core/errors/exceptions.dart';
 import 'package:watad/core/errors/failure.dart';
 
@@ -38,19 +39,12 @@ class ErrorHandler {
   }
 
   static Failure _handleResponseError(int? statusCode, dynamic responseData) {
-    String? message;
-    if (responseData is Map) {
-      message = responseData["message"] ??
-          responseData["Message"] ??
-          responseData["errorMessage"] ??
-          responseData["error"] ??
-          responseData["detail"];
-    } else if (responseData is String) {
-      message = responseData;
-    }
-
-    if (message != null && message.trim().isNotEmpty) {
-      return ServerFailure(errMessage: message);
+    if (responseData != null) {
+      final errorModel = ErrorModel.fromJson(responseData);
+      if (errorModel.errorMessage.isNotEmpty &&
+          errorModel.errorMessage != "An unexpected error occurred") {
+        return ServerFailure(errMessage: errorModel.errorMessage);
+      }
     }
 
     switch (statusCode) {

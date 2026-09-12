@@ -41,7 +41,7 @@ class ProjectListItem extends StatelessWidget {
                         width: 56.w,
                         height: 56.w,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _placeholder(),
+                        errorBuilder: (_, _, _) => _placeholder(),
                       )
                     : _placeholder(),
               ),

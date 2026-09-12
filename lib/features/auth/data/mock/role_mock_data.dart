@@ -13,18 +13,24 @@ class RoleMockData {
     ),
     RoleModel(
       id: "1",
+      title: "Engineer",
+      icon: AppIcons.engineer,
+      userType: 1,
+    ),
+    RoleModel(
+      id: "2",
       title: "Contractor",
       icon: AppIcons.contractor,
       userType: 2,
     ),
     RoleModel(
-      id: "2",
+      id: "3",
       title: "Consultant",
       icon: AppIcons.consultant,
       userType: 3,
     ),
     RoleModel(
-      id: "3",
+      id: "4",
       title: "Supplier",
       icon: AppIcons.engineer,
       userType: 4,
