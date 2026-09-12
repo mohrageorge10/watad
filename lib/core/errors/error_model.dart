@@ -46,10 +46,32 @@ class ErrorModel {
         status: _parseStatus(jsonData),
       );
     } else if (jsonData is String && jsonData.trim().isNotEmpty) {
-      return ErrorModel(errorMessage: jsonData.trim());
+      final trimmed = jsonData.trim();
+      // Check if the response is an HTML page (e.g. Azure 403 Stopped Web App / Cloudflare / IIS error page)
+      if (trimmed.contains('<!DOCTYPE') ||
+          trimmed.contains('<html') ||
+          trimmed.contains('<body') ||
+          trimmed.contains('<div') ||
+          trimmed.contains('<h1')) {
+        if (trimmed.toLowerCase().contains('web app is stopped') ||
+            trimmed.toLowerCase().contains('app is stopped') ||
+            trimmed.toLowerCase().contains('site disabled')) {
+          return ErrorModel(
+            errorMessage:
+                "The backend server is currently stopped on Azure. Please start the App Service in Azure Portal.",
+            status: 403,
+          );
+        }
+        return ErrorModel(
+          errorMessage:
+              "The server returned an HTML error page. Please try again later.",
+        );
+      }
+      return ErrorModel(errorMessage: trimmed);
     } else {
       return ErrorModel(errorMessage: "An unexpected error occurred");
     }
+
   }
 
   static int? _parseStatus(Map json) {

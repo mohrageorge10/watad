@@ -14,77 +14,106 @@ class PortfolioSection extends StatelessWidget {
     this.onViewAllTap,
   });
 
-  // Curated architectural & construction photography matching the reference image
-  static const List<String> _defaultImages = [
-    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
-    'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?w=400&q=80',
-    'https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=400&q=80',
-    'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=400&q=80',
-  ];
+
 
   @override
   Widget build(BuildContext context) {
+    final images = profile.portfolioImages;
+
     return SectionCardWidget(
       icon: Icons.image_outlined,
       title: 'Portfolio',
       actionText: 'View All >',
       onActionTap: onViewAllTap,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(4, (index) {
-          final imageUrl = index < _defaultImages.length
-              ? _defaultImages[index]
-              : _defaultImages.first;
-
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: Container(
-              width: 70.w,
-              height: 70.w,
-              color: const Color(0xFFEDEFFE),
-              child: Image.network(
-                imageUrl,
-                width: 70.w,
-                height: 70.w,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 70.w,
-                    height: 70.w,
+      child: images.isEmpty
+          ? Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 16.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF6F8FA),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(
+                  color: const Color(0xFFE5E5EA),
+                  style: BorderStyle.solid,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(10.r),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFEDEFFE),
-                      borderRadius: BorderRadius.circular(8.r),
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
                     ),
                     child: Icon(
-                      Icons.image_outlined,
+                      Icons.add_photo_alternate_outlined,
                       color: AppColors.primary,
-                      size: 26.r,
+                      size: 22.r,
                     ),
-                  );
-                },
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return Container(
+                  ),
+                  SizedBox(width: 12.w),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'No portfolio photos yet',
+                          style: TextStyle(
+                            fontSize: 13.sp,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1D1D1F),
+                          ),
+                        ),
+                        SizedBox(height: 2.h),
+                        Text(
+                          'Add projects to showcase your quality work.',
+                          style: TextStyle(
+                            fontSize: 11.sp,
+                            color: const Color(0xFF8E8E93),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(images.length.clamp(1, 4), (index) {
+                final imageUrl = images[index];
+
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Container(
                     width: 70.w,
                     height: 70.w,
-                    color: const Color(0xFFF3F4F6),
-                    child: Center(
-                      child: SizedBox(
-                        width: 18.r,
-                        height: 18.r,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
-                      ),
+                    color: const Color(0xFFEDEFFE),
+                    child: Image.network(
+                      imageUrl,
+                      width: 70.w,
+                      height: 70.w,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 70.w,
+                          height: 70.w,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFEDEFFE),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          child: Icon(
+                            Icons.image_outlined,
+                            color: AppColors.primary,
+                            size: 26.r,
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              }),
             ),
-          );
-        }),
-      ),
     );
   }
 }

@@ -33,7 +33,6 @@ class MarketplaceDetailsHeaderSection extends StatelessWidget {
         bottom: 84.h,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           // Back Button
           IconButton(
@@ -54,27 +53,20 @@ class MarketplaceDetailsHeaderSection extends StatelessWidget {
           ),
 
           // Title
-          Text(
-            title,
-            style: TextStyle(
-              color: AppColors.white100,
-              fontSize: 20.sp,
-              fontWeight: FontWeight.bold,
+          Expanded(
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.white100,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
 
-          // Settings Button
-          IconButton(
-            onPressed: onSettingsTap,
-            icon: Icon(
-              Icons.settings_outlined,
-              color: AppColors.white100,
-              size: 22.r,
-            ),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            splashRadius: 24.r,
-          ),
+          // Spacer to balance back button
+          SizedBox(width: 20.r),
         ],
       ),
     );

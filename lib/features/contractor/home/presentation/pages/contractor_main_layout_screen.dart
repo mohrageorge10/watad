@@ -3,7 +3,7 @@ import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_home_page.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/my_bids_management_screen.dart';
-import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
+import 'package:watad/features/contractor/home/presentation/pages/contractor_my_projects_screen.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
 
@@ -18,6 +18,7 @@ class ContractorMainLayoutScreen extends StatefulWidget {
 class _ContractorMainLayoutScreenState
     extends State<ContractorMainLayoutScreen> {
   int _currentIndex = 0;
+  int _homeRefreshCount = 0;
   final bool _hasNewAlerts = false; // Controls the red badge on Alerts tab
   late final PageController _pageController;
 
@@ -36,6 +37,9 @@ class _ContractorMainLayoutScreenState
   void _onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      if (index == 0) {
+        _homeRefreshCount++;
+      }
     });
     _pageController.animateToPage(
       index,
@@ -54,6 +58,7 @@ class _ContractorMainLayoutScreenState
         children: [
           // Tab 0: Home (Dynamic Data-driven Home Screen)
           ContractorHomePage(
+            key: ValueKey('home_tab_$_homeRefreshCount'),
             onNavigateToMarketplace: () => _onTabTapped(1),
             onNavigateToBids: () => _onTabTapped(3),
             onNavigateToProfile: () => _onTabTapped(4),
@@ -65,10 +70,12 @@ class _ContractorMainLayoutScreenState
             onBackTap: () => _onTabTapped(0),
           ),
 
-          // Tab 2: My Projects (Portfolio Projects Screen)
-          PortfolioProjectsScreen(
+          // Tab 2: My Projects (Contractor Ongoing / Accepted Projects Screen)
+          ContractorMyProjectsScreen(
             showBottomNavBar: false,
             onBackTap: () => _onTabTapped(0),
+            onNavigateToMarketplace: () => _onTabTapped(1),
+            onNavigateToProfile: () => _onTabTapped(4),
           ),
 
           // Tab 3: My Bids (My Bids Management Screen)

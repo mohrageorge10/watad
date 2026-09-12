@@ -36,9 +36,11 @@ class AppRoutes {
   static const String contractorPortfolioProjects = '/portfolio-projects';
   static const String contractorMyProjects = '/my-projects';
   static const String contractorAddPortfolioProject = '/add-portfolio-project';
-  static const String contractorPortfolioProjectDetails = '/portfolio-project-details';
+  static const String contractorPortfolioProjectDetails =
+      '/portfolio-project-details';
   static const String contractorMarketplace = '/marketplace';
-  static const String contractorMarketplaceProjectDetails = '/marketplace-project-details';
+  static const String contractorMarketplaceProjectDetails =
+      '/marketplace-project-details';
   static const String contractorSubmitBid = '/submit-bid';
   static const String contractorBids = '/contractor-bids';
   static const String contractorMyBids = '/my-bids';
@@ -46,6 +48,13 @@ class AppRoutes {
   static const String contractorEditBid = '/edit-bid';
   static const String contractorContractDetails = '/contract-details';
   static const String contractorContractPreview = '/contract-preview';
+  static const String contractorProjectDashboard = '/contractor-project-dashboard';
+  static const String contractorAddDailyLog = '/contractor-add-daily-log';
+  static const String contractorMilestoneLogs = '/contractor-milestone-logs';
+  static const String contractorMilestoneInspection =
+      '/contractor-milestone-inspection';
+  static const String contractorAiCrackInspection =
+      '/contractor-ai-crack-inspection';
 
   // ============ Aliases (Backward Compatibility) ============
   static const String loginScreen = authLogin;
@@ -73,9 +82,11 @@ class AppRoutes {
   static const String portfolioProjects = contractorPortfolioProjects;
   static const String myProjects = contractorMyProjects;
   static const String addPortfolioProject = contractorAddPortfolioProject;
-  static const String portfolioProjectDetails = contractorPortfolioProjectDetails;
+  static const String portfolioProjectDetails =
+      contractorPortfolioProjectDetails;
   static const String marketplace = contractorMarketplace;
-  static const String marketplaceProjectDetails = contractorMarketplaceProjectDetails;
+  static const String marketplaceProjectDetails =
+      contractorMarketplaceProjectDetails;
   static const String submitBid = contractorSubmitBid;
   static const String myBids = contractorMyBids;
   static const String bidDetails = contractorBidDetails;
@@ -83,5 +94,3 @@ class AppRoutes {
   static const String contractDetails = contractorContractDetails;
   static const String contractPreview = contractorContractPreview;
 }
-
-

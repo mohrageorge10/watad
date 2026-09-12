@@ -43,7 +43,7 @@ class SocialAuthService {
       );
 
       if (result.status == LoginStatus.success && result.accessToken != null) {
-        return result.accessToken!.token;
+        return result.accessToken!.tokenString;
       }
       return null;
     } catch (_) {

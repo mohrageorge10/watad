@@ -27,6 +27,29 @@ import 'package:watad/features/contractor/home/data/repositories/contractor_proj
 import 'package:watad/features/contractor/home/domain/repositories/contractor_projects_repository.dart';
 import 'package:watad/features/contractor/home/domain/usecases/get_contractor_projects_usecase.dart';
 import 'package:watad/features/contractor/home/presentation/cubit/contractor_home_cubit.dart';
+import 'package:watad/features/contractor/home/presentation/cubit/contractor_my_projects_cubit.dart';
+import 'package:watad/features/contractor/project_dashboard/data/datasources/contractor_project_dashboard_remote_data_source.dart';
+import 'package:watad/features/contractor/project_dashboard/data/repositories/contractor_project_dashboard_repository_impl.dart';
+import 'package:watad/features/contractor/project_dashboard/domain/repositories/contractor_project_dashboard_repository.dart';
+import 'package:watad/features/contractor/project_dashboard/domain/usecases/get_contractor_project_dashboard_usecase.dart';
+import 'package:watad/features/contractor/project_dashboard/presentation/cubit/contractor_project_dashboard_cubit.dart';
+import 'package:watad/features/contractor/daily_logs/data/datasources/daily_logs_remote_data_source.dart';
+import 'package:watad/features/contractor/daily_logs/data/repositories/daily_logs_repository_impl.dart';
+import 'package:watad/features/contractor/daily_logs/domain/repositories/daily_logs_repository.dart';
+import 'package:watad/features/contractor/daily_logs/domain/usecases/submit_daily_log_usecase.dart';
+import 'package:watad/features/contractor/daily_logs/presentation/cubit/add_daily_log_cubit.dart';
+import 'package:watad/features/contractor/milestone_logs/data/datasources/milestone_logs_remote_data_source.dart';
+import 'package:watad/features/contractor/milestone_logs/data/repositories/milestone_logs_repository_impl.dart';
+import 'package:watad/features/contractor/milestone_logs/domain/repositories/milestone_logs_repository.dart';
+import 'package:watad/features/contractor/milestone_logs/domain/usecases/get_milestone_logs_usecase.dart';
+import 'package:watad/features/contractor/milestone_logs/domain/usecases/request_milestone_inspection_usecase.dart';
+import 'package:watad/features/contractor/milestone_logs/presentation/cubit/milestone_logs_cubit.dart';
+import 'package:watad/features/contractor/milestone_inspection/data/datasources/milestone_inspection_remote_data_source.dart';
+import 'package:watad/features/contractor/milestone_inspection/data/repositories/milestone_inspection_repository_impl.dart';
+import 'package:watad/features/contractor/milestone_inspection/domain/repositories/milestone_inspection_repository.dart';
+import 'package:watad/features/contractor/milestone_inspection/domain/usecases/get_milestone_inspection_details_usecase.dart';
+import 'package:watad/features/contractor/milestone_inspection/domain/usecases/submit_milestone_inspection_request_usecase.dart';
+import 'package:watad/features/contractor/milestone_inspection/presentation/cubit/milestone_inspection_cubit.dart';
 import 'package:watad/features/contractor/profile/data/datasources/contractor_profile_remote_data_source.dart';
 import 'package:watad/features/contractor/profile/data/repositories/contractor_profile_repository_impl.dart';
 import 'package:watad/features/contractor/profile/domain/repositories/contractor_profile_repository.dart';
@@ -173,6 +196,99 @@ Future<void> setupServiceLocator() async {
     () => ContractorHomeCubit(
       getContractorHomeDataUseCase: sl(),
       cacheHelper: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => ContractorMyProjectsCubit(
+      getContractorProjectsUseCase: sl(),
+    ),
+  );
+
+  //! Contractor Project Dashboard Feature
+  sl.registerLazySingleton<ContractorProjectDashboardRemoteDataSource>(
+    () => ContractorProjectDashboardRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+  sl.registerLazySingleton<ContractorProjectDashboardRepository>(
+    () => ContractorProjectDashboardRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetContractorProjectDashboardUseCase(sl()),
+  );
+  sl.registerFactory(
+    () => ContractorProjectDashboardCubit(
+      getProjectDashboardUseCase: sl(),
+    ),
+  );
+
+  //! Contractor Daily Logs Feature
+  sl.registerLazySingleton<DailyLogsRemoteDataSource>(
+    () => DailyLogsRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+  sl.registerLazySingleton<DailyLogsRepository>(
+    () => DailyLogsRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(
+    () => SubmitDailyLogUseCase(sl()),
+  );
+  sl.registerFactory(
+    () => AddDailyLogCubit(
+      submitDailyLogUseCase: sl(),
+    ),
+  );
+
+  //! Contractor Milestone Logs Feature
+  sl.registerLazySingleton<MilestoneLogsRemoteDataSource>(
+    () => MilestoneLogsRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+  sl.registerLazySingleton<MilestoneLogsRepository>(
+    () => MilestoneLogsRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetMilestoneLogsUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => RequestMilestoneInspectionUseCase(sl()),
+  );
+  sl.registerFactory(
+    () => MilestoneLogsCubit(
+      getMilestoneLogsUseCase: sl(),
+      requestMilestoneInspectionUseCase: sl(),
+    ),
+  );
+
+  //! Contractor Milestone Inspection Request Feature
+  sl.registerLazySingleton<MilestoneInspectionRemoteDataSource>(
+    () => MilestoneInspectionRemoteDataSourceImpl(
+      apiConsumer: sl(),
+      secureStorage: sl(),
+      cacheHelper: sl(),
+    ),
+  );
+  sl.registerLazySingleton<MilestoneInspectionRepository>(
+    () => MilestoneInspectionRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(
+    () => GetMilestoneInspectionDetailsUseCase(sl()),
+  );
+  sl.registerLazySingleton(
+    () => SubmitMilestoneInspectionRequestUseCase(sl()),
+  );
+  sl.registerFactory(
+    () => MilestoneInspectionCubit(
+      getMilestoneInspectionDetailsUseCase: sl(),
+      submitMilestoneInspectionRequestUseCase: sl(),
     ),
   );
 

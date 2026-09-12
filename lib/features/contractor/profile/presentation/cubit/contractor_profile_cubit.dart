@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
@@ -19,6 +20,8 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
   static const String _kCachedCompanyName = 'contractor_cached_company_name';
   static const String _kCachedExperience = 'contractor_cached_experience';
   static const String _kCachedAboutMe = 'contractor_cached_about_me';
+  static const String _kCachedSpecializations = 'contractor_cached_specializations';
+  static const String _kCachedGovernorates = 'contractor_cached_governorates';
   static const String _kCachedCommercialRegister = 'contractor_cached_commercial_register';
   static const String _kCachedTaxCard = 'contractor_cached_tax_card';
 
@@ -40,12 +43,12 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
 
     await result.fold(
       (profile) async {
-        if (profile.name.isEmpty && profile.companyName.isEmpty) {
+        // Merge with any cached overrides first
+        final mergedProfile = _applyCachedOverrides(profile);
+
+        if (mergedProfile.name.isEmpty && mergedProfile.companyName.isEmpty) {
           emit(const ContractorProfileEmpty());
         } else {
-          // Merge with any cached overrides
-          final mergedProfile = _applyCachedOverrides(profile);
-
           List<ReviewModel> reviews = const [];
           if (getContractorReviewsUseCase != null) {
             final reviewsResult = await getContractorReviewsUseCase!();
@@ -72,6 +75,28 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
     final cachedAboutMe = cacheHelper.getData(key: _kCachedAboutMe) as String?;
     final cachedCommercialRegister = cacheHelper.getData(key: _kCachedCommercialRegister) as String?;
     final cachedTaxCard = cacheHelper.getData(key: _kCachedTaxCard) as String?;
+    final cachedSpecializationsRaw = cacheHelper.getData(key: _kCachedSpecializations) as String?;
+    final cachedGovernoratesRaw = cacheHelper.getData(key: _kCachedGovernorates) as String?;
+
+    List<String>? cachedSpecializations;
+    if (cachedSpecializationsRaw != null && cachedSpecializationsRaw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(cachedSpecializationsRaw);
+        if (decoded is List) {
+          cachedSpecializations = decoded.map((e) => e.toString()).toList();
+        }
+      } catch (_) {}
+    }
+
+    List<String>? cachedGovernorates;
+    if (cachedGovernoratesRaw != null && cachedGovernoratesRaw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(cachedGovernoratesRaw);
+        if (decoded is List) {
+          cachedGovernorates = decoded.map((e) => e.toString()).toList();
+        }
+      } catch (_) {}
+    }
 
     return profile.copyWith(
       profileImagePath: cachedImage ?? profile.profileImagePath,
@@ -79,6 +104,8 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
       companyName: cachedCompanyName ?? profile.companyName,
       yearsOfExperience: cachedExperience ?? profile.yearsOfExperience,
       aboutMe: cachedAboutMe ?? profile.aboutMe,
+      specializations: cachedSpecializations ?? profile.specializations,
+      coveredGovernorates: cachedGovernorates ?? profile.coveredGovernorates,
       commercialRegister: cachedCommercialRegister ?? profile.commercialRegister,
       taxCard: cachedTaxCard ?? profile.taxCard,
     );
@@ -130,34 +157,65 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
       }
     }
 
-    // 3. Update local state and cache upon successful API call
-    if (state is ContractorProfileSuccess) {
-      final current = (state as ContractorProfileSuccess).profile;
-      final updated = current.copyWith(
-        name: name,
-        companyName: companyName,
-        yearsOfExperience: yearsOfExperience,
-        aboutMe: aboutMe,
-        specializations: specializations,
-        coveredGovernorates: coveredGovernorates,
-        commercialRegister: commercialRegister ?? current.commercialRegister,
-        taxCard: taxCard ?? current.taxCard,
-      );
-
-      // Persist in Cache
-      await cacheHelper.saveData(key: _kCachedName, value: name);
-      await cacheHelper.saveData(key: _kCachedCompanyName, value: companyName);
-      await cacheHelper.saveData(key: _kCachedExperience, value: yearsOfExperience);
-      await cacheHelper.saveData(key: _kCachedAboutMe, value: aboutMe);
-      if (commercialRegister != null) {
-        await cacheHelper.saveData(key: _kCachedCommercialRegister, value: commercialRegister);
-      }
-      if (taxCard != null) {
-        await cacheHelper.saveData(key: _kCachedTaxCard, value: taxCard);
-      }
-
-      emit((state as ContractorProfileSuccess).copyWith(profile: updated));
+    // 3. Persist in Cache
+    await cacheHelper.saveData(key: _kCachedName, value: name);
+    await cacheHelper.saveData(key: _kCachedCompanyName, value: companyName);
+    await cacheHelper.saveData(key: _kCachedExperience, value: yearsOfExperience);
+    await cacheHelper.saveData(key: _kCachedAboutMe, value: aboutMe);
+    await cacheHelper.saveData(key: _kCachedSpecializations, value: jsonEncode(specializations));
+    await cacheHelper.saveData(key: _kCachedGovernorates, value: jsonEncode(coveredGovernorates));
+    if (commercialRegister != null) {
+      await cacheHelper.saveData(key: _kCachedCommercialRegister, value: commercialRegister);
     }
+    if (taxCard != null) {
+      await cacheHelper.saveData(key: _kCachedTaxCard, value: taxCard);
+    }
+
+    // 4. Update local state upon successful update
+    final currentProfile = (state is ContractorProfileSuccess)
+        ? (state as ContractorProfileSuccess).profile
+        : const ContractorProfileEntity(
+            id: '',
+            name: '',
+            companyName: '',
+            rating: 0.0,
+            reviewsCount: 0,
+            isVerified: false,
+            yearsOfExperience: '0',
+            projectsCompiled: '0',
+            verificationStatus: 'Unverified',
+            commercialRegister: '',
+            taxCard: '',
+            aboutMe: '',
+            specializations: [],
+            coveredGovernorates: [],
+            portfolioImages: [],
+          );
+
+    final updated = currentProfile.copyWith(
+      name: name,
+      companyName: companyName,
+      yearsOfExperience: yearsOfExperience,
+      aboutMe: aboutMe,
+      specializations: specializations,
+      coveredGovernorates: coveredGovernorates,
+      commercialRegister: commercialRegister ?? currentProfile.commercialRegister,
+      taxCard: taxCard ?? currentProfile.taxCard,
+    );
+
+    List<ReviewModel> reviews = const [];
+    int selectedTabIndex = 0;
+    if (state is ContractorProfileSuccess) {
+      final currentState = state as ContractorProfileSuccess;
+      reviews = currentState.reviews;
+      selectedTabIndex = currentState.selectedTabIndex;
+    }
+
+    emit(ContractorProfileSuccess(
+      profile: updated,
+      reviews: reviews,
+      selectedTabIndex: selectedTabIndex,
+    ));
 
     return null; // Null indicates success
   }

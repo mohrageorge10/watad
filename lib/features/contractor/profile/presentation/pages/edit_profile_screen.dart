@@ -5,6 +5,7 @@ import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_state.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/edit_profile_form_section.dart';
@@ -14,12 +15,14 @@ class EditProfileScreen extends StatelessWidget {
   final VoidCallback? onBackTap;
   final VoidCallback? onSettingsTap;
   final ContractorProfileCubit? cubit;
+  final ContractorProfileEntity? initialProfile;
 
   const EditProfileScreen({
     super.key,
     this.onBackTap,
     this.onSettingsTap,
     this.cubit,
+    this.initialProfile,
   });
 
   @override
@@ -31,9 +34,10 @@ class EditProfileScreen extends StatelessWidget {
       // Fallback
     }
 
-    final currentProfile = (activeCubit?.state is ContractorProfileSuccess)
-        ? (activeCubit!.state as ContractorProfileSuccess).profile
-        : null;
+    final currentProfile = initialProfile ??
+        ((activeCubit?.state is ContractorProfileSuccess)
+            ? (activeCubit!.state as ContractorProfileSuccess).profile
+            : null);
 
     return Scaffold(
       backgroundColor: AppColors.white100,
@@ -81,12 +85,13 @@ class EditProfileScreen extends StatelessWidget {
                       // Prompt dialog to add first portfolio project
                       final wantToAdd = await AppConfirmationDialog.show(
                         context,
-                        title: 'إضافة سابقة أعمال',
-                        message: 'هل ترغب في إضافة أول مشروع لك في سابقة الأعمال؟',
+                        title: 'Add Portfolio Project',
+                        message:
+                            'Would you like to add your first project to your portfolio?',
                         icon: Icons.work_outline_rounded,
                         iconColor: AppColors.primary,
-                        cancelText: 'تخطي الآن',
-                        confirmText: 'إضافة مشروع',
+                        cancelText: 'Skip for now',
+                        confirmText: 'Add Project',
                         confirmButtonColor: AppColors.primary,
                       );
 

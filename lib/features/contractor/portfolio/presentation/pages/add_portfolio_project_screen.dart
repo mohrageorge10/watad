@@ -1,11 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/shared/widgets/app_text_field.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
+import 'package:watad/core/shared/widgets/permission_confirmation_dialog.dart';
 import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/portfolio/presentation/cubit/portfolio_cubit.dart';
 
@@ -101,6 +106,54 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
     }
   }
 
+  Future<void> _pickImagesFromGallery() async {
+    final permissionKey = CacheKeys.galleryPermissionGranted;
+
+    CacheHelper? cache;
+    try {
+      if (sl.isRegistered<CacheHelper>()) {
+        cache = sl<CacheHelper>();
+      }
+    } catch (_) {}
+
+    final bool isAlreadyGranted =
+        cache != null && cache.getData(key: permissionKey) == true;
+
+    if (!isAlreadyGranted) {
+      final granted = await PermissionConfirmationDialog.show(
+        context,
+        title: 'Gallery Access',
+        message: 'Watad would like to access your Photos to choose project pictures.',
+        icon: Icons.photo_library_rounded,
+      );
+
+      if (!granted) return;
+
+      if (cache != null) {
+        await cache.saveData(key: permissionKey, value: true);
+      }
+    }
+
+    try {
+      final picker = ImagePicker();
+      final List<XFile> images = await picker.pickMultiImage(
+        imageQuality: 85,
+      );
+
+      if (images.isNotEmpty) {
+        setState(() {
+          for (final img in images) {
+            if (!_mediaUrls.contains(img.path)) {
+              _mediaUrls.add(img.path);
+            }
+          }
+        });
+      }
+    } catch (_) {
+      // Handled gracefully
+    }
+  }
+
   void _addMediaUrl() {
     final url = _mediaUrlController.text.trim();
     if (url.isNotEmpty && !_mediaUrls.contains(url)) {
@@ -108,6 +161,8 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
         _mediaUrls.add(url);
         _mediaUrlController.clear();
       });
+    } else if (url.isEmpty) {
+      _pickImagesFromGallery();
     }
   }
 
@@ -338,28 +393,6 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 10.h),
-
-              // Sample photo shortcut buttons
-              Wrap(
-                spacing: 8.w,
-                runSpacing: 6.h,
-                children: [
-                  _buildQuickPhotoChip(
-                    label: '+ Villa Photo',
-                    url: 'https://images.unsplash.com/photo-1541888946425-d0fbb186c5f8?w=800&q=80',
-                  ),
-                  _buildQuickPhotoChip(
-                    label: '+ Commercial Photo',
-                    url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80',
-                  ),
-                  _buildQuickPhotoChip(
-                    label: '+ Interior Photo',
-                    url: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80',
-                  ),
-                ],
-              ),
-
               // Image previews
               if (_mediaUrls.isNotEmpty) ...[
                 SizedBox(height: 14.h),
@@ -371,22 +404,41 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
                     separatorBuilder: (context, index) => SizedBox(width: 10.w),
                     itemBuilder: (context, index) {
                       final url = _mediaUrls[index];
+                      final isNetwork = url.startsWith('http://') || url.startsWith('https://');
+
                       return Stack(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10.r),
-                            child: Image.network(
-                              url,
-                              width: 90.w,
-                              height: 90.h,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => Container(
-                                width: 90.w,
-                                height: 90.h,
-                                color: AppColors.grey200,
-                                child: Icon(Icons.broken_image, color: AppColors.grey500, size: 28.r),
-                              ),
-                            ),
+                            child: isNetwork
+                                ? Image.network(
+                                    url,
+                                    width: 90.w,
+                                    height: 90.h,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Container(
+                                      width: 90.w,
+                                      height: 90.h,
+                                      color: AppColors.grey200,
+                                      child: Icon(Icons.broken_image,
+                                          color: AppColors.grey500, size: 28.r),
+                                    ),
+                                  )
+                                : Image.file(
+                                    File(url),
+                                    width: 90.w,
+                                    height: 90.h,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) =>
+                                        Container(
+                                      width: 90.w,
+                                      height: 90.h,
+                                      color: AppColors.grey200,
+                                      child: Icon(Icons.broken_image,
+                                          color: AppColors.grey500, size: 28.r),
+                                    ),
+                                  ),
                           ),
                           Positioned(
                             top: 4.h,
@@ -412,7 +464,7 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
 
               SizedBox(height: 32.h),
 
-              // Action Button (Must say 'Add to Portfolio' or 'Save Project' as specified)
+              // Action Button
               AppElevatedButton(
                 title: isEditMode ? 'Save Project' : 'Add to Portfolio',
                 isLoading: _isLoading,
@@ -440,29 +492,6 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
           fontWeight: FontWeight.w600,
         ),
       ),
-    );
-  }
-
-  Widget _buildQuickPhotoChip({required String label, required String url}) {
-    return ActionChip(
-      label: Text(
-        label,
-        style: TextStyle(
-          fontSize: 12.sp,
-          color: AppColors.primary,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      backgroundColor: AppColors.primary.withValues(alpha: 0.08),
-      side: BorderSide(color: AppColors.primary.withValues(alpha: 0.2)),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-      onPressed: () {
-        if (!_mediaUrls.contains(url)) {
-          setState(() {
-            _mediaUrls.add(url);
-          });
-        }
-      },
     );
   }
 }

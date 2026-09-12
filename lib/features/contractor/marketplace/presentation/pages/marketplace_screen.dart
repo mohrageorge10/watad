@@ -229,40 +229,48 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
               showBackButton: false,
             ),
 
-            // Search & Filter Section
-            MarketplaceSearchFilterSection(
-              searchController: _searchController,
-              onSearchChanged: (query) {
-                context.read<MarketplaceCubit>().searchProjects(query);
-              },
-              onClearSearch: () {
-                context.read<MarketplaceCubit>().searchProjects('');
-              },
-              onFilterTap: () => _handleFilterTap(context),
+            // Search & Filter Section (Floating over blue header)
+            Transform.translate(
+              offset: Offset(0, -24.h),
+              child: MarketplaceSearchFilterSection(
+                searchController: _searchController,
+                onSearchChanged: (query) {
+                  context.read<MarketplaceCubit>().searchProjects(query);
+                },
+                onClearSearch: () {
+                  context.read<MarketplaceCubit>().searchProjects('');
+                },
+                onFilterTap: () => _handleFilterTap(context),
+              ),
             ),
 
             // Filter Chips Section
-            BlocBuilder<MarketplaceCubit, MarketplaceState>(
-              builder: (context, state) {
-                final activeChip = state is MarketplaceSuccess
-                    ? state.activeChip
-                    : state is MarketplaceEmpty
-                        ? state.activeChip
-                        : state is MarketplaceLoading
-                            ? state.activeChip
-                            : context.read<MarketplaceCubit>().currentCategory;
+            Transform.translate(
+              offset: Offset(0, -12.h),
+              child: BlocBuilder<MarketplaceCubit, MarketplaceState>(
+                builder: (context, state) {
+                  final activeChip = state is MarketplaceSuccess
+                      ? state.activeChip
+                      : state is MarketplaceEmpty
+                          ? state.activeChip
+                          : state is MarketplaceLoading
+                              ? state.activeChip
+                              : context.read<MarketplaceCubit>().currentCategory;
 
-                return MarketplaceFilterChipsSection(
-                  activeChip: activeChip,
-                  onChipSelected: (chip) {
-                    context.read<MarketplaceCubit>().selectFilterChip(chip);
-                  },
-                );
-              },
+                  return MarketplaceFilterChipsSection(
+                    activeChip: activeChip,
+                    onChipSelected: (chip) {
+                      context.read<MarketplaceCubit>().selectFilterChip(chip);
+                    },
+                  );
+                },
+              ),
             ),
 
             // Projects List or Shimmer / Empty State
-            BlocBuilder<MarketplaceCubit, MarketplaceState>(
+            Transform.translate(
+              offset: Offset(0, -12.h),
+              child: BlocBuilder<MarketplaceCubit, MarketplaceState>(
               builder: (context, state) {
                 if (state is MarketplaceLoading ||
                     state is MarketplaceInitial) {
@@ -312,6 +320,7 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
 
                 return const SizedBox.shrink();
               },
+            ),
             ),
           ],
         ),

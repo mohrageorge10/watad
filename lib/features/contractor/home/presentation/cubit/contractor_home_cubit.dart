@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/home/data/mock/contractor_home_mock_data.dart';
 import 'package:watad/features/contractor/home/domain/usecases/get_contractor_home_data_usecase.dart';
 import 'package:watad/features/contractor/home/presentation/cubit/contractor_home_state.dart';
 
@@ -25,22 +24,23 @@ class ContractorHomeCubit extends Cubit<ContractorHomeState> {
 
     result.fold(
       (data) {
-        if (data.isEmptyState) {
-          emit(ContractorHomeEmpty(data));
+        final cachedImage = cacheHelper.getData(key: 'contractor_cached_profile_image') as String?;
+        final cachedName = cacheHelper.getData(key: 'contractor_cached_name') as String?;
+
+        final updatedData = data.copyWith(
+          userImage: cachedImage ?? data.userImage,
+          userName: (cachedName != null && cachedName.isNotEmpty) ? cachedName : data.userName,
+        );
+
+        if (updatedData.isEmptyState) {
+          emit(ContractorHomeEmpty(updatedData));
         } else {
-          emit(ContractorHomeSuccess(data));
+          emit(ContractorHomeSuccess(updatedData));
         }
       },
       (failure) {
         emit(ContractorHomeError(failure.errMessage));
       },
     );
-  }
-
-  /// Helper to toggle between empty and populated mock data
-  void toggleMockEmptyState() {
-    ContractorHomeMockData.forceEmptyState =
-        !ContractorHomeMockData.forceEmptyState;
-    loadHomeData();
   }
 }

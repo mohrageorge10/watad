@@ -1,10 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_data.dart';
-import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
 import 'package:watad/features/contractor/marketplace/data/models/marketplace_project_details_model.dart';
 import 'package:watad/features/contractor/marketplace/data/models/marketplace_project_model.dart';
 
@@ -94,79 +93,44 @@ class MarketplaceRemoteDataSourceImpl implements MarketplaceRemoteDataSource {
         }
       }
 
-      if (rawList != null && rawList.isNotEmpty) {
+      if (rawList != null) {
         return rawList
             .map((item) =>
                 MarketplaceProjectModel.fromJson(item as Map<String, dynamic>))
             .toList();
       }
+
+      return const [];
+    } on DioException {
+      return const [];
     } catch (_) {
-      // Fallback seamlessly to mock data on offline/server error
+      return const [];
     }
-
-    // Local filter on mock data as reliable fallback
-    var projects = MockMarketplaceData.getProjects();
-
-    if (category != null && category.isNotEmpty && category != 'All') {
-      if (category == 'Budget') {
-        projects = [...projects]..sort((a, b) {
-            final aVal = _extractBudgetNumber(a.budgetValue);
-            final bVal = _extractBudgetNumber(b.budgetValue);
-            return aVal.compareTo(bVal);
-          });
-      } else {
-        projects = projects
-            .where((p) =>
-                p.category?.toLowerCase() == category.toLowerCase() ||
-                p.location.toLowerCase().contains(category.toLowerCase()))
-            .toList();
-      }
-    }
-
-    if (searchQuery != null && searchQuery.trim().isNotEmpty) {
-      final query = searchQuery.trim().toLowerCase();
-      projects = projects
-          .where((p) =>
-              p.title.toLowerCase().contains(query) ||
-              p.location.toLowerCase().contains(query))
-          .toList();
-    }
-
-    return projects;
   }
 
   @override
   Future<MarketplaceProjectDetailsModel> getMarketplaceProjectDetails(
       String id) async {
-    try {
-      final headers = await _getAuthHeaders();
-      final response = await apiConsumer.get(
-        EndPoints.projectDetails(id),
-        headers: headers.isNotEmpty ? headers : null,
-      );
+    final headers = await _getAuthHeaders();
+    final response = await apiConsumer.get(
+      EndPoints.projectDetails(id),
+      headers: headers.isNotEmpty ? headers : null,
+    );
 
-      Map<String, dynamic>? dataMap;
-      if (response is Map<String, dynamic>) {
-        if (response.containsKey(ApiKey.data) &&
-            response[ApiKey.data] is Map<String, dynamic>) {
-          dataMap = response[ApiKey.data] as Map<String, dynamic>;
-        } else {
-          dataMap = response;
-        }
+    Map<String, dynamic>? dataMap;
+    if (response is Map<String, dynamic>) {
+      if (response.containsKey(ApiKey.data) &&
+          response[ApiKey.data] is Map<String, dynamic>) {
+        dataMap = response[ApiKey.data] as Map<String, dynamic>;
+      } else {
+        dataMap = response;
       }
-
-      if (dataMap != null && dataMap.isNotEmpty) {
-        return MarketplaceProjectDetailsModel.fromJson(dataMap);
-      }
-    } catch (_) {
-      // Fallback to mock project details
     }
 
-    return MockMarketplaceDetailsData.getVillaProjectDetails(id: id);
-  }
+    if (dataMap != null && dataMap.isNotEmpty) {
+      return MarketplaceProjectDetailsModel.fromJson(dataMap);
+    }
 
-  int _extractBudgetNumber(String budget) {
-    final cleaned = budget.replaceAll(RegExp(r'[^0-9]'), '');
-    return int.tryParse(cleaned) ?? 0;
+    throw const FormatException('Project details not found');
   }
 }

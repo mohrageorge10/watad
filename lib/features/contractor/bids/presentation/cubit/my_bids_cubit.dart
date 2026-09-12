@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watad/features/contractor/bids/data/mock/mock_my_bids_data.dart';
 import 'package:watad/features/contractor/bids/data/models/my_bid_model.dart';
 import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
 import 'package:watad/features/contractor/bids/domain/usecases/cancel_bid_usecase.dart';
@@ -26,36 +25,34 @@ class MyBidsCubit extends Cubit<MyBidsState> {
         final result = await getMyBidsUseCase!();
         result.fold(
           (bids) {
-            if (bids.isNotEmpty) {
-              _allBids = bids
-                  .map((e) => e is MyBidModel
-                      ? e
-                      : MyBidModel(
-                          id: e.id,
-                          title: e.title,
-                          location: e.location,
-                          image: e.image,
-                          status: e.status,
-                          statusColorHex: e.statusColorHex,
-                          isBookmarked: e.isBookmarked,
-                          yourBid: e.yourBid,
-                          duration: e.duration,
-                          submittedDate: e.submittedDate,
-                          rejectionReason: e.rejectionReason,
-                        ))
-                  .toList();
-            } else {
-              _allBids = MockMyBidsData.getMockBids();
-            }
+            _allBids = bids
+                .map((e) => e is MyBidModel
+                    ? e
+                    : MyBidModel(
+                        id: e.id,
+                        title: e.title,
+                        location: e.location,
+                        image: e.image,
+                        status: e.status,
+                        statusColorHex: e.statusColorHex,
+                        isBookmarked: e.isBookmarked,
+                        yourBid: e.yourBid,
+                        duration: e.duration,
+                        submittedDate: e.submittedDate,
+                        rejectionReason: e.rejectionReason,
+                      ))
+                .toList();
             _emitSuccess();
           },
           (failure) {
-            _allBids = MockMyBidsData.getMockBids();
-            _emitSuccess();
+            emit(MyBidsError(
+              message: failure.errMessage,
+              activeFilter: _currentFilter,
+            ));
           },
         );
       } else {
-        _allBids = MockMyBidsData.getMockBids();
+        _allBids = [];
         _emitSuccess();
       }
     } catch (e) {

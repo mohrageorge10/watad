@@ -4,7 +4,6 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/profile/data/mock/contractor_profile_mock_data.dart';
 import 'package:watad/features/contractor/profile/data/models/contractor_profile_model.dart';
 import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 
@@ -62,13 +61,40 @@ class ContractorProfileRemoteDataSourceImpl
         }
       }
 
-      throw const FormatException('Invalid profile response structure');
-    } on DioException {
-      // Catch DioException (401 Unauthorized, timeout, network errors) gracefully
+      return _createInitialProfile();
+    } on DioException catch (e) {
+      // If 404 or not found, return initial profile so new contractors can set up details
+      if (e.response?.statusCode == 404) {
+        return _createInitialProfile();
+      }
       rethrow;
-    } catch (e) {
-      rethrow;
+    } catch (_) {
+      return _createInitialProfile();
     }
+  }
+
+  ContractorProfileModel _createInitialProfile() {
+    final cachedName = (cacheHelper.getData(key: CacheKeys.userName) as String?) ?? 'Contractor';
+    final cachedId = (cacheHelper.getData(key: CacheKeys.userId) as String?) ?? '';
+    return ContractorProfileModel(
+      id: cachedId,
+      name: cachedName.isNotEmpty ? cachedName : 'Contractor',
+      companyName: 'Company Details Pending',
+      rating: 0.0,
+      reviewsCount: 0,
+      isVerified: false,
+      yearsOfExperience: '0',
+      projectsCompiled: '0',
+      verificationStatus: 'Unverified',
+      commercialRegister: '',
+      taxCard: '',
+      aboutMe: 'Tap Edit Profile to add company details, experience, and services.',
+      specializations: const [],
+      coveredGovernorates: const [],
+      portfolioImages: const [],
+      profileImagePath: null,
+      isCompleted: false,
+    );
   }
 
   @override
@@ -107,19 +133,7 @@ class ContractorProfileRemoteDataSourceImpl
     required String contractorId,
     String? userName,
   }) async {
-    final token = await secureStorage.read(key: CacheKeys.token) ??
-        (cacheHelper.getData(key: CacheKeys.token) as String?);
-
-    if (token != null && token.isNotEmpty) {
-      return await fetchContractorProfile();
-    }
-
-    // Fallback for unauthenticated local development / testing
-    await Future.delayed(const Duration(milliseconds: 600));
-    return ContractorProfileMockData.getContractorProfile(
-      contractorId: contractorId,
-      userName: userName,
-    );
+    return await fetchContractorProfile();
   }
 
   @override
@@ -152,46 +166,11 @@ class ContractorProfileRemoteDataSourceImpl
         }
       }
 
-      return _getMockReviews();
+      return const [];
     } on DioException {
-      return _getMockReviews();
+      return const [];
     } catch (_) {
-      return _getMockReviews();
+      return const [];
     }
-  }
-
-  List<ReviewModel> _getMockReviews() {
-    return const [
-      ReviewModel(
-        id: 'rev_1',
-        reviewerName: 'Eng. Tarek Mostafa',
-        reviewerImage: null,
-        rating: 5.0,
-        comment:
-            'Exceptional concrete pouring quality. Delivered ahead of scheduled milestone with full safety compliance.',
-        date: '2 weeks ago',
-        projectName: 'New Cairo Villa',
-      ),
-      ReviewModel(
-        id: 'rev_2',
-        reviewerName: 'Al-Rehab Developers',
-        reviewerImage: null,
-        rating: 4.8,
-        comment:
-            'Professional team with strong engineering discipline and timely execution of foundation work.',
-        date: '1 month ago',
-        projectName: 'Commercial Tower Foundation',
-      ),
-      ReviewModel(
-        id: 'rev_3',
-        reviewerName: 'Fahad Al-Otaibi',
-        reviewerImage: null,
-        rating: 4.9,
-        comment:
-            'Superb communication and technical diligence throughout the project stages. Highly recommended.',
-        date: '2 months ago',
-        projectName: 'Al-Riyadh Tower',
-      ),
-    ];
   }
 }

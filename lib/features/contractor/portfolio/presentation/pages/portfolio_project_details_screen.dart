@@ -54,12 +54,13 @@ class _PortfolioProjectDetailsScreenState
   Future<void> _confirmDelete() async {
     final confirm = await AppConfirmationDialog.show(
       context,
-      title: 'حذف المشروع',
-      message: 'هل أنت متأكد من رغبتك في حذف هذا المشروع من سابقة أعمالك نهائياً؟',
+      title: 'Delete Project',
+      message:
+          'Are you sure you want to permanently delete this project from your portfolio?',
       icon: Icons.delete_forever_rounded,
       iconColor: const Color(0xFFFF3B30),
-      cancelText: 'إلغاء',
-      confirmText: 'حذف',
+      cancelText: 'Cancel',
+      confirmText: 'Delete',
       confirmButtonColor: const Color(0xFFFF3B30),
     );
 
@@ -79,7 +80,7 @@ class _PortfolioProjectDetailsScreenState
       if (error != null) {
         AppToast.showError(context, error);
       } else {
-        AppToast.showSuccess(context, 'تم حذف المشروع من سابقة الأعمال بنجاح');
+        AppToast.showSuccess(context, 'Project deleted from portfolio successfully');
         context.pop(true);
       }
     }

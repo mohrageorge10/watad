@@ -9,6 +9,12 @@ class ContractorProjectEntity extends Equatable {
   final String badgeText;
   final String badgeColorHex;
   final String? progress;
+  final String ownerName;
+  final String landArea;
+  final String floors;
+  final String contractValue;
+  final String contractedDate;
+  final String? contractId;
 
   const ContractorProjectEntity({
     required this.id,
@@ -19,6 +25,12 @@ class ContractorProjectEntity extends Equatable {
     required this.badgeText,
     required this.badgeColorHex,
     this.progress,
+    this.ownerName = 'Ahmed Al-Masry',
+    this.landArea = '1,200 m²',
+    this.floors = '2 Floors',
+    this.contractValue = 'EGP 2,450,000',
+    this.contractedDate = 'Sep 08, 2026',
+    this.contractId,
   });
 
   @override
@@ -31,5 +43,11 @@ class ContractorProjectEntity extends Equatable {
         badgeText,
         badgeColorHex,
         progress,
+        ownerName,
+        landArea,
+        floors,
+        contractValue,
+        contractedDate,
+        contractId,
       ];
 }

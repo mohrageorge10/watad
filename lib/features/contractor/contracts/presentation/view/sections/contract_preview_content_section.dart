@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/theme/app_colors.dart';
-import 'package:watad/features/contractor/contracts/data/mock/mock_contract_data.dart';
+import 'package:watad/features/contractor/contracts/data/models/contract_party_model.dart';
 import 'package:watad/features/contractor/contracts/presentation/view/widgets/contract_overview_card.dart';
 import 'package:watad/features/contractor/contracts/presentation/view/widgets/contract_party_tile_widget.dart';
 import 'package:watad/features/contractor/contracts/presentation/view/widgets/contract_project_summary_card.dart';

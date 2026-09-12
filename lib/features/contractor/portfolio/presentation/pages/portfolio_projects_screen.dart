@@ -12,7 +12,7 @@ import 'package:watad/features/contractor/portfolio/presentation/view/sections/p
 import 'package:watad/features/contractor/portfolio/presentation/view/sections/portfolio_projects_list_section.dart';
 import 'package:watad/features/contractor/portfolio/presentation/view/sections/portfolio_shimmer_section.dart';
 import 'package:watad/features/contractor/portfolio/presentation/view/sections/portfolio_showcase_section.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/contractor_profile_bottom_nav_bar.dart';
+import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
 
 class PortfolioProjectsScreen extends StatelessWidget {
   final List<PortfolioProjectItemModel>? projects;
@@ -169,7 +169,7 @@ class _PortfolioProjectsView extends StatelessWidget {
         },
       ),
       bottomNavigationBar: showBottomNavBar
-          ? ContractorProfileBottomNavBar(
+          ? ContractorBottomNavBar(
               currentIndex: 2,
               onTap: (index) => _handleBottomNavTap(context, index),
             )

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:watad/core/shared/widgets/app_shimmer.dart'; // TODO: عدّل المسار لو AppShimmerBox عندك في مكان تاني
+import 'package:watad/core/shared/widgets/app_shimmer.dart';
 
 class CurrentProjectOverviewShimmer extends StatelessWidget {
   const CurrentProjectOverviewShimmer({super.key});

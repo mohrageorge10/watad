@@ -29,11 +29,16 @@ class KeyValueRowWidget extends StatelessWidget {
             ),
           ),
           Text(
-            value,
+            value.trim().isNotEmpty ? value : 'Not provided',
             style: TextStyle(
               fontSize: 13.sp,
-              color: const Color(0xFF1D1D1F),
-              fontWeight: FontWeight.w700,
+              color: value.trim().isNotEmpty
+                  ? const Color(0xFF1D1D1F)
+                  : const Color(0xFF8E8E93),
+              fontWeight:
+                  value.trim().isNotEmpty ? FontWeight.w700 : FontWeight.w500,
+              fontStyle:
+                  value.trim().isNotEmpty ? FontStyle.normal : FontStyle.italic,
             ),
           ),
         ],

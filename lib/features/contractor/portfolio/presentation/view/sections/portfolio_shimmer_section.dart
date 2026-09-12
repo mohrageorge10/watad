@@ -34,7 +34,6 @@ class PortfolioShimmerSection extends StatelessWidget {
               bottom: 56.h,
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   onPressed: onBackTap,
@@ -46,16 +45,16 @@ class PortfolioShimmerSection extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
-                AppShimmerBox(
-                  width: 140.w,
-                  height: 20.h,
-                  borderRadius: 6,
+                Expanded(
+                  child: Center(
+                    child: AppShimmerBox(
+                      width: 140.w,
+                      height: 20.h,
+                      borderRadius: 6,
+                    ),
+                  ),
                 ),
-                Icon(
-                  Icons.settings_outlined,
-                  color: AppColors.white100.withValues(alpha: 0.5),
-                  size: 22.r,
-                ),
+                SizedBox(width: 20.r),
               ],
             ),
           ),

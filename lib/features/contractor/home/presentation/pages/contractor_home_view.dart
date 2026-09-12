@@ -66,6 +66,7 @@ class ContractorHomeView extends StatelessWidget {
                     ContractorHeaderSection(
                       userName: homeData.userName,
                       headline: homeData.headline,
+                      userImage: homeData.userImage,
                       onNotificationTap: () {},
                       onProfileTap: onNavigateToProfile,
                     ),

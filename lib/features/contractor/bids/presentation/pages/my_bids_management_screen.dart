@@ -71,13 +71,13 @@ class MyBidsManagementScreen extends StatelessWidget {
                       : (state is MyBidsLoading
                           ? state.activeFilter
                           : 'All');
-                  final allCount = state is MyBidsSuccess ? state.allCount : 5;
+                  final allCount = state is MyBidsSuccess ? state.allCount : 0;
                   final pendingCount =
-                      state is MyBidsSuccess ? state.pendingCount : 2;
+                      state is MyBidsSuccess ? state.pendingCount : 0;
                   final acceptedCount =
-                      state is MyBidsSuccess ? state.acceptedCount : 2;
+                      state is MyBidsSuccess ? state.acceptedCount : 0;
                   final rejectedCount =
-                      state is MyBidsSuccess ? state.rejectedCount : 1;
+                      state is MyBidsSuccess ? state.rejectedCount : 0;
 
                   return MyBidsFilterChipsWidget(
                     activeFilter: activeFilter,

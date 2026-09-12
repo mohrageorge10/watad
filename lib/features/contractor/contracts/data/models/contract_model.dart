@@ -51,31 +51,61 @@ class ContractModel extends ContractEntity {
     }
 
     return ContractModel(
-      id: json['id']?.toString() ?? '',
-      projectId: json['projectId']?.toString() ?? '',
+      id: json['id']?.toString() ?? json['Id']?.toString() ?? '',
+      projectId: json['projectId']?.toString() ?? json['ProjectId']?.toString() ?? '',
       projectName: json['projectName'] as String? ??
+          json['ProjectName'] as String? ??
           json['projectTitle'] as String? ??
+          json['ProjectTitle'] as String? ??
           'Construction Project',
-      contractorId: json['contractorId']?.toString() ?? '',
-      contractorName: json['contractorName'] as String? ?? 'Contractor',
-      clientId: json['clientId']?.toString() ?? '',
-      clientName: json['clientName'] as String? ?? 'Client',
-      status: json['status'] as String? ?? 'Draft',
-      totalAmount: parseDouble(json['totalAmount'] ?? json['amount']),
-      durationDays: parseInt(json['durationDays'] ?? json['duration']),
+      contractorId: json['contractorId']?.toString() ??
+          json['ContractorId']?.toString() ??
+          '',
+      contractorName: json['contractorName'] as String? ??
+          json['ContractorName'] as String? ??
+          'Contractor',
+      clientId: json['clientId']?.toString() ?? json['ClientId']?.toString() ?? '',
+      clientName: json['clientName'] as String? ??
+          json['ClientName'] as String? ??
+          'Client',
+      status: json['status'] as String? ?? json['Status'] as String? ?? 'Draft',
+      totalAmount: parseDouble(
+        json['totalAmount'] ??
+            json['TotalAmount'] ??
+            json['amount'] ??
+            json['Amount'],
+      ),
+      durationDays: parseInt(
+        json['durationDays'] ??
+            json['DurationDays'] ??
+            json['duration'] ??
+            json['Duration'],
+      ),
       scopeOfWork: json['scopeOfWork'] as String? ??
+          json['ScopeOfWork'] as String? ??
           json['scope'] as String? ??
+          json['Scope'] as String? ??
           'Standard construction and finishing works as specified in project documents.',
       termsAndConditions: json['termsAndConditions'] as String? ??
+          json['TermsAndConditions'] as String? ??
           json['terms'] as String? ??
+          json['Terms'] as String? ??
           'All work shall comply with Egyptian construction standards and building codes.',
-      contractorSignature: json['contractorSignature'] as String?,
-      contractorSignedAt: parseDate(json['contractorSignedAt']),
-      clientSignature: json['clientSignature'] as String?,
-      clientSignedAt: parseDate(json['clientSignedAt']),
-      createdAt: parseDate(json['createdAt']) ?? DateTime.now(),
+      contractorSignature: json['contractorSignature'] as String? ??
+          json['ContractorSignature'] as String?,
+      contractorSignedAt: parseDate(
+        json['contractorSignedAt'] ?? json['ContractorSignedAt'],
+      ),
+      clientSignature: json['clientSignature'] as String? ??
+          json['ClientSignature'] as String?,
+      clientSignedAt: parseDate(
+        json['clientSignedAt'] ?? json['ClientSignedAt'],
+      ),
+      createdAt: parseDate(json['createdAt'] ?? json['CreatedAt']) ??
+          DateTime.now(),
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

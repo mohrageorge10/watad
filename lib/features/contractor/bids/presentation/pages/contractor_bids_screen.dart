@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
+import 'package:watad/core/shared/widgets/app_shimmer.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/contractor_bids_cubit.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/contractor_bids_state.dart';
@@ -97,11 +99,7 @@ class _ContractorBidsViewState extends State<_ContractorBidsView> {
         builder: (context, state) {
           // 1. Initial / Loading first page
           if (state is ContractorBidsLoading || state is ContractorBidsInitial) {
-            return const Center(
-              child: CircularProgressIndicator(
-                color: AppColors.primary,
-              ),
-            );
+            return const ListShimmer(itemCount: 5, itemHeight: 90);
           }
 
           // 2. Error State
@@ -161,11 +159,8 @@ class _ContractorBidsViewState extends State<_ContractorBidsView> {
                   if (index == bids.length) {
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 16.h),
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                          strokeWidth: 2.5,
-                        ),
+                      child: const AppLoadingIndicator(
+                        size: 24,
                       ),
                     );
                   }

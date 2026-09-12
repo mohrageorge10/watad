@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
 import 'package:watad/features/contractor/bids/presentation/view/sections/bid_details_content_section.dart';
 import 'package:watad/features/contractor/bids/presentation/view/sections/bid_details_header_section.dart';
@@ -20,6 +22,7 @@ class BidDetailsScreen extends StatelessWidget {
   final bool isBookmarked;
   final VoidCallback? onBackTap;
   final VoidCallback? onSettingsTap;
+  final VoidCallback? onViewContractTap;
 
   const BidDetailsScreen({
     super.key,
@@ -40,6 +43,7 @@ class BidDetailsScreen extends StatelessWidget {
     this.isBookmarked = false,
     this.onBackTap,
     this.onSettingsTap,
+    this.onViewContractTap,
   });
 
   @override
@@ -95,6 +99,7 @@ class BidDetailsScreen extends StatelessWidget {
 
             // 2. Content Section
             BidDetailsContentSection(
+              bidId: bid?.id,
               title: effectiveTitle,
               location: effectiveLocation,
               status: effectiveStatus,
@@ -108,11 +113,22 @@ class BidDetailsScreen extends StatelessWidget {
               description: description,
               images: effectiveImages,
               initialIsBookmarked: effectiveIsBookmarked,
+              onViewContractTap: onViewContractTap ??
+                  () {
+                    context.pushNamed(
+                      AppRoutes.contractPreview,
+                      extra: {
+                        'contractId': bid?.id,
+                        'bidId': bid?.id,
+                      },
+                    );
+                  },
             ),
           ],
         ),
       ),
-      // No BottomNavigationBar per explicit request: "شيل ال Bottom Navigation Bar"
     );
   }
 }
+
+

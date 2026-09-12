@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_attachment_tile_widget.dart';
 import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_key_detail_item_widget.dart';
@@ -7,6 +8,7 @@ import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_spe
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/marketplace_image_gallery.dart';
 
 class BidDetailsContentSection extends StatefulWidget {
+  final String? bidId;
   final String title;
   final String location;
   final String status;
@@ -20,9 +22,11 @@ class BidDetailsContentSection extends StatefulWidget {
   final String description;
   final List<String> images;
   final bool initialIsBookmarked;
+  final VoidCallback? onViewContractTap;
 
   const BidDetailsContentSection({
     super.key,
+    this.bidId,
     this.title = 'Villa Construction Project',
     this.location = 'New Cairo, Cairo',
     this.status = 'Pending Review',
@@ -45,6 +49,7 @@ class BidDetailsContentSection extends StatefulWidget {
       'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80',
     ],
     this.initialIsBookmarked = false,
+    this.onViewContractTap,
   });
 
   @override
@@ -295,6 +300,17 @@ class _BidDetailsContentSectionState extends State<BidDetailsContentSection> {
                   title: 'Soil_Survey_Report.pdf',
                   size: '1.8 MB',
                 ),
+
+                if (widget.status == 'Accepted') ...[
+                  SizedBox(height: 28.h),
+                  AppElevatedButton(
+                    title: 'View & Sign Contract →',
+                    height: 50,
+                    borderRadius: 12,
+                    backgroundColor: AppColors.primary,
+                    onPressed: widget.onViewContractTap,
+                  ),
+                ],
               ],
             ),
           ),
@@ -305,3 +321,4 @@ class _BidDetailsContentSectionState extends State<BidDetailsContentSection> {
     );
   }
 }
+

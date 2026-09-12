@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/portfolio/presentation/view/widgets/portfolio_status_badge.dart';
@@ -184,13 +185,9 @@ class PortfolioProjectCard extends StatelessWidget {
                     height: 80.w,
                     color: const Color(0xFFF3F4F6),
                     child: Center(
-                      child: SizedBox(
-                        width: 18.r,
-                        height: 18.r,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
+                      child: AppLoadingIndicator(
+                        size: 18.r,
+                        strokeWidth: 2,
                       ),
                     ),
                   );

@@ -4,7 +4,6 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/portfolio/data/mock/portfolio_projects_mock_data.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 
 abstract class PortfolioRemoteDataSource {
@@ -95,13 +94,13 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     if (token != null && token.isNotEmpty) {
       try {
         final result = await fetchContractorPortfolio();
-        if (result.isNotEmpty) return result;
-      } catch (_) {}
+        return result;
+      } catch (_) {
+        return const [];
+      }
     }
 
-    // Fallback for unauthenticated local development / testing
-    await Future.delayed(const Duration(milliseconds: 400));
-    return PortfolioProjectsMockData.projects;
+    return const [];
   }
 
   @override
@@ -109,35 +108,20 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     required Map<String, dynamic> projectData,
   }) async {
     final headers = await _getHeaders();
-    final token = headers[ApiKey.authorization];
+    final response = await apiConsumer.post(
+      EndPoints.addPortfolioProject,
+      data: projectData,
+      headers: headers.isNotEmpty ? headers : null,
+    );
 
-    if (token != null) {
-      try {
-        final response = await apiConsumer.post(
-          EndPoints.contractorPortfolio,
-          data: projectData,
-          headers: headers,
-        );
-
-        if (response is Map<String, dynamic>) {
-          final data = response[ApiKey.data] ?? response;
-          if (data is Map<String, dynamic>) {
-            return PortfolioProjectItemModel.fromJson(data);
-          }
-        }
-      } catch (_) {
-        rethrow;
+    if (response is Map<String, dynamic>) {
+      final data = response[ApiKey.data] ?? response;
+      if (data is Map<String, dynamic>) {
+        return PortfolioProjectItemModel.fromJson(data);
       }
     }
 
-    // Local / Mock fallback
-    await Future.delayed(const Duration(milliseconds: 500));
-    return PortfolioProjectItemModel.fromJson({
-      'id': 'proj_${DateTime.now().millisecondsSinceEpoch}',
-      ...projectData,
-      'badgeText': 'Completed',
-      'badgeType': 'success',
-    });
+    throw Exception('Failed to add portfolio project');
   }
 
   @override
@@ -146,32 +130,20 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     required Map<String, dynamic> projectData,
   }) async {
     final headers = await _getHeaders();
-    final token = headers[ApiKey.authorization];
+    final response = await apiConsumer.put(
+      EndPoints.updatePortfolioProject(projectId),
+      data: projectData,
+      headers: headers.isNotEmpty ? headers : null,
+    );
 
-    if (token != null) {
-      try {
-        final response = await apiConsumer.put(
-          EndPoints.contractorPortfolio,
-          data: projectData,
-          headers: headers,
-        );
-
-        if (response is Map<String, dynamic>) {
-          final data = response[ApiKey.data] ?? response;
-          if (data is Map<String, dynamic>) {
-            return PortfolioProjectItemModel.fromJson(data);
-          }
-        }
-      } catch (_) {
-        rethrow;
+    if (response is Map<String, dynamic>) {
+      final data = response[ApiKey.data] ?? response;
+      if (data is Map<String, dynamic>) {
+        return PortfolioProjectItemModel.fromJson(data);
       }
     }
 
-    await Future.delayed(const Duration(milliseconds: 400));
-    return PortfolioProjectItemModel.fromJson({
-      'id': projectId,
-      ...projectData,
-    });
+    throw Exception('Failed to update portfolio project');
   }
 
   @override
@@ -179,32 +151,19 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     required String projectId,
   }) async {
     final headers = await _getHeaders();
-    final token = headers[ApiKey.authorization];
+    final response = await apiConsumer.get(
+      EndPoints.portfolioProject(projectId),
+      headers: headers.isNotEmpty ? headers : null,
+    );
 
-    if (token != null) {
-      try {
-        final response = await apiConsumer.get(
-          EndPoints.portfolioProject(projectId),
-          headers: headers,
-        );
-
-        if (response is Map<String, dynamic>) {
-          final data = response[ApiKey.data] ?? response;
-          if (data is Map<String, dynamic>) {
-            return PortfolioProjectItemModel.fromJson(data);
-          }
-        }
-      } catch (_) {
-        rethrow;
+    if (response is Map<String, dynamic>) {
+      final data = response[ApiKey.data] ?? response;
+      if (data is Map<String, dynamic>) {
+        return PortfolioProjectItemModel.fromJson(data);
       }
     }
 
-    await Future.delayed(const Duration(milliseconds: 300));
-    final match = PortfolioProjectsMockData.projects.firstWhere(
-      (p) => p.id == projectId,
-      orElse: () => PortfolioProjectsMockData.projects.first,
-    );
-    return match;
+    throw Exception('Portfolio project not found');
   }
 
   @override
@@ -212,21 +171,10 @@ class PortfolioRemoteDataSourceImpl implements PortfolioRemoteDataSource {
     required String projectId,
   }) async {
     final headers = await _getHeaders();
-    final token = headers[ApiKey.authorization];
-
-    if (token != null) {
-      try {
-        await apiConsumer.delete(
-          EndPoints.portfolioProject(projectId),
-          headers: headers,
-        );
-        return true;
-      } catch (_) {
-        rethrow;
-      }
-    }
-
-    await Future.delayed(const Duration(milliseconds: 400));
+    await apiConsumer.delete(
+      EndPoints.portfolioProject(projectId),
+      headers: headers.isNotEmpty ? headers : null,
+    );
     return true;
   }
 }

@@ -33,7 +33,6 @@ class EditProfileHeaderSection extends StatelessWidget {
             bottom: 24.h,
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 onPressed: onBackTap ?? () => Navigator.of(context).maybePop(),
@@ -44,23 +43,18 @@ class EditProfileHeaderSection extends StatelessWidget {
                 iconSize: 20.r,
                 splashRadius: 24.r,
               ),
-              Text(
-                'Edit Profile',
-                style: TextStyle(
-                  color: AppColors.white100,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  'Edit Profile',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.white100,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              IconButton(
-                onPressed: onSettingsTap,
-                icon: const Icon(
-                  Icons.settings_outlined,
-                  color: AppColors.white100,
-                ),
-                iconSize: 22.r,
-                splashRadius: 24.r,
-              ),
+              SizedBox(width: 20.r),
             ],
           ),
         ),
