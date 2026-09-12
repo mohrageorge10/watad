@@ -12,16 +12,6 @@ class EndPoints {
       "Owner/centraldashboard/$projectId/progress-bargraph";
   static String siteLogsArchive(String projectId) =>
       "contractor/site-logs/project/$projectId/archive";
-  static String changeOrdersHistory(String projectId) =>
-      "ChangeOrders/project/$projectId/history";
-  static String pendingChangeOrders(String projectId) =>
-      "ChangeOrders/project/$projectId/pending";
-  static String changeOrderDetails(String id) => "ChangeOrders/$id";
-  static String decideChangeOrder(String id) => "ChangeOrders/$id/decide";
-  static const String changeOrders = "ChangeOrders";
-
-  // ================= Alerts & Notifications =================
-  static const String notifications = "Notifications";
 
   // =================== Auth ===================
   static const String signUp = "Auth/register";
@@ -121,7 +111,7 @@ class EndPoints {
   static String estimateChangeOrder(String id) => "ChangeOrders/$id/estimate";
   static String pendingChangeOrders(String projectId) =>
       "ChangeOrders/project/$projectId/pending";
-  static String historyChangeOrders(String projectId) =>
+  static String changeOrdersHistory(String projectId) =>
       "ChangeOrders/project/$projectId/history";
   static String pendingEstimationChangeOrders(String projectId) =>
       "ChangeOrders/project/$projectId/pending-estimation";

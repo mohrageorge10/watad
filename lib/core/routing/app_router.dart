@@ -44,7 +44,6 @@ import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasi
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
-import 'package:watad/features/dashboard/owner/alerts/presentation/view/alerts_view.dart';
 import 'package:watad/features/dashboard/owner/copilot/presentation/view/copilot_chat_view.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/view/future_plan_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_details_view.dart';
@@ -56,7 +55,6 @@ import 'package:watad/features/dashboard/owner/project_dashboard/financial_summa
 import 'package:watad/features/dashboard/owner/project_dashboard/progress_site_updates/presentation/view/progress_site_updates_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/all_change_orders_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_orders_view.dart';
-<<<<<<< HEAD
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/domain/entities/change_order_details.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_details_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/confirm_accept_change_order_view.dart';
@@ -64,7 +62,6 @@ import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/p
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_accepted_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/create_change_order_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_submitted_view.dart';
-=======
 
 CustomTransitionPage<void> _buildAnimatedPage({
   required GoRouterState state,
@@ -94,7 +91,6 @@ CustomTransitionPage<void> _buildAnimatedPage({
   );
 }
 
->>>>>>> origin/develop
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
@@ -262,17 +258,13 @@ final GoRouter appRouter = GoRouter(
           _buildAnimatedPage(state: state, child: const CreateProjectView()),
     ),
     GoRoute(
-<<<<<<< HEAD
       path: AppRoutes.futurePlan,
-      builder: (context, state) => const FuturePlanView(),
+      pageBuilder: (context, state) => _buildAnimatedPage(
+        state: state,
+        child: const FuturePlanView(),
+      ),
     ),
     GoRoute(
-      name: 'bid_details',
-      path: AppRoutes.bidDetails,
-      builder: (context, state) {
-        final bidId = state.extra as String;
-        return BidDetailsView(bidId: bidId);
-=======
       path: AppRoutes.ownerBidDetails,
       name: AppRoutes.ownerBidDetails,
       pageBuilder: (context, state) {
@@ -287,7 +279,6 @@ final GoRouter appRouter = GoRouter(
           state: state,
           child: BidDetailsView(bidId: bidId),
         );
->>>>>>> origin/develop
       },
     ),
     GoRoute(

@@ -43,7 +43,7 @@ class AcceptRejectDialogs {
   }) {
     showDialog(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.6),
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       builder: (BuildContext ctx) {
         return Dialog(
           insetPadding: EdgeInsets.symmetric(horizontal: 20.w),

@@ -205,7 +205,7 @@ class _ProfileHeader extends StatelessWidget {
                         ? Image.network(
                       profilePictureUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
+                      errorBuilder: (_, _, _) => Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
                     )
                         : Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
                   ),
