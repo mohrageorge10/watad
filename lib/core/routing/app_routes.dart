@@ -13,6 +13,7 @@ class AppRoutes {
   static const String financialSummary = '/financial-summary';
   static const String progressSiteUpdates = '/progress-site-updates';
   static const String changeOrders = '/change-orders';
+  static const String allChangeOrders = '/all-change-orders';
   static const String feasibilityCalculator = '/feasibility-calculator';
   static const String feasibilityReport = '/feasibility-report';
   static const String createProject = '/create-project';
@@ -25,4 +26,9 @@ class AppRoutes {
   static const String otpScreen = '/otp';
   static const String resetPasswordScreen = '/reset-password';
   static const String roleSelection = '/role-selection';
+  
+  // ============ Change Password Feature ============
+  static const String changePassword = '/change-password';
+  static const String changePasswordOtp = '/change-password-otp';
+  static const String newPassword = '/new-password';
 }

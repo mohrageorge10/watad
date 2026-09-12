@@ -104,7 +104,7 @@ class ProgressCardSection extends StatelessWidget {
           SizedBox(height: 2.h),
           Text(
             subtitle,
-            style: AppTextStyles.font10MediumDark.copyWith(
+            style: AppTextStyles.font12MediumGrey.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),

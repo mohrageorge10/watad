@@ -127,4 +127,30 @@ class AuthRepositoryImpl implements AuthRepository {
       return ApiResult.failure(ErrorHandler.handle(e));
     }
   }
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+    try {
+      final response = await remoteDataSource.verifyCurrentPassword(request);
+      if (!response.isSuccess) {
+        return ApiResult.failure(ServerFailure(errMessage: response.message));
+      }
+      return ApiResult.success(response.toEntity());
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<AuthResponseEntity>> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+    try {
+      final response = await remoteDataSource.confirmNewPassword(request);
+      if (!response.isSuccess) {
+        return ApiResult.failure(ServerFailure(errMessage: response.message));
+      }
+      return ApiResult.success(response.toEntity());
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
 }

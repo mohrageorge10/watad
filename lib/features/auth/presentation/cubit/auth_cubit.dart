@@ -18,6 +18,8 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final GoogleLoginUseCase googleLoginUseCase;
   final FacebookLoginUseCase facebookLoginUseCase;
+  final VerifyCurrentPasswordUseCase verifyCurrentPasswordUseCase;
+  final ConfirmNewPasswordUseCase confirmNewPasswordUseCase;
   final CacheHelper cacheHelper;
   final SecureStorageHelper secureStorage;
 
@@ -31,6 +33,8 @@ class AuthCubit extends Cubit<AuthState> {
     required this.resetPasswordUseCase,
     required this.googleLoginUseCase,
     required this.facebookLoginUseCase,
+    required this.verifyCurrentPasswordUseCase,
+    required this.confirmNewPasswordUseCase,
     required this.cacheHelper,
     required this.secureStorage,
   }) : super(AuthInitial());
@@ -174,6 +178,32 @@ class AuthCubit extends Cubit<AuthState> {
           );
         }
         emit(SocialLoginSuccessState(response));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+    emit(AuthLoading());
+    final result = await verifyCurrentPasswordUseCase(request);
+    result.fold(
+      (response) {
+        emit(VerifyCurrentPasswordSuccessState(response.message));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+    emit(AuthLoading());
+    final result = await confirmNewPasswordUseCase(request);
+    result.fold(
+      (response) {
+        emit(ConfirmNewPasswordSuccessState(response.message));
       },
       (failure) {
         emit(AuthErrorState(failure.errMessage));

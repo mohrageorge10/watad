@@ -21,6 +21,8 @@ class ProjectDashboardLoaded extends ProjectDashboardState {
   List<Object?> get props => [data];
 }
 
+class ProjectDashboardEmpty extends ProjectDashboardState {}
+
 class ProjectDashboardError extends ProjectDashboardState {
   final String message;
 

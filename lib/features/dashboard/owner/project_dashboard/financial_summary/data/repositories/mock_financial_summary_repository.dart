@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:watad/core/network/api/api_result.dart';
 import '../../../../../../../core/theme/app_colors.dart';
 import '../../domain/entities/financial_summary_data.dart';
 import '../../domain/repositories/financial_summary_repository.dart';
 
 class MockFinancialSummaryRepository implements FinancialSummaryRepository {
   @override
-  Future<FinancialSummaryData> getFinancialSummary(String projectId) async {
+  Future<ApiResult<FinancialSummaryData>> getFinancialSummary(String projectId) async {
     await Future.delayed(const Duration(milliseconds: 800));
 
-    return FinancialSummaryData(
+    return ApiResult.success(FinancialSummaryData(
       totalBudget: '12,500,000 EGP',
       breakdowns: [
         BudgetBreakdownItem(
@@ -34,45 +34,45 @@ class MockFinancialSummaryRepository implements FinancialSummaryRepository {
         QuickStat(
           title: 'Committed',
           value: '3,150,000',
-          currency: 'EGP',
+          percentage: '25%',
         ),
         QuickStat(
-          title: 'Spent to Date',
-          value: '6,250,000',
-          currency: 'EGP',
+          title: 'In Escrow',
+          value: '4,000,000',
+          percentage: '32%',
         ),
         QuickStat(
-          title: 'Remaining Budget',
-          value: '2,250,000',
-          currency: 'EGP',
+          title: 'Uncommitted',
+          value: '5,350,000',
+          percentage: '43%',
         ),
       ],
       latestPayments: [
         PaymentItem(
-          title: 'Payment #4',
-          subtitle: 'Steel & Rebar Supply',
-          date: '20 May 2024',
-          value: '230,000 EGP',
-          status: 'Paid',
-          statusColor: AppColors.accept,
+          title: 'Consultancy Fees',
+          subtitle: 'Phase 1 - Design Approval',
+          date: '12 Oct 2024',
+          value: '150,000 EGP',
+          status: 'Completed',
+          statusColor: AppColors.accept, // Green
         ),
         PaymentItem(
-          title: 'Payment #3',
-          subtitle: 'Concrete Works',
-          date: '05 May 2024',
-          value: '320,000 EGP',
-          status: 'Paid',
-          statusColor: AppColors.accept,
+          title: 'Contractor Payment',
+          subtitle: 'Milestone 2 - Foundation',
+          date: '05 Oct 2024',
+          value: '850,000 EGP',
+          status: 'Pending',
+          statusColor: AppColors.icon, // Yellow
         ),
         PaymentItem(
-          title: 'Payment #2',
-          subtitle: 'Excavation Works',
-          date: '18 Apr 2024',
-          value: '210,000 EGP',
-          status: 'Paid',
+          title: 'Material Procurement',
+          subtitle: 'Steel & Cement',
+          date: '28 Sep 2024',
+          value: '1,200,000 EGP',
+          status: 'Completed',
           statusColor: AppColors.accept,
         ),
       ],
-    );
+    ));
   }
 }

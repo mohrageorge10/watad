@@ -12,4 +12,6 @@ abstract class AuthRepository {
   Future<ApiResult<AuthResponseEntity>> resetPassword(ResetPasswordRequestModel request);
   Future<ApiResult<AuthResponseEntity>> googleLogin(GoogleLoginRequestModel request);
   Future<ApiResult<AuthResponseEntity>> facebookLogin(FacebookLoginRequestModel request);
+  Future<ApiResult<AuthResponseEntity>> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request);
+  Future<ApiResult<AuthResponseEntity>> confirmNewPassword(ConfirmNewPasswordRequestModel request);
 }

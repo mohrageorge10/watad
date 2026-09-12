@@ -84,3 +84,19 @@ class AuthErrorState extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class VerifyCurrentPasswordSuccessState extends AuthState {
+  final String message;
+  const VerifyCurrentPasswordSuccessState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class ConfirmNewPasswordSuccessState extends AuthState {
+  final String message;
+  const ConfirmNewPasswordSuccessState(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../../core/routing/app_routes.dart';
+import '../../../main_layout/presentation/cubit/main_layout_cubit.dart';
 import '../../../../../../core/theme/app_colors.dart';
 import '../../../../../../core/theme/app_text_styles.dart';
 import '../../domain/entities/dashboard_data.dart';
@@ -40,6 +42,9 @@ class QuickAccessSection extends StatelessWidget {
           context.push(AppRoutes.progressSiteUpdates);
         } else if (item.title.contains('Change')) {
           context.push(AppRoutes.changeOrders);
+        } else if (item.title.contains('Alerts')) {
+          // MainLayoutCubit manages the bottom nav bar. Index 3 is Alerts.
+          context.read<MainLayoutCubit>().changeBottomNavIndex(3);
         }
       },
       child: Container(

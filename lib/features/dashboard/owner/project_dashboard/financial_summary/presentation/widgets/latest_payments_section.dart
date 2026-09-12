@@ -11,6 +11,10 @@ class LatestPaymentsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (payments.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -66,7 +70,7 @@ class LatestPaymentsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -116,12 +120,19 @@ class LatestPaymentsSection extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(height: 16.h),
-              Text(
-                item.status,
-                style: AppTextStyles.font10MediumWhite.copyWith(
+              SizedBox(height: 12.h),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                decoration: BoxDecoration(
                   color: item.statusColor,
-                  fontWeight: FontWeight.w600,
+                  borderRadius: BorderRadius.circular(4.r),
+                ),
+                child: Text(
+                  item.status,
+                  style: AppTextStyles.font10MediumWhite.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],

@@ -25,6 +25,23 @@ class EndPoints {
   static String generateContractPdf(String projectId, String contractId) => 
       "contractor/projects/$projectId/contracts/$contractId/generate-pdf";
 
+  // ================= Central Dashboard =================
+  static String timelineOverview(String projectId) =>
+      "Owner/centraldashboard/$projectId/timeline-overview";
+  static String financialOverview(String projectId) =>
+      "Owner/centraldashboard/$projectId/financial-overview";
+  static String progressBargraph(String projectId) =>
+      "Owner/centraldashboard/$projectId/progress-bargraph";
+  static String siteLogsArchive(String projectId) =>
+      "contractor/site-logs/project/$projectId/archive";
+  static String changeOrdersHistory(String projectId) =>
+      "ChangeOrders/project/$projectId/history";
+  static String pendingChangeOrders(String projectId) =>
+      "ChangeOrders/project/$projectId/pending";
+
+  // ================= Alerts & Notifications =================
+  static const String notifications = "Notifications";
+
   // =================== Auth ===================
   static const String signUp = "Auth/register";
   static const String confirmEmail = "Auth/confirm-email";

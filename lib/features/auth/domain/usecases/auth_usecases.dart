@@ -65,3 +65,17 @@ class FacebookLoginUseCase {
   Future<ApiResult<AuthResponseEntity>> call(FacebookLoginRequestModel request) =>
       repository.facebookLogin(request);
 }
+
+class VerifyCurrentPasswordUseCase {
+  final AuthRepository repository;
+  const VerifyCurrentPasswordUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(VerifyCurrentPasswordRequestModel request) =>
+      repository.verifyCurrentPassword(request);
+}
+
+class ConfirmNewPasswordUseCase {
+  final AuthRepository repository;
+  const ConfirmNewPasswordUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(ConfirmNewPasswordRequestModel request) =>
+      repository.confirmNewPassword(request);
+}

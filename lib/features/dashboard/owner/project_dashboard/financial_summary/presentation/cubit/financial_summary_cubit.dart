@@ -1,19 +1,46 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/repositories/financial_summary_repository.dart';
+import 'package:watad/features/dashboard/owner/home/domain/usecases/get_current_project_overview_usecase.dart';
+import '../../domain/usecases/get_financial_summary_usecase.dart';
 import 'financial_summary_state.dart';
 
 class FinancialSummaryCubit extends Cubit<FinancialSummaryState> {
-  final FinancialSummaryRepository _repository;
+  final GetFinancialSummaryUseCase getFinancialSummaryUseCase;
+  final GetCurrentProjectOverviewUseCase getCurrentProjectOverviewUseCase;
 
-  FinancialSummaryCubit(this._repository) : super(FinancialSummaryInitial());
+  FinancialSummaryCubit({
+    required this.getFinancialSummaryUseCase,
+    required this.getCurrentProjectOverviewUseCase,
+  }) : super(FinancialSummaryInitial());
 
-  Future<void> fetchSummaryData(String projectId) async {
+  Future<void> fetchSummaryData() async {
     emit(FinancialSummaryLoading());
-    try {
-      final data = await _repository.getFinancialSummary(projectId);
-      emit(FinancialSummaryLoaded(data));
-    } catch (e) {
-      emit(FinancialSummaryError(e.toString()));
-    }
+    
+    final overviewResult = await getCurrentProjectOverviewUseCase();
+    String? projectId;
+    bool hasError = false;
+
+    overviewResult.fold(
+      (data) {
+        if (!data.hasActiveProject || data.projectId == null || data.projectId!.isEmpty) {
+          emit(FinancialSummaryError('No active project found'));
+          hasError = true;
+        } else {
+          projectId = data.projectId;
+        }
+      },
+      (failure) {
+        emit(FinancialSummaryError(failure.errMessage));
+        hasError = true;
+      },
+    );
+
+    if (hasError || projectId == null) return;
+
+    final result = await getFinancialSummaryUseCase(projectId!);
+    
+    result.fold(
+      (data) => emit(FinancialSummaryLoaded(data)),
+      (failure) => emit(FinancialSummaryError(failure.errMessage)),
+    );
   }
 }

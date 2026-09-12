@@ -26,10 +26,11 @@ import 'package:watad/features/dashboard/owner/contracts/presentation/view/miles
 import 'package:watad/features/dashboard/owner/contracts/presentation/view/contract_details_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/financial_summary/presentation/view/financial_summary_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/progress_site_updates/presentation/view/progress_site_updates_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/all_change_orders_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_orders_view.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: AppRoutes.projectDashboard,
+  initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
   routes: [
     GoRoute(
@@ -55,6 +56,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.changeOrders,
       builder: (context, state) => const ChangeOrdersView(),
+    ),
+    GoRoute(
+      path: AppRoutes.allChangeOrders,
+      builder: (context, state) => const AllChangeOrdersView(),
     ),
     GoRoute(
       path: AppRoutes.feasibilityCalculator,

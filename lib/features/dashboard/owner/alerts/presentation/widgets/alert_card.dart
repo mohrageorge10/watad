@@ -2,48 +2,65 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
-import '../../domain/entities/alert_item.dart';
+import 'package:intl/intl.dart';
+import '../../domain/entities/notification_item.dart';
 
 class AlertCard extends StatelessWidget {
-  final AlertItem alert;
+  final NotificationItem alert;
 
   const AlertCard({super.key, required this.alert});
 
-  IconData _getIconForType(AlertType type) {
+  IconData _getIconForType(NotificationType type) {
     switch (type) {
-      case AlertType.critical:
-      case AlertType.warning:
+      case NotificationType.alert:
+      case NotificationType.warning:
         return Icons.warning_amber_rounded;
-      case AlertType.info:
+      case NotificationType.info:
         return Icons.info_outline_rounded;
-      case AlertType.success:
+      case NotificationType.actionRequired:
         return Icons.check_circle_outline_rounded;
     }
   }
 
-  Color _getColorForType(AlertType type) {
+  Color _getColorForType(NotificationType type) {
     switch (type) {
-      case AlertType.critical:
+      case NotificationType.alert:
         return AppColors.alert; // Red
-      case AlertType.warning:
+      case NotificationType.warning:
         return AppColors.icon; // Yellow/Orange
-      case AlertType.info:
+      case NotificationType.info:
         return AppColors.primary; // Blue
-      case AlertType.success:
+      case NotificationType.actionRequired:
         return AppColors.accept; // Green
     }
   }
 
-  String _getTypeLabel(AlertType type) {
+  String _getTypeLabel(NotificationType type) {
     switch (type) {
-      case AlertType.critical:
-        return "Critical";
-      case AlertType.warning:
+      case NotificationType.alert:
+        return "Alert";
+      case NotificationType.warning:
         return "Warning";
-      case AlertType.info:
+      case NotificationType.info:
         return "Info";
-      case AlertType.success:
-        return ""; // Success alerts don't have a small label in the design
+      case NotificationType.actionRequired:
+        return "Action Required"; 
+    }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return '';
+    final now = DateTime.now();
+    final isToday = date.year == now.year && date.month == now.month && date.day == now.day;
+    final isYesterday = date.year == now.year && date.month == now.month && date.day == now.day - 1;
+    
+    final timeStr = DateFormat('hh:mm a').format(date);
+    if (isToday) {
+      return 'Today, $timeStr';
+    } else if (isYesterday) {
+      return 'Yesterday, $timeStr';
+    } else {
+      return '${DateFormat('dd MMM yyyy').format(date)} – $timeStr';
     }
   }
 
@@ -95,17 +112,17 @@ class AlertCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (alert.subtitle.isNotEmpty) SizedBox(height: 4.h),
-                if (alert.subtitle.isNotEmpty)
+                if (alert.message.isNotEmpty) SizedBox(height: 4.h),
+                if (alert.message.isNotEmpty)
                   Text(
-                    alert.subtitle,
+                    alert.message,
                     style: AppTextStyles.font12MediumGrey.copyWith(
                       color: AppColors.grey500,
                     ),
                   ),
                 SizedBox(height: 8.h),
                 Text(
-                  alert.dateText,
+                  _formatDate(alert.createdAt),
                   style: AppTextStyles.font12MediumGrey.copyWith(
                     color: AppColors.grey500,
                   ),
@@ -113,18 +130,9 @@ class AlertCard extends StatelessWidget {
               ],
             ),
           ),
-          if (alert.isUnread)
-            Container(
-              margin: EdgeInsets.only(top: 8.h),
-              width: 8.w,
-              height: 8.w,
-              decoration: BoxDecoration(
-                color: iconColor,
-                shape: BoxShape.circle,
-              ),
-            ),
         ],
       ),
     );
   }
 }
+

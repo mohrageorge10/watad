@@ -129,3 +129,33 @@ class FacebookLoginRequestModel {
         'userType': userType,
       };
 }
+
+class VerifyCurrentPasswordRequestModel {
+  final String currentPassword;
+
+  const VerifyCurrentPasswordRequestModel({
+    required this.currentPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'currentPassword': currentPassword,
+      };
+}
+
+class ConfirmNewPasswordRequestModel {
+  final String otpCode;
+  final String newPassword;
+  final String confirmNewPassword;
+
+  const ConfirmNewPasswordRequestModel({
+    required this.otpCode,
+    required this.newPassword,
+    required this.confirmNewPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'otpCode': otpCode,
+        'newPassword': newPassword,
+        'confirmNewPassword': confirmNewPassword,
+      };
+}

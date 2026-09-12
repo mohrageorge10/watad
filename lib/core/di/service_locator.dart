@@ -11,6 +11,8 @@ import 'package:watad/features/dashboard/owner/feasibility/feasibility_injection
 import 'package:watad/features/dashboard/owner/projects/create_project/create_project_injection.dart';
 import 'package:watad/features/dashboard/owner/marketplace/marketplace_injection.dart';
 import 'package:watad/features/dashboard/owner/contracts/contracts_injection.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/project_dashboard_injection.dart';
+import 'package:watad/features/dashboard/owner/alerts/alerts_injection.dart';
 import 'package:watad/core/services/social_auth_service.dart';
 import 'package:watad/core/services/file_download_service.dart';
 import 'package:watad/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -42,6 +44,8 @@ Future<void> setupServiceLocator() async {
   initCreateProjectFeature(sl);
   initMarketplaceFeature(sl);
   initContractsFeature(sl);
+  initProjectDashboardFeature(sl);
+  initAlertsFeature(sl);
 
   //! Auth Feature
   // DataSource
@@ -64,6 +68,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
   sl.registerLazySingleton(() => FacebookLoginUseCase(sl()));
+  sl.registerLazySingleton(() => VerifyCurrentPasswordUseCase(sl()));
+  sl.registerLazySingleton(() => ConfirmNewPasswordUseCase(sl()));
 
   // Cubit
   sl.registerFactory(
@@ -77,6 +83,8 @@ Future<void> setupServiceLocator() async {
       resetPasswordUseCase: sl(),
       googleLoginUseCase: sl(),
       facebookLoginUseCase: sl(),
+      verifyCurrentPasswordUseCase: sl(),
+      confirmNewPasswordUseCase: sl(),
       cacheHelper: sl(),
       secureStorage: sl(),
     ),
