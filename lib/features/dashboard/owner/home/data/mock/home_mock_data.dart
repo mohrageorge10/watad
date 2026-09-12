@@ -48,9 +48,9 @@ class HomeMockData {
       icon: Icons.add_business_rounded,
     ),
     ServiceCategoryModel(
-      title: "Future Plan",
-      subtitle: "Plan ahead with our smart tools and services.",
-      icon: Icons.lightbulb_outline_rounded,
+      title: "Watad Copilot",
+      subtitle: "AI assistant for your project.",
+      icon: Icons.smart_toy_outlined,
     ),
   ];
 

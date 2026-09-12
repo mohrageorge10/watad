@@ -19,8 +19,8 @@ class ExploreServicesSection extends StatelessWidget {
       context.read<MainLayoutCubit>().changeBottomNavIndex(2); // 2 is Marketplace
     } else if (title.contains("Project")) {
       context.push(AppRoutes.createProject);
-    } else if (title.contains("Future Plan")) {
-      context.push(AppRoutes.futurePlan);
+    } else if (title.contains("Copilot")) {
+      context.push(AppRoutes.copilot);
     }
   }
 

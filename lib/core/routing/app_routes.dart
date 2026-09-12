@@ -38,4 +38,6 @@ class AppRoutes {
   static const String changePassword = '/change-password';
   static const String changePasswordOtp = '/change-password-otp';
   static const String newPassword = '/new-password';
+  // Copilot
+  static const String copilot = '/copilot';
 }

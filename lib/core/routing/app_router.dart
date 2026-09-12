@@ -19,6 +19,8 @@ import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasi
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
+import 'package:watad/features/dashboard/owner/alerts/presentation/view/alerts_view.dart';
+import 'package:watad/features/dashboard/owner/copilot/presentation/view/copilot_chat_view.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/view/future_plan_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_details_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_result_view.dart';
@@ -256,6 +258,10 @@ final GoRouter appRouter = GoRouter(
           password: extra?['password'] as String?,
         );
       },
+    ),
+    GoRoute(
+      path: AppRoutes.copilot,
+      builder: (context, state) => const CopilotChatView(),
     ),
   ],
 );
