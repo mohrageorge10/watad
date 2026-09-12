@@ -72,6 +72,125 @@ class ChangeOrdersView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.push(AppRoutes.allChangeOrders);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                          decoration: BoxDecoration(
+                            color: AppColors.white100,
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(8.w),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(Icons.pending_actions_outlined, color: AppColors.primary, size: 20.w),
+                              ),
+                              SizedBox(width: 12.w),
+                              Expanded(
+                                child: Text(
+                                  "Pending Change Orders",
+                                  style: AppTextStyles.font14Medium.copyWith(
+                                    color: AppColors.grey900,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 36.h,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    context.push(AppRoutes.allChangeOrders);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColors.primary,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  ),
+                                  child: Text(
+                                    "Review",
+                                    style: AppTextStyles.font14MediumWhite.copyWith(
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.white100,
+                          borderRadius: BorderRadius.circular(12.r),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(8.w),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.calendar_today_outlined, color: AppColors.primary, size: 20.w),
+                            ),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: Text(
+                                "Add change order",
+                                style: AppTextStyles.font14Medium.copyWith(
+                                  color: AppColors.grey900,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 36.h,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  context.push(AppRoutes.createChangeOrder);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                ),
+                                child: Text(
+                                  "New",
+                                  style: AppTextStyles.font14MediumWhite.copyWith(
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 24.h),
                       Text(
                         "Recent Change Orders",
                         style: AppTextStyles.font16SemiBold.copyWith(
@@ -87,30 +206,7 @@ class ChangeOrdersView extends StatelessWidget {
                       else
                         RecentChangeOrdersList(items: recentChangeOrders),
                       SizedBox(height: 24.h),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48.h,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.push(AppRoutes.allChangeOrders);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.white100,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                              side: const BorderSide(color: AppColors.primary),
-                            ),
-                          ),
-                          child: Text(
-                            'View All Change Orders',
-                            style: AppTextStyles.font10MediumWhite.copyWith(
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40.h),
+                      SizedBox(height: 16.h),
                     ],
                   ),
                 );

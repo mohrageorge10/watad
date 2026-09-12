@@ -1,3 +1,7 @@
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -9,6 +13,16 @@ class ExploreServicesSection extends StatelessWidget {
   final List<ServiceCategoryModel> services;
 
   const ExploreServicesSection({super.key, required this.services});
+
+  void _onServiceTap(BuildContext context, String title) {
+    if (title.contains("Contractors") || title.contains("Matching") || title.contains("Marketplace")) {
+      context.read<MainLayoutCubit>().changeBottomNavIndex(2); // 2 is Marketplace
+    } else if (title.contains("Project")) {
+      context.push(AppRoutes.createProject);
+    } else if (title.contains("Future Plan")) {
+      context.push(AppRoutes.futurePlan);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,48 +49,53 @@ class ExploreServicesSection extends StatelessWidget {
             separatorBuilder: (context, index) => SizedBox(width: 16.w),
             itemBuilder: (context, index) {
               final service = services[index];
-              return Container(
-                width: 140.w,
-                padding: EdgeInsets.all(16.w),
-                decoration: BoxDecoration(
-                  color: AppColors.white100,
-                  borderRadius: BorderRadius.circular(16.r),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.04),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      service.title,
-                      style: AppTextStyles.font14SemiBoldDark.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
+              return GestureDetector(
+                onTap: () => _onServiceTap(context, service.title),
+                child: Container(
+                  width: 140.w,
+                  padding: EdgeInsets.all(16.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.white100,
+                    borderRadius: BorderRadius.circular(16.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
-                      maxLines: 2,
-                    ),
-                    SizedBox(height: 12.h),
-                    Text(
-                      service.subtitle,
-                      style: AppTextStyles.font12RegularGrey.copyWith(
-                        fontSize: 10.sp,
-                        color: AppColors.grey500,
-                        height: 1.4,
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        service.title,
+                        style: AppTextStyles.font14SemiBoldDark.copyWith(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
                       ),
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const Spacer(),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: CircularActionButton(onTap: () {}),
-                    ),
-                  ],
+                      SizedBox(height: 12.h),
+                      Text(
+                        service.subtitle,
+                        style: AppTextStyles.font12RegularGrey.copyWith(
+                          fontSize: 10.sp,
+                          color: AppColors.grey500,
+                          height: 1.4,
+                        ),
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const Spacer(),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: CircularActionButton(
+                          onTap: () => _onServiceTap(context, service.title),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

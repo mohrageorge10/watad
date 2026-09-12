@@ -14,9 +14,16 @@ class AppRoutes {
   static const String progressSiteUpdates = '/progress-site-updates';
   static const String changeOrders = '/change-orders';
   static const String allChangeOrders = '/all-change-orders';
+  static const String changeOrderDetails = '/change-order-details';
+  static const String confirmAcceptChangeOrder = '/confirm-accept-change-order';
+  static const String confirmRejectChangeOrder = '/confirm-reject-change-order';
+  static const String changeOrderAccepted = '/change-order-accepted';
+  static const String createChangeOrder = '/create-change-order';
+  static const String changeOrderSubmitted = '/change-order-submitted';
   static const String feasibilityCalculator = '/feasibility-calculator';
   static const String feasibilityReport = '/feasibility-report';
   static const String createProject = '/create-project';
+  static const String futurePlan = '/future-plan';
   static const String bidDetails = '/bid-details';
   static const String bidResult = '/bid-result';
   static const String createContractForm = '/create-contract-form';

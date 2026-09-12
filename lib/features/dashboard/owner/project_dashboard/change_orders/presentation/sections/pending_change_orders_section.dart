@@ -58,13 +58,16 @@ class PendingChangeOrdersSection extends StatelessWidget {
               return PendingChangeOrderCard(
                 order: order,
                 onViewDetails: () {
-                  AppToast.showInfo(context, order.title);
+                  context.push(AppRoutes.changeOrderDetails, extra: {
+                    'id': order.id,
+                    'isPending': true,
+                  });
                 },
                 onReject: () {
-                  AppToast.showError(context, '${order.id} rejected');
+                  context.push(AppRoutes.confirmRejectChangeOrder, extra: order);
                 },
                 onAccept: () {
-                  AppToast.showSuccess(context, '${order.id} accepted');
+                  context.push(AppRoutes.confirmAcceptChangeOrder, extra: order);
                 },
               );
             },

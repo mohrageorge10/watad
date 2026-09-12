@@ -38,6 +38,9 @@ class EndPoints {
       "ChangeOrders/project/$projectId/history";
   static String pendingChangeOrders(String projectId) =>
       "ChangeOrders/project/$projectId/pending";
+  static String changeOrderDetails(String id) => "ChangeOrders/$id";
+  static String decideChangeOrder(String id) => "ChangeOrders/$id/decide";
+  static const String changeOrders = "ChangeOrders";
 
   // ================= Alerts & Notifications =================
   static const String notifications = "Notifications";

@@ -19,6 +19,7 @@ import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasi
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
+import 'package:watad/features/dashboard/owner/home/presentation/view/future_plan_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_details_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_result_view.dart';
 import 'package:watad/features/dashboard/owner/contracts/presentation/view/create_contract_view.dart';
@@ -28,7 +29,13 @@ import 'package:watad/features/dashboard/owner/project_dashboard/financial_summa
 import 'package:watad/features/dashboard/owner/project_dashboard/progress_site_updates/presentation/view/progress_site_updates_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/all_change_orders_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_orders_view.dart';
-
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/domain/entities/change_order_details.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_details_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/confirm_accept_change_order_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/confirm_reject_change_order_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_accepted_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/create_change_order_view.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_submitted_view.dart';
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
@@ -62,6 +69,53 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const AllChangeOrdersView(),
     ),
     GoRoute(
+      path: AppRoutes.changeOrderDetails,
+      builder: (context, state) {
+        if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          return ChangeOrderDetailsView(
+            orderId: map['id'] as String,
+            isPending: map['isPending'] as bool? ?? false,
+          );
+        } else {
+          final orderId = state.extra as String;
+          return ChangeOrderDetailsView(orderId: orderId, isPending: false);
+        }
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.confirmAcceptChangeOrder,
+      builder: (context, state) {
+        final order = state.extra as ChangeOrderDetails;
+        return ConfirmAcceptChangeOrderView(order: order);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.confirmRejectChangeOrder,
+      builder: (context, state) {
+        final order = state.extra as ChangeOrderDetails;
+        return ConfirmRejectChangeOrderView(order: order);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.changeOrderAccepted,
+      builder: (context, state) {
+        final order = state.extra as ChangeOrderDetails;
+        return ChangeOrderAcceptedView(order: order);
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.createChangeOrder,
+      builder: (context, state) => const CreateChangeOrderView(),
+    ),
+    GoRoute(
+      path: AppRoutes.changeOrderSubmitted,
+      builder: (context, state) {
+        final orderId = state.extra as String;
+        return ChangeOrderSubmittedView(orderId: orderId);
+      },
+    ),
+    GoRoute(
       path: AppRoutes.feasibilityCalculator,
       builder: (context, state) => const FeasibilityCalculatorView(),
     ),
@@ -75,6 +129,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.createProject,
       builder: (context, state) => const CreateProjectView(),
+    ),
+    GoRoute(
+      path: AppRoutes.futurePlan,
+      builder: (context, state) => const FuturePlanView(),
     ),
     GoRoute(
       name: 'bid_details',

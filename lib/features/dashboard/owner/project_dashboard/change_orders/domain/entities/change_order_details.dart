@@ -2,7 +2,6 @@ enum ChangeOrderReviewStatus { pending, approved, rejected }
 
 class ChangeOrderDetails {
   final String id;
-  final String title;
   final String description;
   final num costImpact;
   final int timeImpactDays;
@@ -11,7 +10,6 @@ class ChangeOrderDetails {
 
   const ChangeOrderDetails({
     required this.id,
-    required this.title,
     required this.description,
     required this.costImpact,
     required this.timeImpactDays,

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import '../../domain/entities/change_order_item.dart';
 
 class ChangeOrderListItem extends StatelessWidget {
@@ -11,20 +13,27 @@ class ChangeOrderListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      margin: EdgeInsets.only(bottom: 16.h),
-      decoration: BoxDecoration(
-        color: AppColors.white100,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return GestureDetector(
+      onTap: () {
+        context.push(AppRoutes.changeOrderDetails, extra: {
+          'id': item.id,
+          'isPending': false,
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        margin: EdgeInsets.only(bottom: 16.h),
+        decoration: BoxDecoration(
+          color: AppColors.white100,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,7 +43,7 @@ class ChangeOrderListItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "by ${item.requestedByUserId}",
+                  item.description,
                   style: AppTextStyles.font14SemiBoldDark.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -59,6 +68,7 @@ class ChangeOrderListItem extends StatelessWidget {
           _buildStatusWidget(item.status),
         ],
       ),
+    ),
     );
   }
 

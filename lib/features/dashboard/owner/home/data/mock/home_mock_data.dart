@@ -38,19 +38,19 @@ class HomeMockData {
 
   static const List<ServiceCategoryModel> services = [
     ServiceCategoryModel(
-      title: "Find Contractors",
-      subtitle: "Browse verified contractors and find the right team for your project.",
+      title: "Recommended Contractors",
+      subtitle: "Find verified contractors via Smart Matching for your project.",
       icon: Icons.construction_rounded,
     ),
     ServiceCategoryModel(
-      title: "Engineering Offices",
-      subtitle: "Discover top engineering offices and review their projects and expertise.",
-      icon: Icons.architecture_rounded,
+      title: "Create New Project",
+      subtitle: "Start a new construction project and manage it easily.",
+      icon: Icons.add_business_rounded,
     ),
     ServiceCategoryModel(
-      title: "Materials Market",
-      subtitle: "Compare prices and order quality construction materials with ease.",
-      icon: Icons.storefront_rounded,
+      title: "Future Plan",
+      subtitle: "Plan ahead with our smart tools and services.",
+      icon: Icons.lightbulb_outline_rounded,
     ),
   ];
 

@@ -46,7 +46,7 @@ class PendingChangeOrderCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  order.title,
+                  order.description,
                   style: AppTextStyles.font14SemiBoldDark.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

@@ -158,100 +158,104 @@ class _AlertsViewState extends State<AlertsView> {
 
                           // Scrollable Alerts List
                           Expanded(
-                            child: state.data.items.isEmpty
-                                ? const AppEmptyStateWidget(
-                                    title: 'No notifications found',
-                                    message: 'You currently have no notifications for this category.',
-                                  )
-                                : CustomScrollView(
-                                    controller: _scrollController,
-                                    slivers: [
-                                      SliverPadding(
-                                        padding: EdgeInsets.symmetric(horizontal: 24.w),
-                                        sliver: SliverToBoxAdapter(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                "Recent",
-                                                style: AppTextStyles.font14SemiBoldDark.copyWith(
-                                                  color: AppColors.primary,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                              PopupMenuButton<String>(
-                                                onSelected: (String? value) {
-                                                  _cubit.filterCategory(value == 'All' ? null : value);
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.white100,
-                                                    borderRadius: BorderRadius.circular(20.r),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.black.withValues(alpha: 0.04),
-                                                        blurRadius: 4,
-                                                        offset: const Offset(0, 2),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        state.activeCategory != null 
-                                                          ? _categoryOptions.entries.firstWhere((e) => e.value == state.activeCategory).key 
-                                                          : "Sort By Category",
-                                                        style: AppTextStyles.font12MediumGrey.copyWith(
-                                                          color: AppColors.primary,
-                                                          fontWeight: FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 4.w),
-                                                      Icon(Icons.keyboard_arrow_down, color: AppColors.primary, size: 16.sp),
-                                                    ],
-                                                  ),
-                                                ),
-                                                itemBuilder: (BuildContext context) {
-                                                  return [
-                                                    const PopupMenuItem<String>(
-                                                      value: 'All',
-                                                      child: Text('All Categories'),
-                                                    ),
-                                                    ..._categoryOptions.entries.map((e) {
-                                                      return PopupMenuItem<String>(
-                                                        value: e.value,
-                                                        child: Text(e.key),
-                                                      );
-                                                    }),
-                                                  ];
-                                                },
-                                              ),
-                                            ],
+                            child: CustomScrollView(
+                              controller: _scrollController,
+                              slivers: [
+                                SliverPadding(
+                                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                  sliver: SliverToBoxAdapter(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Recent",
+                                          style: AppTextStyles.font14SemiBoldDark.copyWith(
+                                            color: AppColors.primary,
+                                            fontWeight: FontWeight.w700,
                                           ),
                                         ),
-                                      ),
-                                      SliverPadding(
-                                        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-                                        sliver: SliverList(
-                                          delegate: SliverChildBuilderDelegate(
-                                            (context, index) {
-                                              if (index == state.data.items.length) {
-                                                return Padding(
-                                                  padding: EdgeInsets.symmetric(vertical: 16.h),
-                                                  child: const Center(
-                                                    child: CircularProgressIndicator(color: AppColors.primary),
+                                        PopupMenuButton<String>(
+                                          onSelected: (String? value) {
+                                            _cubit.filterCategory(value == 'All' ? null : value);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.white100,
+                                              borderRadius: BorderRadius.circular(20.r),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.black.withValues(alpha: 0.04),
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0, 2),
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  state.activeCategory != null 
+                                                    ? _categoryOptions.entries.firstWhere((e) => e.value == state.activeCategory).key 
+                                                    : "Sort By Category",
+                                                  style: AppTextStyles.font12MediumGrey.copyWith(
+                                                    color: AppColors.primary,
+                                                    fontWeight: FontWeight.w600,
                                                   ),
+                                                ),
+                                                SizedBox(width: 4.w),
+                                                Icon(Icons.keyboard_arrow_down, color: AppColors.primary, size: 16.sp),
+                                              ],
+                                            ),
+                                          ),
+                                          itemBuilder: (BuildContext context) {
+                                            return [
+                                              const PopupMenuItem<String>(
+                                                value: 'All',
+                                                child: Text('All Categories'),
+                                              ),
+                                              ..._categoryOptions.entries.map((e) {
+                                                return PopupMenuItem<String>(
+                                                  value: e.value,
+                                                  child: Text(e.key),
                                                 );
-                                              }
-                                              return AlertCard(alert: state.data.items[index]);
-                                            },
-                                            childCount: state.data.items.length + (state.isFetchingMore ? 1 : 0),
-                                          ),
+                                              }),
+                                            ];
+                                          },
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
+                                ),
+                                if (state.data.items.isEmpty)
+                                  const SliverFillRemaining(
+                                    hasScrollBody: false,
+                                    child: AppEmptyStateWidget(
+                                      title: 'No notifications found',
+                                      message: 'You currently have no notifications for this category.',
+                                    ),
+                                  )
+                                else
+                                  SliverPadding(
+                                    padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
+                                    sliver: SliverList(
+                                      delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                          if (index == state.data.items.length) {
+                                            return Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 16.h),
+                                              child: const Center(
+                                                child: CircularProgressIndicator(color: AppColors.primary),
+                                              ),
+                                            );
+                                          }
+                                          return AlertCard(alert: state.data.items[index]);
+                                        },
+                                        childCount: state.data.items.length + (state.isFetchingMore ? 1 : 0),
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
                         ],
                       );

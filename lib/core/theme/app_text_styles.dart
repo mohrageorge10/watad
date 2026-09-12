@@ -110,6 +110,12 @@ class AppTextStyles {
     color: AppColors.grey600,
   );
 
+  static const font14MediumWhite = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    color: AppColors.white100,
+  );
+
   static const font14Regular = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,

@@ -39,10 +39,14 @@ class NotificationDto {
 
   NotificationItem toEntity() {
     return NotificationItem(
+      id: id ?? '',
       title: title ?? '',
       message: message ?? '',
       createdAt: createdAt != null ? DateTime.tryParse(createdAt!) : null,
       type: _mapType(type),
+      category: category,
+      actionUrl: actionUrl,
+      isRead: isRead ?? false,
     );
   }
 

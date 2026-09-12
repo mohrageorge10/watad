@@ -21,8 +21,12 @@ import 'change_orders/data/datasources/change_orders_remote_data_source.dart';
 import 'change_orders/data/repositories/change_orders_repository_impl.dart';
 import 'change_orders/domain/repositories/change_orders_repository.dart';
 import 'change_orders/domain/usecases/get_change_orders_usecase.dart';
+import 'change_orders/domain/usecases/get_change_order_details_usecase.dart';
+import 'change_orders/domain/usecases/decide_change_order_usecase.dart';
+import 'change_orders/domain/usecases/create_change_order_usecase.dart';
 import 'change_orders/presentation/cubit/change_orders_cubit.dart';
-
+import 'change_orders/presentation/cubit/create_change_order_cubit.dart';
+import 'change_orders/presentation/cubit/change_order_details_cubit.dart';
 import 'change_orders/data/datasources/all_change_orders_remote_data_source.dart';
 import 'change_orders/data/repositories/all_change_orders_repository_impl.dart';
 import 'change_orders/domain/repositories/all_change_orders_repository.dart';
@@ -94,10 +98,27 @@ void initProjectDashboardFeature(GetIt sl) {
   );
 
   sl.registerLazySingleton(() => GetChangeOrdersUseCase(sl()));
+  sl.registerLazySingleton(() => GetChangeOrderDetailsUsecase(repository: sl()));
+  sl.registerLazySingleton(() => DecideChangeOrderUsecase(repository: sl()));
+  sl.registerLazySingleton(() => CreateChangeOrderUseCase(repository: sl()));
 
   sl.registerFactory(
     () => ChangeOrdersCubit(
       getChangeOrdersUseCase: sl(),
+      getCurrentProjectOverviewUseCase: sl(),
+    ),
+  );
+  
+  sl.registerFactory(
+    () => ChangeOrderDetailsCubit(
+      getChangeOrderDetailsUsecase: sl(),
+      decideChangeOrderUsecase: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => CreateChangeOrderCubit(
+      createChangeOrderUseCase: sl(),
       getCurrentProjectOverviewUseCase: sl(),
     ),
   );

@@ -37,8 +37,7 @@ class PendingChangeOrderDto {
   ChangeOrderDetails toEntity() {
     return ChangeOrderDetails(
       id: id ?? '',
-      title: description ?? '',
-      description: '', 
+      description: description ?? '',
       costImpact: costImpact ?? 0,
       timeImpactDays: timeImpactDays ?? 0,
       createdAt: createdAt != null ? DateTime.tryParse(createdAt!) ?? DateTime.now() : DateTime.now(),
