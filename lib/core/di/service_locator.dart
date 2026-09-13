@@ -23,11 +23,8 @@ import 'package:watad/features/dashboard/owner/feasibility/feasibility_injection
 import 'package:watad/features/dashboard/owner/home/home_injection.dart';
 import 'package:watad/features/dashboard/owner/marketplace/marketplace_injection.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/create_project_injection.dart';
-import 'package:watad/features/dashboard/owner/contracts/contracts_injection.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/project_dashboard_injection.dart';
 import 'package:watad/features/dashboard/owner/alerts/alerts_injection.dart';
-import 'package:watad/core/services/social_auth_service.dart';
-import 'package:watad/core/services/file_download_service.dart';
 import 'package:watad/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:watad/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:watad/features/auth/domain/repositories/auth_repository.dart';
@@ -68,19 +65,7 @@ import 'package:watad/features/contractor/bids/domain/usecases/get_my_bids_useca
 import 'package:watad/features/contractor/bids/domain/usecases/submit_bid_usecase.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/contractor_bids_cubit.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/my_bids_cubit.dart';
-import 'package:watad/features/contractor/contracts/data/datasources/contracts_remote_data_source.dart';
-import 'package:watad/features/contractor/contracts/data/repositories/contracts_repository_impl.dart';
-import 'package:watad/features/contractor/contracts/domain/repositories/contracts_repository.dart';
-import 'package:watad/features/contractor/contracts/domain/usecases/get_accepted_bid_contract_usecase.dart';
-import 'package:watad/features/contractor/contracts/domain/usecases/get_contract_details_usecase.dart';
-import 'package:watad/features/contractor/contracts/domain/usecases/sign_contract_usecase.dart';
-import 'package:watad/features/contractor/contracts/presentation/cubit/contract_cubit.dart';
 import 'package:watad/features/contractor/marketplace/data/datasources/marketplace_remote_data_source.dart';
-import 'package:watad/features/contractor/marketplace/data/repositories/marketplace_repository_impl.dart';
-import 'package:watad/features/contractor/marketplace/domain/repositories/marketplace_repository.dart';
-import 'package:watad/features/contractor/marketplace/domain/usecases/get_marketplace_project_details_usecase.dart';
-import 'package:watad/features/contractor/marketplace/domain/usecases/get_marketplace_projects_usecase.dart';
-import 'package:watad/features/contractor/marketplace/presentation/cubit/marketplace_cubit.dart';
 
 final GetIt sl = GetIt.instance;
 
@@ -99,14 +84,10 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ApiConsumer>(
     () => DioConsumer(
       dio: sl(),
-  //! Owner Features
-  initHomeFeature(sl);
-  initFeasibilityFeature(sl);
-  initCreateProjectFeature(sl);
-  initMarketplaceFeature(sl);
-  initContractsFeature(sl);
-  initProjectDashboardFeature(sl);
-  initAlertsFeature(sl);
+      cacheHelper: sl(),
+      secureStorage: sl(),
+    ),
+  );
 
   //! Auth Feature
   // DataSource
@@ -127,8 +108,6 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => ForgotPasswordUseCase(sl()));
   sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => GoogleLoginUseCase(sl()));
-  sl.registerLazySingleton(() => FacebookLoginUseCase(sl()));
   sl.registerLazySingleton(() => VerifyCurrentPasswordUseCase(sl()));
   sl.registerLazySingleton(() => ConfirmNewPasswordUseCase(sl()));
 
@@ -142,13 +121,10 @@ Future<void> setupServiceLocator() async {
       forgotPasswordUseCase: sl(),
       verifyOtpUseCase: sl(),
       resetPasswordUseCase: sl(),
-      googleLoginUseCase: sl(),
-      facebookLoginUseCase: sl(),
       verifyCurrentPasswordUseCase: sl(),
       confirmNewPasswordUseCase: sl(),
       cacheHelper: sl(),
       secureStorage: sl(),
-      socialAuthService: sl(),
     ),
   );
 
@@ -304,7 +280,6 @@ Future<void> setupServiceLocator() async {
       apiConsumer: sl(),
       secureStorage: sl(),
       cacheHelper: sl(),
-      secureStorage: sl(),
     ),
   );
 
@@ -317,6 +292,8 @@ Future<void> setupServiceLocator() async {
   initCreateProjectFeature(sl);
   initMarketplaceFeature(sl);
   initContractsFeature(sl);
+  initProjectDashboardFeature(sl);
+  initAlertsFeature(sl);
 
   //! Contractor Features
   initContractorHomeFeature(sl);

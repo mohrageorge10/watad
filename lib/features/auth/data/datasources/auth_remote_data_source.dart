@@ -11,10 +11,12 @@ abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> forgotPassword(ForgotPasswordRequestModel request);
   Future<AuthResponseModel> verifyOtp(VerifyOtpRequestModel request);
   Future<AuthResponseModel> resetPassword(ResetPasswordRequestModel request);
-  Future<AuthResponseModel> googleLogin(GoogleLoginRequestModel request);
-  Future<AuthResponseModel> facebookLogin(FacebookLoginRequestModel request);
-  Future<AuthResponseModel> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request);
-  Future<AuthResponseModel> confirmNewPassword(ConfirmNewPasswordRequestModel request);
+  Future<AuthResponseModel> verifyCurrentPassword(
+    VerifyCurrentPasswordRequestModel request,
+  );
+  Future<AuthResponseModel> confirmNewPassword(
+    ConfirmNewPasswordRequestModel request,
+  );
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -41,7 +43,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> confirmEmail(ConfirmEmailRequestModel request) async {
+  Future<AuthResponseModel> confirmEmail(
+    ConfirmEmailRequestModel request,
+  ) async {
     final response = await apiConsumer.post(
       EndPoints.confirmEmail,
       data: request.toJson(),
@@ -60,7 +64,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> forgotPassword(ForgotPasswordRequestModel request) async {
+  Future<AuthResponseModel> forgotPassword(
+    ForgotPasswordRequestModel request,
+  ) async {
     final response = await apiConsumer.post(
       EndPoints.forgetPassword,
       data: request.toJson(),
@@ -78,7 +84,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> resetPassword(ResetPasswordRequestModel request) async {
+  Future<AuthResponseModel> resetPassword(
+    ResetPasswordRequestModel request,
+  ) async {
     final response = await apiConsumer.post(
       EndPoints.resetPassword,
       data: request.toJson(),
@@ -87,25 +95,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> googleLogin(GoogleLoginRequestModel request) async {
-    final response = await apiConsumer.post(
-      EndPoints.googleLogin,
-      data: request.toJson(),
-    );
-    return AuthResponseModel.fromJson(response);
-  }
-
-  @override
-  Future<AuthResponseModel> facebookLogin(FacebookLoginRequestModel request) async {
-    final response = await apiConsumer.post(
-      EndPoints.facebookLogin,
-      data: request.toJson(),
-    );
-    return AuthResponseModel.fromJson(response);
-  }
-
-  @override
-  Future<AuthResponseModel> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+  Future<AuthResponseModel> verifyCurrentPassword(
+    VerifyCurrentPasswordRequestModel request,
+  ) async {
     final response = await apiConsumer.post(
       EndPoints.verifyCurrentPassword,
       data: request.toJson(),
@@ -114,7 +106,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<AuthResponseModel> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+  Future<AuthResponseModel> confirmNewPassword(
+    ConfirmNewPasswordRequestModel request,
+  ) async {
     final response = await apiConsumer.post(
       EndPoints.confirmChangePassword,
       data: request.toJson(),

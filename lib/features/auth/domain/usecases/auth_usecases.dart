@@ -52,19 +52,6 @@ class ResetPasswordUseCase {
       repository.resetPassword(request);
 }
 
-class GoogleLoginUseCase {
-  final AuthRepository repository;
-  const GoogleLoginUseCase(this.repository);
-  Future<ApiResult<AuthResponseEntity>> call(GoogleLoginRequestModel request) =>
-      repository.googleLogin(request);
-}
-
-class FacebookLoginUseCase {
-  final AuthRepository repository;
-  const FacebookLoginUseCase(this.repository);
-  Future<ApiResult<AuthResponseEntity>> call(FacebookLoginRequestModel request) =>
-      repository.facebookLogin(request);
-}
 
 class VerifyCurrentPasswordUseCase {
   final AuthRepository repository;

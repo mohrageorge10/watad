@@ -888,6 +888,8 @@ final GoRouter appRouter = GoRouter(
           ),
         );
       },
+    ),
+    GoRoute(
       path: AppRoutes.copilot,
       builder: (context, state) => const CopilotChatView(),
     ),

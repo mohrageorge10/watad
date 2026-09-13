@@ -16,8 +16,6 @@ class AuthCubit extends Cubit<AuthState> {
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final VerifyOtpUseCase verifyOtpUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
-  final GoogleLoginUseCase googleLoginUseCase;
-  final FacebookLoginUseCase facebookLoginUseCase;
   final VerifyCurrentPasswordUseCase verifyCurrentPasswordUseCase;
   final ConfirmNewPasswordUseCase confirmNewPasswordUseCase;
   final CacheHelper cacheHelper;
@@ -31,8 +29,6 @@ class AuthCubit extends Cubit<AuthState> {
     required this.forgotPasswordUseCase,
     required this.verifyOtpUseCase,
     required this.resetPasswordUseCase,
-    required this.googleLoginUseCase,
-    required this.facebookLoginUseCase,
     required this.verifyCurrentPasswordUseCase,
     required this.confirmNewPasswordUseCase,
     required this.cacheHelper,
@@ -147,43 +143,7 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> googleLogin(GoogleLoginRequestModel request) async {
-    emit(AuthLoading());
-    final result = await googleLoginUseCase(request);
-    result.fold(
-      (response) async {
-        if (response.user != null) {
-          await _saveUserSession(
-            user: response.user!,
-            rememberMe: true,
-          );
-        }
-        emit(SocialLoginSuccessState(response));
-      },
-      (failure) {
-        emit(AuthErrorState(failure.errMessage));
-      },
-    );
-  }
 
-  Future<void> facebookLogin(FacebookLoginRequestModel request) async {
-    emit(AuthLoading());
-    final result = await facebookLoginUseCase(request);
-    result.fold(
-      (response) async {
-        if (response.user != null) {
-          await _saveUserSession(
-            user: response.user!,
-            rememberMe: true,
-          );
-        }
-        emit(SocialLoginSuccessState(response));
-      },
-      (failure) {
-        emit(AuthErrorState(failure.errMessage));
-      },
-    );
-  }
 
   Future<void> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
     emit(AuthLoading());

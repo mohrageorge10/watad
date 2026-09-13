@@ -25,7 +25,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> register(RegisterRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> register(
+    RegisterRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.register(request);
       if (!response.isSuccess) {
@@ -38,7 +40,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> confirmEmail(ConfirmEmailRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> confirmEmail(
+    ConfirmEmailRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.confirmEmail(request);
       if (!response.isSuccess) {
@@ -64,7 +68,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> forgotPassword(ForgotPasswordRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> forgotPassword(
+    ForgotPasswordRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.forgotPassword(request);
       if (!response.isSuccess) {
@@ -77,7 +83,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> verifyOtp(VerifyOtpRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> verifyOtp(
+    VerifyOtpRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.verifyOtp(request);
       if (!response.isSuccess) {
@@ -90,7 +98,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> resetPassword(ResetPasswordRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> resetPassword(
+    ResetPasswordRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.resetPassword(request);
       if (!response.isSuccess) {
@@ -103,33 +113,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> googleLogin(GoogleLoginRequestModel request) async {
-    try {
-      final response = await remoteDataSource.googleLogin(request);
-      if (!response.isSuccess) {
-        return ApiResult.failure(ServerFailure(errMessage: response.message));
-      }
-      return ApiResult.success(response.toEntity());
-    } catch (e) {
-      return ApiResult.failure(ErrorHandler.handle(e));
-    }
-  }
-
-  @override
-  Future<ApiResult<AuthResponseEntity>> facebookLogin(FacebookLoginRequestModel request) async {
-    try {
-      final response = await remoteDataSource.facebookLogin(request);
-      if (!response.isSuccess) {
-        return ApiResult.failure(ServerFailure(errMessage: response.message));
-      }
-      return ApiResult.success(response.toEntity());
-    } catch (e) {
-      return ApiResult.failure(ErrorHandler.handle(e));
-    }
-  }
-
-  @override
-  Future<ApiResult<AuthResponseEntity>> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> verifyCurrentPassword(
+    VerifyCurrentPasswordRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.verifyCurrentPassword(request);
       if (!response.isSuccess) {
@@ -142,7 +128,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<ApiResult<AuthResponseEntity>> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+  Future<ApiResult<AuthResponseEntity>> confirmNewPassword(
+    ConfirmNewPasswordRequestModel request,
+  ) async {
     try {
       final response = await remoteDataSource.confirmNewPassword(request);
       if (!response.isSuccess) {
