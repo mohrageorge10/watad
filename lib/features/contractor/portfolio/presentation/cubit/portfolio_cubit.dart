@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
@@ -17,6 +18,9 @@ class PortfolioCubit extends Cubit<PortfolioState> {
   final DeletePortfolioProjectUseCase? deletePortfolioProjectUseCase;
   final CacheHelper cacheHelper;
 
+  static const String _kCachedPortfolioProjects =
+      'contractor_cached_portfolio_projects';
+
   List<PortfolioProjectItemModel> _cachedProjects = [];
 
   PortfolioCubit({
@@ -30,6 +34,31 @@ class PortfolioCubit extends Cubit<PortfolioState> {
 
   List<PortfolioProjectItemModel> get cachedProjects => _cachedProjects;
 
+  List<PortfolioProjectItemModel> _loadLocalCachedProjects() {
+    final raw = cacheHelper.getData(key: _kCachedPortfolioProjects) as String?;
+    if (raw != null && raw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return decoded
+              .map((e) => PortfolioProjectItemModel.fromJson(
+                  Map<String, dynamic>.from(e)))
+              .toList();
+        }
+      } catch (_) {}
+    }
+    return [];
+  }
+
+  Future<void> _saveLocalCachedProjects(
+      List<PortfolioProjectItemModel> list) async {
+    final mapped = list.map((e) => e.toJson()).toList();
+    await cacheHelper.saveData(
+      key: _kCachedPortfolioProjects,
+      value: jsonEncode(mapped),
+    );
+  }
+
   Future<void> loadProjects({String? contractorId}) async {
     emit(PortfolioLoading());
 
@@ -39,17 +68,33 @@ class PortfolioCubit extends Cubit<PortfolioState> {
 
     final result = await getPortfolioProjectsUseCase(contractorId: currentId);
 
+    if (isClosed) return;
     result.fold(
       (projects) {
-        _cachedProjects = projects;
-        if (projects.isEmpty) {
+        if (isClosed) return;
+        final local = _loadLocalCachedProjects();
+        final merged = [
+          ...local,
+          ...projects.where((p) => !local.any((lp) =>
+              lp.id == p.id ||
+              lp.title.toLowerCase().trim() == p.title.toLowerCase().trim())),
+        ];
+        _cachedProjects = merged;
+        if (merged.isEmpty) {
           emit(PortfolioEmpty());
         } else {
-          emit(PortfolioSuccess(projects));
+          emit(PortfolioSuccess(merged));
         }
       },
       (failure) {
-        emit(PortfolioError(failure.errMessage));
+        if (isClosed) return;
+        final local = _loadLocalCachedProjects();
+        if (local.isNotEmpty) {
+          _cachedProjects = local;
+          emit(PortfolioSuccess(local));
+        } else {
+          emit(PortfolioError(failure.errMessage));
+        }
       },
     );
   }
@@ -64,48 +109,52 @@ class PortfolioCubit extends Cubit<PortfolioState> {
   }) async {
     emit(PortfolioActionLoading());
 
+    // Send only the exact field names the backend expects
     final projectData = {
-      'title': title,
+      'title': title, // Backend DTO uses 'title' not 'projectTitle'
       'description': description,
       'location': location,
       'projectCost': projectCost,
       'completionDate': completionDate,
-      'mediaUrls': mediaUrls,
+      'Photos': mediaUrls, // Backend expects 'Photos' (capital P) for image files
     };
 
-    if (addPortfolioProjectUseCase != null) {
-      final result = await addPortfolioProjectUseCase!(projectData: projectData);
-      return result.fold(
-        (project) {
-          _cachedProjects = [project, ..._cachedProjects];
-          emit(PortfolioActionSuccess('Project added successfully!', project: project));
-          return null; // success, no error
-        },
-        (failure) {
-          emit(PortfolioActionError(failure.errMessage));
-          return failure.errMessage;
-        },
-      );
+    if (addPortfolioProjectUseCase == null) {
+      if (!isClosed) emit(PortfolioActionError('Add use case not configured'));
+      return 'Add use case not configured';
     }
 
-    // Local fallback
-    final newProj = PortfolioProjectItemModel(
-      id: 'proj_${DateTime.now().millisecondsSinceEpoch}',
-      title: title,
-      description: description,
-      location: location,
-      price: 'EGP ${projectCost.toStringAsFixed(0)}',
-      date: completionDate,
-      image: mediaUrls.isNotEmpty ? mediaUrls.first : '',
-      mediaUrls: mediaUrls,
-      projectCost: projectCost,
-      badgeText: 'Completed',
-      badgeType: 'success',
+    final result = await addPortfolioProjectUseCase!(projectData: projectData);
+
+    return result.fold(
+      (addedProject) async {
+        // Success: save to local cache and emit success
+        final local = _loadLocalCachedProjects();
+        final updatedList = [
+          addedProject,
+          ...local.where((p) => p.id != addedProject.id),
+        ];
+        await _saveLocalCachedProjects(updatedList);
+
+        _cachedProjects = [
+          addedProject,
+          ..._cachedProjects.where((p) => p.id != addedProject.id),
+        ];
+
+        if (!isClosed) {
+          emit(PortfolioActionSuccess('Project added successfully!',
+              project: addedProject));
+        }
+        return null;
+      },
+      (failure) {
+        // Failure: report error to user — don't silently add to local cache
+        if (!isClosed) emit(PortfolioActionError(failure.errMessage));
+        return failure.errMessage;
+      },
     );
-    _cachedProjects = [newProj, ..._cachedProjects];
-    emit(PortfolioActionSuccess('Project added successfully!', project: newProj));
-    return null;
   }
+
 
   Future<String?> updateProject({
     required String id,
@@ -118,13 +167,14 @@ class PortfolioCubit extends Cubit<PortfolioState> {
   }) async {
     emit(PortfolioActionLoading());
 
+    // Send only the exact field names the backend expects
     final projectData = {
-      'title': title,
+      'title': title, // Backend DTO uses 'title' not 'projectTitle'
       'description': description,
       'location': location,
       'projectCost': projectCost,
       'completionDate': completionDate,
-      'mediaUrls': mediaUrls,
+      'NewPhotos': mediaUrls, // For update, backend uses 'NewPhotos'
     };
 
     if (updatePortfolioProjectUseCase != null) {
@@ -133,9 +183,15 @@ class PortfolioCubit extends Cubit<PortfolioState> {
         projectData: projectData,
       );
       return result.fold(
-        (updated) {
-          _cachedProjects = _cachedProjects.map((p) => p.id == id ? updated : p).toList();
-          emit(PortfolioActionSuccess('Project updated successfully!', project: updated));
+        (updated) async {
+          _cachedProjects =
+              _cachedProjects.map((p) => p.id == id ? updated : p).toList();
+          final local = _loadLocalCachedProjects();
+          final updatedLocal =
+              local.map((p) => p.id == id ? updated : p).toList();
+          await _saveLocalCachedProjects(updatedLocal);
+          emit(PortfolioActionSuccess('Project updated successfully!',
+              project: updated));
           return null;
         },
         (failure) {

@@ -99,7 +99,7 @@ class _AboutMeSectionState extends State<AboutMeSection> {
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.all(12.r),
                       border: InputBorder.none,
-                      hintText: 'Tell us about yourself...',
+                      hintText: 'Tell project owners about your experience, track record, and capabilities...',
                     ),
                   ),
                 ),
@@ -136,12 +136,19 @@ class _AboutMeSectionState extends State<AboutMeSection> {
               ],
             )
           : Text(
-              widget.profile.aboutMe,
+              widget.profile.aboutMe.trim().isNotEmpty
+                  ? widget.profile.aboutMe
+                  : 'Add a brief summary about your experience, track record, and construction capabilities to attract project owners.',
               style: TextStyle(
-                color: const Color(0xFF1D1D1F),
+                color: widget.profile.aboutMe.trim().isNotEmpty
+                    ? const Color(0xFF1D1D1F)
+                    : const Color(0xFF8E8E93),
                 fontSize: 13.sp,
                 height: 1.5,
                 fontWeight: FontWeight.w400,
+                fontStyle: widget.profile.aboutMe.trim().isNotEmpty
+                    ? FontStyle.normal
+                    : FontStyle.italic,
               ),
             ),
     );

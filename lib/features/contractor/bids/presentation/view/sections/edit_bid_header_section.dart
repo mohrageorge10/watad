@@ -31,7 +31,6 @@ class EditBidHeaderSection extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.fromLTRB(16.w, 12.h, 20.w, 24.h),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
                 onPressed: onBackTap ??
@@ -48,24 +47,18 @@ class EditBidHeaderSection extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
               ),
-              Text(
-                title,
-                style: TextStyle(
-                  color: AppColors.white100,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: AppColors.white100,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              IconButton(
-                onPressed: onSettingsTap ?? () {},
-                icon: Icon(
-                  Icons.settings_outlined,
-                  color: AppColors.white100,
-                  size: 24.r,
-                ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-              ),
+              SizedBox(width: 20.r),
             ],
           ),
         ),

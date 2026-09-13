@@ -116,5 +116,94 @@ void main() {
         expect(AppValidators.validatePhone('01012345678'), isNull);
       });
     });
+
+    group('validateCommercialRegister', () {
+      test('returns null when empty and not required', () {
+        expect(AppValidators.validateCommercialRegister(null), isNull);
+        expect(AppValidators.validateCommercialRegister(''), isNull);
+        expect(AppValidators.validateCommercialRegister('   '), isNull);
+      });
+
+      test('returns error when empty and isRequired is true', () {
+        expect(
+          AppValidators.validateCommercialRegister(null, isRequired: true),
+          'Commercial Register number is required',
+        );
+      });
+
+      test('returns error when length is less than 5 digits', () {
+        expect(
+          AppValidators.validateCommercialRegister('123'),
+          'Commercial Register must be between 5 and 15 digits',
+        );
+      });
+
+      test('returns null when valid digits between 5 and 15', () {
+        expect(AppValidators.validateCommercialRegister('12345'), isNull);
+        expect(AppValidators.validateCommercialRegister('123456789'), isNull);
+      });
+    });
+
+    group('validateTaxId', () {
+      test('returns null when empty and not required', () {
+        expect(AppValidators.validateTaxId(null), isNull);
+        expect(AppValidators.validateTaxId(''), isNull);
+        expect(AppValidators.validateTaxId('   '), isNull);
+      });
+
+      test('returns error when empty and isRequired is true', () {
+        expect(
+          AppValidators.validateTaxId(null, isRequired: true),
+          'Tax ID is required',
+        );
+      });
+
+      test('returns error when not exactly 9 digits', () {
+        expect(
+          AppValidators.validateTaxId('987'),
+          'Tax ID must be 9 digits (e.g. 123-456-789)',
+        );
+        expect(
+          AppValidators.validateTaxId('12345678'),
+          'Tax ID must be 9 digits (e.g. 123-456-789)',
+        );
+      });
+
+      test('returns null when exactly 9 digits (with or without dashes)', () {
+        expect(AppValidators.validateTaxId('123456789'), isNull);
+        expect(AppValidators.validateTaxId('987-654-321'), isNull);
+      });
+    });
+
+    group('validateExperience', () {
+      test('returns error when empty and required', () {
+        expect(
+          AppValidators.validateExperience(null),
+          'Years of experience is required',
+        );
+        expect(
+          AppValidators.validateExperience(''),
+          'Years of experience is required',
+        );
+      });
+
+      test('returns error when invalid number or out of bounds', () {
+        expect(
+          AppValidators.validateExperience('abc'),
+          'Please enter a valid number of years (0 - 70)',
+        );
+        expect(
+          AppValidators.validateExperience('99'),
+          'Please enter a valid number of years (0 - 70)',
+        );
+      });
+
+      test('returns null when valid experience', () {
+        expect(AppValidators.validateExperience('0'), isNull);
+        expect(AppValidators.validateExperience('5'), isNull);
+        expect(AppValidators.validateExperience('10+'), isNull);
+      });
+    });
   });
 }
+

@@ -20,7 +20,7 @@ class MyBidsManagementScreen extends StatelessWidget {
   const MyBidsManagementScreen({
     super.key,
     this.showBottomNavBar = true,
-    this.showBackButton = false, // Explicitly requested: without back arrow
+    this.showBackButton = false,
     this.onBackTap,
     this.onSettingsTap,
   });
@@ -50,53 +50,61 @@ class MyBidsManagementScreen extends StatelessWidget {
       create: (context) => sl<MyBidsCubit>()..loadBids(),
       child: Scaffold(
         backgroundColor: const Color(0xFFF6F8FA),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. Header Section (Curved primary app bar without back arrow)
-              MyBidsHeaderSection(
-                title: 'My Bids Management',
-                showBackButton: showBackButton,
-                onBackTap: onBackTap,
-                onSettingsTap: onSettingsTap,
-              ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            await context.read<MyBidsCubit>().loadBids();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: ClampingScrollPhysics(),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. Header Section (Curved primary app bar)
+                MyBidsHeaderSection(
+                  title: 'My Bids Management',
+                  showBackButton: showBackButton,
+                  onBackTap: onBackTap,
+                  onSettingsTap: onSettingsTap,
+                ),
 
-              // 2. Filter Chips Section
-              BlocBuilder<MyBidsCubit, MyBidsState>(
-                builder: (context, state) {
-                  final activeFilter = state is MyBidsSuccess
-                      ? state.activeFilter
-                      : (state is MyBidsLoading
-                          ? state.activeFilter
-                          : 'All');
-                  final allCount = state is MyBidsSuccess ? state.allCount : 5;
-                  final pendingCount =
-                      state is MyBidsSuccess ? state.pendingCount : 2;
-                  final acceptedCount =
-                      state is MyBidsSuccess ? state.acceptedCount : 2;
-                  final rejectedCount =
-                      state is MyBidsSuccess ? state.rejectedCount : 1;
+                // 2. Filter Chips Section
+                BlocBuilder<MyBidsCubit, MyBidsState>(
+                  builder: (context, state) {
+                    final activeFilter = state is MyBidsSuccess
+                        ? state.activeFilter
+                        : (state is MyBidsLoading
+                            ? state.activeFilter
+                            : 'All');
+                    final allCount =
+                        state is MyBidsSuccess ? state.allCount : 0;
+                    final pendingCount =
+                        state is MyBidsSuccess ? state.pendingCount : 0;
+                    final acceptedCount =
+                        state is MyBidsSuccess ? state.acceptedCount : 0;
+                    final rejectedCount =
+                        state is MyBidsSuccess ? state.rejectedCount : 0;
 
-                  return MyBidsFilterChipsWidget(
-                    activeFilter: activeFilter,
-                    allCount: allCount,
-                    pendingCount: pendingCount,
-                    acceptedCount: acceptedCount,
-                    rejectedCount: rejectedCount,
-                    onFilterSelected: (filter) {
-                      context.read<MyBidsCubit>().changeFilter(filter);
-                    },
-                  );
-                },
-              ),
+                    return MyBidsFilterChipsWidget(
+                      activeFilter: activeFilter,
+                      allCount: allCount,
+                      pendingCount: pendingCount,
+                      acceptedCount: acceptedCount,
+                      rejectedCount: rejectedCount,
+                      onFilterSelected: (filter) {
+                        context.read<MyBidsCubit>().changeFilter(filter);
+                      },
+                    );
+                  },
+                ),
 
-              // 3. Bids List Section
-              const MyBidsListSection(),
+                // 3. Bids List Section
+                const MyBidsListSection(),
 
-              SizedBox(height: 24.h),
-            ],
+                SizedBox(height: 24.h),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: showBottomNavBar

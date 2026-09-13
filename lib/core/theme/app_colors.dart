@@ -68,4 +68,13 @@ class AppColors {
   static const Color statusUnderReview = Color(0xFF3B82F6);
   static const Color statusApproved = Color(0xFF8B5CF6);
   static const Color statusRejected = alert;
+
+  // ================= Contractor Theme & Neutrals =================
+  static const Color contractorNavy = Color(0xFF1E3A8A);
+  static const Color textPrimary = Color(0xFF1D1D1F);
+  static const Color textSecondary = Color(0xFF8E8E93);
+  static const Color textMuted = Color(0xFF636366);
+  static const Color borderLight = Color(0xFFE5E5EA);
+  static const Color surfaceLight = Color(0xFFF2F4F7);
+  static const Color surfaceBackground = Color(0xFFF6F8FA);
 }

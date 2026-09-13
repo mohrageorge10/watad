@@ -74,8 +74,13 @@ class _ItemSelectionDialogState extends State<ItemSelectionDialog> {
         !widget.currentSelected.any(
             (item) => item.toLowerCase() == query.toLowerCase());
 
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final availableHeight = MediaQuery.of(context).size.height - bottomInset - 260.h;
+    final maxListHeight = availableHeight.clamp(100.0, 240.0);
+
     return Dialog(
       backgroundColor: AppColors.white100,
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
       ),
@@ -150,71 +155,82 @@ class _ItemSelectionDialogState extends State<ItemSelectionDialog> {
             SizedBox(height: 12.h),
 
             // Suggestions List
-            ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: 220.h),
-              child: _filteredItems.isEmpty && !canAddCustom
-                  ? Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 20.h),
-                        child: Text(
-                          'No matching items found',
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            color: const Color(0xFF8E8E93),
-                          ),
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _filteredItems.length + (canAddCustom && !_filteredItems.contains(query) ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (canAddCustom && !_filteredItems.contains(query) && index == 0) {
-                          return ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 6.w),
-                            leading: Icon(
-                              Icons.add_circle_outline_rounded,
-                              color: AppColors.primary,
-                              size: 20.r,
-                            ),
-                            title: Text(
-                              'Add "$query"',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
-                              ),
-                            ),
-                            onTap: () => Navigator.of(context).pop(query),
-                          );
-                        }
-
-                        final itemIndex = canAddCustom && !_filteredItems.contains(query)
-                            ? index - 1
-                            : index;
-                        final item = _filteredItems[itemIndex];
-
-                        return ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 6.w),
-                          title: Text(
-                            item,
+            Flexible(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: maxListHeight),
+                child: _filteredItems.isEmpty && !canAddCustom
+                    ? Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.h),
+                          child: Text(
+                            'No matching items found',
                             style: TextStyle(
                               fontSize: 13.sp,
-                              color: const Color(0xFF1D1D1F),
-                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF8E8E93),
                             ),
                           ),
-                          trailing: Icon(
-                            Icons.arrow_forward_ios_rounded,
-                            size: 13.r,
-                            color: const Color(0xFFC7C7CC),
-                          ),
-                          onTap: () => Navigator.of(context).pop(item),
-                        );
-                      },
-                    ),
+                        ),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: _filteredItems.length +
+                            (canAddCustom && !_filteredItems.contains(query)
+                                ? 1
+                                : 0),
+                        itemBuilder: (context, index) {
+                          if (canAddCustom &&
+                              !_filteredItems.contains(query) &&
+                              index == 0) {
+                            return ListTile(
+                              dense: true,
+                              contentPadding:
+                                  EdgeInsets.symmetric(horizontal: 6.w),
+                              leading: Icon(
+                                Icons.add_circle_outline_rounded,
+                                color: AppColors.primary,
+                                size: 20.r,
+                              ),
+                              title: Text(
+                                'Add "$query"',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              onTap: () => Navigator.of(context).pop(query),
+                            );
+                          }
+
+                          final itemIndex = canAddCustom &&
+                                  !_filteredItems.contains(query)
+                              ? index - 1
+                              : index;
+                          final item = _filteredItems[itemIndex];
+
+                          return ListTile(
+                            dense: true,
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 6.w),
+                            title: Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: const Color(0xFF1D1D1F),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            trailing: Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 13.r,
+                              color: const Color(0xFFC7C7CC),
+                            ),
+                            onTap: () => Navigator.of(context).pop(item),
+                          );
+                        },
+                      ),
+              ),
             ),
           ],
         ),

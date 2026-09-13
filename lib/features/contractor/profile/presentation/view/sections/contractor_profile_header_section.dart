@@ -21,40 +21,15 @@ class ContractorProfileHeaderSection extends StatelessWidget {
           bottomRight: Radius.circular(24.r),
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.only(
-            top: 16.h,
-            left: 20.w,
-            right: 20.w,
-            bottom: 75.h,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Dummy spacer to balance the settings button and keep title centered
-              SizedBox(width: 32.r),
-
-              Text(
-                'Contractor Profile',
-                style: TextStyle(
-                  color: AppColors.white100,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-
-              IconButton(
-                onPressed: onSettingsTap,
-                icon: const Icon(
-                  Icons.settings_outlined,
-                  color: AppColors.white100,
-                ),
-                iconSize: 22.r,
-                splashRadius: 24.r,
-              ),
-            ],
+      padding: EdgeInsets.fromLTRB(20.w, 48.h, 20.w, 85.h),
+      child: Center(
+        child: Text(
+          'Contractor Profile',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: AppColors.white100,
+            fontSize: 22.sp,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

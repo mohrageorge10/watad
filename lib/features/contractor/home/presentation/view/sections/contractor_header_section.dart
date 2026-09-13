@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -7,17 +8,38 @@ class ContractorHeaderSection extends StatelessWidget {
     super.key,
     required this.userName,
     this.headline = 'Your operational command center. Everything',
+    this.userImage,
     this.onNotificationTap,
     this.onProfileTap,
   });
 
   final String userName;
   final String headline;
+  final String? userImage;
   final VoidCallback? onNotificationTap;
   final VoidCallback? onProfileTap;
 
+  ImageProvider? _resolveImage(String? path) {
+    if (path == null || path.trim().isEmpty) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return NetworkImage(path);
+    }
+    if (path.startsWith('assets/')) {
+      return AssetImage(path);
+    }
+    try {
+      final file = File(path);
+      if (file.existsSync()) {
+        return FileImage(file);
+      }
+    } catch (_) {}
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final imageProvider = _resolveImage(userImage);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -89,11 +111,14 @@ class ContractorHeaderSection extends StatelessWidget {
                     child: CircleAvatar(
                       radius: 20.r,
                       backgroundColor: AppColors.white100,
-                      child: Icon(
-                        Icons.person,
-                        color: AppColors.primary,
-                        size: 22.r,
-                      ),
+                      backgroundImage: imageProvider,
+                      child: imageProvider == null
+                          ? Icon(
+                              Icons.person,
+                              color: AppColors.primary,
+                              size: 22.r,
+                            )
+                          : null,
                     ),
                   ),
                 ],

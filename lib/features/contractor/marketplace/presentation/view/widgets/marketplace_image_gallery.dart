@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
 import 'package:watad/core/theme/app_colors.dart';
 
 class MarketplaceImageGallery extends StatefulWidget {
@@ -332,13 +333,9 @@ class _GalleryNetworkImage extends StatelessWidget {
           return Container(
             color: const Color(0xFF1E1E1E),
             alignment: Alignment.center,
-            child: SizedBox(
-              width: 24.r,
-              height: 24.r,
-              child: const CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppColors.primary,
-              ),
+            child: AppLoadingIndicator(
+              size: 24.r,
+              strokeWidth: 2,
             ),
           );
         },

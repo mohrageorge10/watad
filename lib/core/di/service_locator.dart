@@ -6,10 +6,23 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/dio_consumer.dart';
 import 'package:watad/core/network/connection/network_info.dart';
-import 'package:watad/features/dashboard/owner/home/home_injection.dart';
+import 'package:watad/core/services/file_download_service.dart';
+import 'package:watad/features/auth/auth_injection.dart';
+import 'package:watad/features/contractor/bids/contractor_bids_injection.dart';
+import 'package:watad/features/contractor/contracts/contractor_contracts_injection.dart';
+import 'package:watad/features/contractor/daily_logs/contractor_daily_logs_injection.dart';
+import 'package:watad/features/contractor/home/contractor_home_injection.dart';
+import 'package:watad/features/contractor/marketplace/contractor_marketplace_injection.dart';
+import 'package:watad/features/contractor/milestone_inspection/contractor_milestone_inspection_injection.dart';
+import 'package:watad/features/contractor/milestone_logs/contractor_milestone_logs_injection.dart';
+import 'package:watad/features/contractor/portfolio/contractor_portfolio_injection.dart';
+import 'package:watad/features/contractor/profile/contractor_profile_injection.dart';
+import 'package:watad/features/contractor/project_dashboard/contractor_project_dashboard_injection.dart';
+import 'package:watad/features/dashboard/owner/contracts/contracts_injection.dart';
 import 'package:watad/features/dashboard/owner/feasibility/feasibility_injection.dart';
-import 'package:watad/features/dashboard/owner/projects/create_project/create_project_injection.dart';
+import 'package:watad/features/dashboard/owner/home/home_injection.dart';
 import 'package:watad/features/dashboard/owner/marketplace/marketplace_injection.dart';
+import 'package:watad/features/dashboard/owner/projects/create_project/create_project_injection.dart';
 import 'package:watad/features/dashboard/owner/contracts/contracts_injection.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/project_dashboard_injection.dart';
 import 'package:watad/features/dashboard/owner/alerts/alerts_injection.dart';
@@ -75,17 +88,17 @@ Future<void> setupServiceLocator() async {
   //! Core / External
   sl.registerLazySingleton<Dio>(() => Dio());
   sl.registerLazySingleton<DataConnectionChecker>(() => DataConnectionChecker());
-  sl.registerLazySingleton<SocialAuthService>(() => SocialAuthService());
   sl.registerLazySingleton<FileDownloadService>(() => FileDownloadService(dio: sl()));
-
-  //! Network
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-  sl.registerLazySingleton<ApiConsumer>(() => DioConsumer(dio: sl()));
 
   //! Cache & Storage
   sl.registerLazySingleton<CacheHelper>(() => CacheHelper());
   sl.registerLazySingleton<SecureStorageHelper>(() => SecureStorageHelper());
 
+  //! Network
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+  sl.registerLazySingleton<ApiConsumer>(
+    () => DioConsumer(
+      dio: sl(),
   //! Owner Features
   initHomeFeature(sl);
   initFeasibilityFeature(sl);
@@ -291,49 +304,29 @@ Future<void> setupServiceLocator() async {
       apiConsumer: sl(),
       secureStorage: sl(),
       cacheHelper: sl(),
-    ),
-  );
-
-  // Repository
-  sl.registerLazySingleton<MarketplaceRepository>(
-    () => MarketplaceRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // UseCases
-  sl.registerLazySingleton(() => GetMarketplaceProjectsUseCase(sl()));
-  sl.registerLazySingleton(() => GetMarketplaceProjectDetailsUseCase(sl()));
-
-  // Cubit
-  sl.registerFactory(
-    () => MarketplaceCubit(getMarketplaceProjectsUseCase: sl()),
-  );
-
-  //! Contractor Contracts Feature
-  // DataSource
-  sl.registerLazySingleton<ContractsRemoteDataSource>(
-    () => ContractsRemoteDataSourceImpl(
-      apiConsumer: sl(),
       secureStorage: sl(),
-      cacheHelper: sl(),
     ),
   );
 
-  // Repository
-  sl.registerLazySingleton<ContractsRepository>(
-    () => ContractsRepositoryImpl(remoteDataSource: sl()),
-  );
+  //! Auth Feature
+  initAuthFeature(sl);
 
-  // UseCases
-  sl.registerLazySingleton(() => GetContractDetailsUseCase(sl()));
-  sl.registerLazySingleton(() => SignContractUseCase(sl()));
-  sl.registerLazySingleton(() => GetAcceptedBidContractUseCase(sl()));
+  //! Owner Features
+  initHomeFeature(sl);
+  initFeasibilityFeature(sl);
+  initCreateProjectFeature(sl);
+  initMarketplaceFeature(sl);
+  initContractsFeature(sl);
 
-  // Cubit
-  sl.registerFactory(
-    () => ContractCubit(
-      getContractDetailsUseCase: sl(),
-      signContractUseCase: sl(),
-      getAcceptedBidContractUseCase: sl(),
-    ),
-  );
+  //! Contractor Features
+  initContractorHomeFeature(sl);
+  initContractorProjectDashboardFeature(sl);
+  initContractorDailyLogsFeature(sl);
+  initContractorMilestoneLogsFeature(sl);
+  initContractorMilestoneInspectionFeature(sl);
+  initContractorProfileFeature(sl);
+  initContractorPortfolioFeature(sl);
+  initContractorBidsFeature(sl);
+  initContractorMarketplaceFeature(sl);
+  initContractorContractsFeature(sl);
 }

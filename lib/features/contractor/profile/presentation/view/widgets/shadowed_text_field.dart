@@ -28,6 +28,7 @@ class ShadowedTextField extends StatelessWidget {
   final Color? suffixColor;
   final Color? valueColor;
   final TextStyle? textStyle;
+  final AutovalidateMode? autovalidateMode;
 
   const ShadowedTextField({
     super.key,
@@ -48,6 +49,7 @@ class ShadowedTextField extends StatelessWidget {
     this.suffixColor,
     this.valueColor,
     this.textStyle,
+    this.autovalidateMode,
   });
 
   @override
@@ -97,10 +99,27 @@ class ShadowedTextField extends StatelessWidget {
   }
 
   Widget _buildDropdownField(BuildContext context) {
+    final bool hasMatching = initialValue != null &&
+        dropdownItems != null &&
+        dropdownItems!.contains(initialValue);
+
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      initialValue: initialValue ?? dropdownItems?.firstOrNull,
-      items: (dropdownItems ?? [initialValue ?? ''])
+      initialValue: hasMatching ? initialValue : null,
+      validator: validator,
+      autovalidateMode:
+          autovalidateMode ?? AutovalidateMode.onUserInteraction,
+      hint: hintText != null
+          ? Text(
+              hintText!,
+              style: TextStyle(
+                color: const Color(0xFF8E8E93),
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w400,
+              ),
+            )
+          : null,
+      items: (dropdownItems ?? [])
           .map(
             (item) => DropdownMenuItem<String>(
               value: item,
@@ -126,11 +145,13 @@ class ShadowedTextField extends StatelessWidget {
         border: InputBorder.none,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          color: const Color(0xFF8E8E93),
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w400,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        errorMaxLines: 2,
+        errorStyle: TextStyle(
+          color: AppColors.danger500,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
@@ -153,6 +174,8 @@ class ShadowedTextField extends StatelessWidget {
       onTap: onTap,
       onChanged: onChanged,
       validator: validator,
+      autovalidateMode:
+          autovalidateMode ?? AutovalidateMode.onUserInteraction,
       style: textStyle ??
           TextStyle(
             color: valueColor ?? const Color(0xFF1D1D1F),
@@ -167,6 +190,14 @@ class ShadowedTextField extends StatelessWidget {
         border: InputBorder.none,
         enabledBorder: InputBorder.none,
         focusedBorder: InputBorder.none,
+        errorBorder: InputBorder.none,
+        focusedErrorBorder: InputBorder.none,
+        errorMaxLines: 2,
+        errorStyle: TextStyle(
+          color: AppColors.danger500,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+        ),
         hintText: hintText,
         hintStyle: TextStyle(
           color: const Color(0xFF8E8E93),

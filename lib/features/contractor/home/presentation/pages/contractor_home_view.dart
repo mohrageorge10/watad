@@ -21,11 +21,13 @@ class ContractorHomeView extends StatelessWidget {
     this.onNavigateToMarketplace,
     this.onNavigateToProfile,
     this.onNavigateToBids,
+    this.onNavigateToMyProjects,
   });
 
   final VoidCallback? onNavigateToMarketplace;
   final VoidCallback? onNavigateToProfile;
   final VoidCallback? onNavigateToBids;
+  final VoidCallback? onNavigateToMyProjects;
 
   @override
   Widget build(BuildContext context) {
@@ -66,24 +68,34 @@ class ContractorHomeView extends StatelessWidget {
                     ContractorHeaderSection(
                       userName: homeData.userName,
                       headline: homeData.headline,
+                      userImage: homeData.userImage,
                       onNotificationTap: () {},
                       onProfileTap: onNavigateToProfile,
                     ),
 
                     // 2. Complete Profile Floating Card (only shown if profile is incomplete)
-                    if (!homeData.isProfileComplete)
+                    if (!homeData.isProfileComplete) ...[
                       CompleteProfileSection(
                         text: homeData.completeProfileText,
                         onTap: onNavigateToProfile,
                       ),
+                      SizedBox(height: 12.h),
+                    ] else
+                      SizedBox(height: 24.h),
 
                     // 3. Active Projects Section (decides internally whether to show items or empty card)
                     ActiveProjectsSection(
                       projects: homeData.activeProjects,
                       ongoingCount: homeData.ongoingProjectsCount,
-                      onViewAllTap: () {},
+                      onViewAllTap: onNavigateToMyProjects ??
+                          () {
+                            context.push(AppRoutes.contractorMyProjects);
+                          },
                       onProjectTap: (project) {},
-                      onExploreTap: onNavigateToMarketplace,
+                      onExploreTap: onNavigateToMarketplace ??
+                          () {
+                            context.go(AppRoutes.marketplace);
+                          },
                     ),
 
                     // 4. Explore Marketplace Section

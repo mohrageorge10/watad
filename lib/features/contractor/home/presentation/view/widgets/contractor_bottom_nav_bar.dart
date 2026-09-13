@@ -92,47 +92,52 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isSelected ? AppColors.primary : const Color(0xFF8E8E93);
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Icon(
-                  icon,
-                  color: color,
-                  size: 24.r,
-                ),
-                if (hasBadge)
-                  Positioned(
-                    top: -2.h,
-                    right: -2.w,
-                    child: Container(
-                      width: 8.r,
-                      height: 8.r,
-                      decoration: const BoxDecoration(
-                        color: AppColors.alert,
-                        shape: BoxShape.circle,
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12.r),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 4.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(
+                    icon,
+                    color: color,
+                    size: 24.r,
+                  ),
+                  if (hasBadge)
+                    Positioned(
+                      top: -2.h,
+                      right: -2.w,
+                      child: Container(
+                        width: 8.r,
+                        height: 8.r,
+                        decoration: const BoxDecoration(
+                          color: AppColors.alert,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 11.sp,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ],
               ),
-            ),
-          ],
+              SizedBox(height: 4.h),
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: color,
+                  fontSize: 10.5.sp,
+                  fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

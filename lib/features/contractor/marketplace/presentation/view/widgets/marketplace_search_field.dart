@@ -22,11 +22,14 @@ class MarketplaceSearchField extends StatelessWidget {
       height: 48.h,
       decoration: BoxDecoration(
         color: AppColors.white100,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: const Color(0xFFE5E5EA),
-          width: 1.w,
-        ),
+        borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
       child: Center(
         child: TextField(

@@ -53,7 +53,9 @@ class ErrorHandler {
       case 401:
         return const ServerFailure(errMessage: "Unauthorized. Please log in again.");
       case 403:
-        return const ServerFailure(errMessage: "Forbidden access.");
+        return const ServerFailure(
+          errMessage: "Server is stopped or access is forbidden (403).",
+        );
       case 404:
         return const ServerFailure(errMessage: "Requested resource not found.");
       case 409:

@@ -32,6 +32,47 @@ class ProfileConstants {
     'Matruh',
   ];
 
+  static const List<String> egyptianCityLocations = [
+    'New Cairo, Cairo',
+    'Sheikh Zayed, Giza',
+    '6th of October, Giza',
+    'Nasr City, Cairo',
+    'Maadi, Cairo',
+    'Heliopolis, Cairo',
+    'Zamalek, Cairo',
+    'Dokki, Giza',
+    'Mohandessin, Giza',
+    'Shorouk City, Cairo',
+    'Madinaty, Cairo',
+    'New Administrative Capital, Cairo',
+    'Smouha, Alexandria',
+    'Gleem, Alexandria',
+    'Miami, Alexandria',
+    'North Coast, Matruh',
+    'El Gouna, Red Sea',
+    'Hurghada, Red Sea',
+    'Sharm El Sheikh, South Sinai',
+    'Mansoura, Dakahlia',
+    'Tanta, Gharbia',
+    'Zagazig, Sharqia',
+    'Ismailia, Ismailia',
+    'Port Said, Port Said',
+    'Suez, Suez',
+    'Faiyum, Faiyum',
+    'Beni Suef, Beni Suef',
+    'Minya, Minya',
+    'Asyut, Asyut',
+    'Sohag, Sohag',
+    'Qena, Qena',
+    'Luxor, Luxor',
+    'Aswan, Aswan',
+    'Obour City, Qalyubia',
+    'Badr City, Cairo',
+    'New Damietta, Damietta',
+    'New Mansoura, Dakahlia',
+    'New Alamein, Matruh',
+  ];
+
   static const List<String> specializations = [
     'Concrete & Finishes',
     'Residential Construction',
@@ -45,3 +86,4 @@ class ProfileConstants {
     'Landscaping',
   ];
 }
+

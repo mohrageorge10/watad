@@ -1,61 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:watad/features/contractor/profile/data/constants/profile_constants.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/custom_chip_widget.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/dashed_button_widget.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/item_selection_dialog.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/section_card_widget.dart';
 
 class SpecializationSection extends StatelessWidget {
   final ContractorProfileEntity profile;
-  final ValueChanged<String>? onRemoveSpecialization;
-  final ValueChanged<String>? onAddSpecialization;
+  final VoidCallback? onEditTap;
 
   const SpecializationSection({
     super.key,
     required this.profile,
-    this.onRemoveSpecialization,
-    this.onAddSpecialization,
+    this.onEditTap,
   });
-
-  Future<void> _handleAddTap(BuildContext context) async {
-    final result = await ItemSelectionDialog.show(
-      context,
-      title: 'Add Specialization',
-      hintText: 'Search or enter specialization...',
-      allItems: ProfileConstants.specializations,
-      currentSelected: profile.specializations,
-    );
-
-    if (result != null && result.trim().isNotEmpty) {
-      onAddSpecialization?.call(result.trim());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
+    final hasItems = profile.specializations.isNotEmpty;
+
     return SectionCardWidget(
       icon: Icons.work_outline_rounded,
       title: 'Specialization',
-      child: Wrap(
-        spacing: 8.w,
-        runSpacing: 8.h,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        children: [
-          ...profile.specializations.map(
-            (specialization) => CustomChipWidget(
-              label: specialization,
-              hasCloseIcon: true,
-              onCloseTap: () => onRemoveSpecialization?.call(specialization),
+      child: hasItems
+          ? Wrap(
+              spacing: 8.w,
+              runSpacing: 8.h,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: profile.specializations
+                  .map(
+                    (specialization) => CustomChipWidget(
+                      label: specialization,
+                      hasCloseIcon: false,
+                    ),
+                  )
+                  .toList(),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    'Select your construction specialties to automatically get matched with relevant project tenders.',
+                    style: TextStyle(
+                      fontSize: 13.sp,
+                      color: const Color(0xFF8E8E93),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: onEditTap ??
+                      () {
+                        context.push(AppRoutes.editProfile, extra: profile);
+                      },
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
+                    child: Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          DashedButtonWidget(
-            text: '+ Add',
-            onTap: () => _handleAddTap(context),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -8,6 +8,58 @@ class ContractorHomeMockData {
   /// Flag to toggle empty state vs populated state for testing
   static bool forceEmptyState = false;
 
+  /// Default rich accepted / in-progress mock projects for testing
+  static const List<ContractorProjectModel> mockContractorProjects = [
+    ContractorProjectModel(
+      id: 'proj_1',
+      title: 'Modern Villa Alpha',
+      location: 'New Cairo, Cairo',
+      time: 'Updated 2 hours ago',
+      image: 'mountain_view_villa.png',
+      badgeText: 'In Progress',
+      badgeColorHex: '#00B368',
+      progress: '62%',
+      ownerName: 'Ahmed Al-Masry (Owner)',
+      landArea: '1,200 m²',
+      floors: '2 Floors',
+      contractValue: 'EGP 2,450,000',
+      contractedDate: 'Sep 08, 2026',
+      contractId: 'contract_101',
+    ),
+    ContractorProjectModel(
+      id: 'proj_2',
+      title: 'Commercial Building',
+      location: 'New Cairo, Cairo',
+      time: 'Updated 1 day ago',
+      image: 'seaside_villa.png',
+      badgeText: 'In Progress',
+      badgeColorHex: '#00B368',
+      progress: '35%',
+      ownerName: 'Omar Khaled (Owner)',
+      landArea: '1,800 m²',
+      floors: '3 Floors',
+      contractValue: 'EGP 3,200,000',
+      contractedDate: 'Aug 20, 2026',
+      contractId: 'contract_102',
+    ),
+    ContractorProjectModel(
+      id: 'proj_3',
+      title: 'Residential Villa',
+      location: '6th of October',
+      time: 'Updated 3 days ago',
+      image: 'zayed_residence.png',
+      badgeText: 'In Progress',
+      badgeColorHex: '#00B368',
+      progress: '80%',
+      ownerName: 'Sara Mohamed (Owner)',
+      landArea: '600 m²',
+      floors: '1 Floor',
+      contractValue: 'EGP 1,800,000',
+      contractedDate: 'Oct 10, 2026',
+      contractId: 'contract_103',
+    ),
+  ];
+
   /// Populated State matching the user JSON
   static ContractorHomeModel getPopulatedHomeData({String? userName}) {
     return ContractorHomeModel(
@@ -15,39 +67,8 @@ class ContractorHomeMockData {
       headline: 'Your operational command center. Everything',
       completeProfileText:
           'Complete Your Company details and portfolio to increase your chances of getting accepted by 80%',
-      ongoingProjectsCount: 3,
-      activeProjects: const [
-        ContractorProjectModel(
-          id: 'proj_1',
-          title: 'Mountain View Villa',
-          location: 'New Cairo, Egypt',
-          time: 'Updated 2 hours ago',
-          image: 'mountain_view_villa.png',
-          badgeText: 'In Progress',
-          badgeColorHex: '#00B368',
-          progress: '62%',
-        ),
-        ContractorProjectModel(
-          id: 'proj_2',
-          title: 'Seaside Villa',
-          location: 'Ain Sokhna, Egypt',
-          time: 'Updated 1 day ago',
-          image: 'seaside_villa.png',
-          badgeText: 'Design Phase',
-          badgeColorHex: '#FFB020',
-          progress: '25%',
-        ),
-        ContractorProjectModel(
-          id: 'proj_3',
-          title: 'Zayed Residence',
-          location: '6th of October, Egypt',
-          time: 'Updated 3 days ago',
-          image: 'zayed_residence.png',
-          badgeText: 'Draft',
-          badgeColorHex: '#8E8E93',
-          progress: '10%',
-        ),
-      ],
+      ongoingProjectsCount: mockContractorProjects.length,
+      activeProjects: mockContractorProjects,
       recentBids: const [
         ContractorBidModel(
           id: 'bid_1',

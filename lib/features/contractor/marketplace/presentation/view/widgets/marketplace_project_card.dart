@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_entity.dart';
 
@@ -282,13 +283,9 @@ class MarketplaceProjectCard extends StatelessWidget {
         loadingBuilder: (context, child, loadingProgress) {
           if (loadingProgress == null) return child;
           return Center(
-            child: SizedBox(
-              width: 20.r,
-              height: 20.r,
-              child: const CircularProgressIndicator(
-                strokeWidth: 2,
-                color: AppColors.primary,
-              ),
+            child: AppLoadingIndicator(
+              size: 20.r,
+              strokeWidth: 2,
             ),
           );
         },

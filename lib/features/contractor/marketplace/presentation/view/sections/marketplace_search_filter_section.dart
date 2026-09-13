@@ -20,12 +20,7 @@ class MarketplaceSearchFilterSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-        left: 24.w,
-        right: 24.w,
-        top: 24.h,
-        bottom: 16.h,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Row(
         children: [
           // Search Field
@@ -37,7 +32,7 @@ class MarketplaceSearchFilterSection extends StatelessWidget {
               hintText: 'Search projects...',
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 10.w),
 
           // Filter Button
           Container(
@@ -45,22 +40,25 @@ class MarketplaceSearchFilterSection extends StatelessWidget {
             height: 48.h,
             decoration: BoxDecoration(
               color: AppColors.white100,
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(
-                color: const Color(0xFFE5E5EA),
-                width: 1.w,
-              ),
+              borderRadius: BorderRadius.circular(14.r),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
+                ),
+              ],
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 onTap: onFilterTap,
-                borderRadius: BorderRadius.circular(12.r),
+                borderRadius: BorderRadius.circular(14.r),
                 child: Center(
                   child: Icon(
                     Icons.tune_rounded,
                     color: AppColors.primary,
-                    size: 22.r,
+                    size: 20.r,
                   ),
                 ),
               ),

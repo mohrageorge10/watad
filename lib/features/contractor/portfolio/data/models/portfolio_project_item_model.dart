@@ -76,14 +76,18 @@ class PortfolioProjectItemModel {
     return PortfolioProjectItemModel(
       id: json['id']?.toString() ?? json['projectId']?.toString() ?? '',
       title: json['title'] as String? ??
+          json['Title'] as String? ??
+          json['projectTitle'] as String? ??
           json['projectName'] as String? ??
           json['name'] as String? ??
           '',
       description: json['description'] as String? ??
+          json['Description'] as String? ??
           json['technicalDetails'] as String? ??
           json['details'] as String? ??
           '',
       location: json['location'] as String? ??
+          json['Location'] as String? ??
           json['city'] as String? ??
           json['address'] as String? ??
           '',
@@ -118,12 +122,18 @@ class PortfolioProjectItemModel {
       };
 
   Map<String, dynamic> toApiJson() => {
+        'projectTitle': title,
         'title': title,
+        'projectName': title,
+        'ProjectTitle': title,
         'description': description,
+        'projectDescription': description,
         'location': location,
         'projectCost': projectCost ?? 0.0,
+        'cost': projectCost ?? 0.0,
         'completionDate': date,
         'mediaUrls': allImages,
+        'images': allImages,
       };
 
   PortfolioProjectItemModel copyWith({

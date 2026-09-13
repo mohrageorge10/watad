@@ -13,18 +13,27 @@ import 'package:watad/core/shared/widgets/permission_confirmation_dialog.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/shadowed_text_field.dart';
 
+typedef OnSubmitBidCallback = Future<void> Function({
+  required String proposedCost,
+  required String proposedDuration,
+  required String technicalProposal,
+  String? attachmentPath,
+});
+
 class SubmitBidFormSection extends StatefulWidget {
   final String projectName;
   final String initialCost;
   final String initialDuration;
-  final VoidCallback? onSubmitTap;
+  final bool isLoading;
+  final OnSubmitBidCallback? onSubmit;
 
   const SubmitBidFormSection({
     super.key,
     required this.projectName,
-    this.initialCost = '2,450,000',
+    this.initialCost = '2,000,000',
     this.initialDuration = '6',
-    this.onSubmitTap,
+    this.isLoading = false,
+    this.onSubmit,
   });
 
   @override
@@ -36,19 +45,17 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
   late final TextEditingController _durationController;
   late final TextEditingController _proposalController;
 
-  bool _hasFile = true;
-  String _fileName = 'Technical_Proposal.pdf';
-  String _fileSize = '4.2 MB';
-
-  final String _defaultProposal =
-      'We will deliver the project with high quality and on time, using experienced team and modern construction techniques.';
+  bool _hasFile = false;
+  String _fileName = '';
+  String _fileSize = '';
+  String? _filePath;
 
   @override
   void initState() {
     super.initState();
     _costController = TextEditingController(text: widget.initialCost);
     _durationController = TextEditingController(text: widget.initialDuration);
-    _proposalController = TextEditingController(text: _defaultProposal);
+    _proposalController = TextEditingController();
   }
 
   @override
@@ -133,6 +140,7 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
           _hasFile = true;
           _fileName = picked.name;
           _fileSize = formattedSize;
+          _filePath = picked.path;
         });
 
         if (context.mounted) {
@@ -149,6 +157,58 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
           'Could not pick file: $e',
         );
       }
+    }
+  }
+
+  void _validateAndSubmit() {
+    final cost = _costController.text.trim();
+    final duration = _durationController.text.trim();
+    final proposal = _proposalController.text.trim();
+
+    if (cost.isEmpty) {
+      AppToast.showError(context, 'Please enter the proposed cost.');
+      return;
+    }
+
+    final costDigits = cost.replaceAll(RegExp(r'[^0-9.]'), '');
+    final costNum = double.tryParse(costDigits);
+    if (costNum == null || costNum <= 0) {
+      AppToast.showError(context, 'Please enter a valid proposed cost.');
+      return;
+    }
+
+    if (duration.isEmpty) {
+      AppToast.showError(context, 'Please enter the proposed duration in months.');
+      return;
+    }
+
+    final durDigits = duration.replaceAll(RegExp(r'[^0-9]'), '');
+    final durationNum = int.tryParse(durDigits);
+    if (durationNum == null || durationNum <= 0) {
+      AppToast.showError(context, 'Please enter a valid duration (e.g. 6).');
+      return;
+    }
+
+    // If no file is attached AND no text is written
+    if (!_hasFile && proposal.isEmpty) {
+      AppToast.showError(
+        context,
+        'Please enter your technical proposal or attach a document.',
+      );
+      return;
+    }
+
+    final effectiveProposal = proposal.isNotEmpty
+        ? proposal
+        : (_hasFile ? 'Please refer to the attached document: $_fileName' : 'Technical proposal attached.');
+
+    if (widget.onSubmit != null) {
+      widget.onSubmit!(
+        proposedCost: cost,
+        proposedDuration: duration,
+        technicalProposal: effectiveProposal,
+        attachmentPath: _filePath,
+      );
     }
   }
 
@@ -171,6 +231,7 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
             label: 'Proposed Cost (EGP) *',
             controller: _costController,
             inputType: ShadowedInputType.number,
+            hintText: 'e.g. 2,000,000',
             suffixText: 'EGP',
             valueColor: AppColors.primary,
           ),
@@ -182,6 +243,7 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
             label: 'Proposed Duration (Months) *',
             controller: _durationController,
             inputType: ShadowedInputType.number,
+            hintText: 'e.g. 6',
             suffixText: 'Months',
             valueColor: AppColors.primary,
           ),
@@ -193,6 +255,7 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
             label: 'Technical Proposal *',
             controller: _proposalController,
             inputType: ShadowedInputType.multiline,
+            hintText: 'Describe your execution plan, team experience, materials, and timeline...',
             maxLines: 4,
             onChanged: (val) {
               setState(() {});
@@ -242,6 +305,9 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
               onRemove: () {
                 setState(() {
                   _hasFile = false;
+                  _fileName = '';
+                  _fileSize = '';
+                  _filePath = null;
                 });
                 AppToast.showSuccess(context, 'File removed');
               },
@@ -252,8 +318,9 @@ class _SubmitBidFormSectionState extends State<SubmitBidFormSection> {
 
           // 6. Submit Button
           AppElevatedButton(
-            title: 'Confirm & Send Bid',
-            onPressed: widget.onSubmitTap ?? () {},
+            title: widget.isLoading ? 'Submitting Bid...' : 'Confirm & Send Bid',
+            isLoading: widget.isLoading,
+            onPressed: widget.isLoading ? null : _validateAndSubmit,
             backgroundColor: AppColors.primary,
             borderRadius: 12.r,
             height: 50.h,

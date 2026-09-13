@@ -10,6 +10,7 @@ class ContractorHomeEntity extends Equatable {
   final List<ContractorProjectEntity> activeProjects;
   final List<ContractorBidEntity> recentBids;
   final bool isProfileComplete;
+  final String? userImage;
 
   const ContractorHomeEntity({
     required this.userName,
@@ -19,9 +20,33 @@ class ContractorHomeEntity extends Equatable {
     required this.activeProjects,
     required this.recentBids,
     this.isProfileComplete = false,
+    this.userImage,
   });
 
   bool get isEmptyState => activeProjects.isEmpty && recentBids.isEmpty;
+
+  ContractorHomeEntity copyWith({
+    String? userName,
+    String? headline,
+    String? completeProfileText,
+    int? ongoingProjectsCount,
+    List<ContractorProjectEntity>? activeProjects,
+    List<ContractorBidEntity>? recentBids,
+    bool? isProfileComplete,
+    String? userImage,
+    bool clearUserImage = false,
+  }) {
+    return ContractorHomeEntity(
+      userName: userName ?? this.userName,
+      headline: headline ?? this.headline,
+      completeProfileText: completeProfileText ?? this.completeProfileText,
+      ongoingProjectsCount: ongoingProjectsCount ?? this.ongoingProjectsCount,
+      activeProjects: activeProjects ?? this.activeProjects,
+      recentBids: recentBids ?? this.recentBids,
+      isProfileComplete: isProfileComplete ?? this.isProfileComplete,
+      userImage: clearUserImage ? null : (userImage ?? this.userImage),
+    );
+  }
 
   @override
   List<Object?> get props => [
@@ -32,5 +57,6 @@ class ContractorHomeEntity extends Equatable {
         activeProjects,
         recentBids,
         isProfileComplete,
+        userImage,
       ];
 }

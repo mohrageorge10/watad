@@ -25,29 +25,25 @@ class ContractorProjectsRemoteDataSourceImpl
   Future<List<ContractorProjectModel>> fetchContractorProjects({
     int? status,
   }) async {
-    // 1. Retrieve token securely without hardcoding
+    // 1. Retrieve token securely
     final token = await secureStorage.read(key: CacheKeys.token) ??
         (cacheHelper.getData(key: CacheKeys.token) as String?);
 
-    // 2. Prepare headers with Bearer Token
     final headers = <String, dynamic>{
       if (token != null && token.isNotEmpty)
         ApiKey.authorization: ApiKey.bearer(token),
     };
 
-    // 3. Query Parameter Logic: include status only if provided
     final queryParameters = <String, dynamic>{
       ApiQueryParams.status: ?status,
     };
 
-    // 4. API Request
     final response = await apiConsumer.get(
       EndPoints.contractorProjects,
       queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
-      headers: headers,
+      headers: headers.isNotEmpty ? headers : null,
     );
 
-    // 5. Safe and flexible parsing
     if (response is List) {
       return response
           .map((item) =>

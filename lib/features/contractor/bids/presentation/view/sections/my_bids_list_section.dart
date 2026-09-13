@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
+import 'package:watad/core/shared/widgets/app_shimmer.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/bids/presentation/cubit/my_bids_cubit.dart';
@@ -42,38 +43,17 @@ class MyBidsListSection extends StatelessWidget {
     return BlocBuilder<MyBidsCubit, MyBidsState>(
       builder: (context, state) {
         if (state is MyBidsLoading || state is MyBidsInitial) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 48.h),
-            child: const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
-          );
+          return const ListShimmer(itemCount: 4, itemHeight: 120);
         }
 
         if (state is MyBidsError) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 24.w),
-            child: Center(
-              child: Column(
-                children: [
-                  Text(
-                    state.message,
-                    style: TextStyle(
-                      color: const Color(0xFFFF3B30),
-                      fontSize: 14.sp,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 12.h),
-                  ElevatedButton(
-                    onPressed: () => context.read<MyBidsCubit>().loadBids(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primary,
-                    ),
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
+            child: AppEmptyStateWidget(
+              title: 'Error Loading Bids',
+              message: state.message,
+              buttonTitle: 'Try Again',
+              onButtonPressed: () => context.read<MyBidsCubit>().loadBids(),
             ),
           );
         }
@@ -124,11 +104,15 @@ class MyBidsListSection extends StatelessWidget {
                     if (result is Map<String, dynamic>) {
                       final cost = result['cost'] as String?;
                       final duration = result['duration'] as String?;
+                      final proposal = result['proposal'] as String?;
+                      final fileName = result['fileName'] as String?;
                       if (cost != null && duration != null) {
                         cubit.updateBid(
                           bid.id,
                           yourBid: cost,
                           duration: duration,
+                          proposal: proposal,
+                          attachmentName: fileName,
                         );
                       }
                     }
@@ -138,7 +122,7 @@ class MyBidsListSection extends StatelessWidget {
                   },
                   onViewContractTap: () {
                     context.pushNamed(
-                      AppRoutes.contractDetails,
+                      AppRoutes.contractPreview,
                       extra: {
                         'contractId': bid.id,
                         'bidId': bid.id,

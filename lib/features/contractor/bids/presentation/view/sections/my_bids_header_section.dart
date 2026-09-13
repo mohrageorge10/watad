@@ -18,6 +18,7 @@ class MyBidsHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.paddingOf(context).top;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -27,14 +28,10 @@ class MyBidsHeaderSection extends StatelessWidget {
           bottomRight: Radius.circular(24.r),
         ),
       ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(24.w, 16.h, 20.w, 24.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (showBackButton) ...[
+      padding: EdgeInsets.fromLTRB(20.w, topPadding + 16.h, 20.w, 40.h),
+      child: showBackButton
+          ? Row(
+              children: [
                 IconButton(
                   onPressed: onBackTap ?? () => Navigator.of(context).maybePop(),
                   icon: Icon(
@@ -45,32 +42,31 @@ class MyBidsHeaderSection extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
                 ),
-                SizedBox(width: 12.w),
-              ],
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: AppColors.white100,
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.white100,
+                      fontSize: 22.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              IconButton(
-                onPressed: onSettingsTap ?? () {},
-                icon: Icon(
-                  Icons.settings_outlined,
+                SizedBox(width: 20.r),
+              ],
+            )
+          : Center(
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
                   color: AppColors.white100,
-                  size: 24.r,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
                 ),
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

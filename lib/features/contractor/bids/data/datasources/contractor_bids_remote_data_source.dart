@@ -4,7 +4,6 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/bids/data/mock/mock_my_bids_data.dart';
 import 'package:watad/features/contractor/bids/data/models/my_bid_model.dart';
 import 'package:watad/features/contractor/home/data/models/contractor_bid_model.dart';
 
@@ -81,6 +80,14 @@ class ContractorBidsRemoteDataSourceImpl
             .map((item) =>
                 ContractorBidModel.fromJson(item as Map<String, dynamic>))
             .toList();
+      } else if (data is Map<String, dynamic>) {
+        final dynamic items = data['items'] ?? data['bids'] ?? data['data'];
+        if (items is List) {
+          return items
+              .map((item) =>
+                  ContractorBidModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+        }
       }
     }
 
@@ -104,19 +111,29 @@ class ContractorBidsRemoteDataSourceImpl
             response[ApiKey.data] ?? response['items'] ?? response['bids'];
         if (data is List) {
           rawList = data;
+        } else if (data is Map<String, dynamic>) {
+          final dynamic items = data['items'] ?? data['bids'] ?? data['data'];
+          if (items is List) {
+            rawList = items;
+          }
         }
       }
 
-      if (rawList != null && rawList.isNotEmpty) {
+      if (rawList != null) {
         return rawList
             .map((item) => MyBidModel.fromJson(item as Map<String, dynamic>))
             .toList();
       }
-    } catch (_) {
-      // Graceful fallback to mock bids if offline or network error
-    }
 
-    return MockMyBidsData.getMockBids();
+      return const [];
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return const [];
+      }
+      return const [];
+    } catch (_) {
+      return const [];
+    }
   }
 
   @override
@@ -134,27 +151,22 @@ class ContractorBidsRemoteDataSourceImpl
       final costClean = proposedCost.replaceAll(RegExp(r'[^0-9.]'), '');
       final durationClean = proposedDuration.replaceAll(RegExp(r'[^0-9]'), '');
 
-      dynamic fileUpload;
-      if (attachmentFilePath != null && attachmentFilePath.isNotEmpty) {
-        final fileName = attachmentFilePath.split('/').last.split('\\').last;
-        fileUpload = await MultipartFile.fromFile(
-          attachmentFilePath,
-          filename: fileName,
-        );
-      }
+      final int rawDuration = int.tryParse(durationClean) ?? int.tryParse(proposedDuration) ?? 1;
+      // Convert months (1..24) to days (e.g. 6 months -> 180 days)
+      final int durationInDays = rawDuration <= 24 ? rawDuration * 30 : rawDuration;
 
-      final formDataMap = <String, dynamic>{
-        'ProjectId': projectId,
-        'ProposedCost': double.tryParse(costClean) ?? proposedCost,
-        'ProposedDuration': int.tryParse(durationClean) ?? proposedDuration,
-        'TechnicalProposal': technicalProposal,
-        'Attachments': ?fileUpload,
+      final jsonPayload = <String, dynamic>{
+        'projectId': projectId,
+        'proposedCost': double.tryParse(costClean) ?? double.tryParse(proposedCost) ?? 0.0,
+        'proposedDurationDays': durationInDays,
+        'proposedDuration': durationInDays,
+        'durationDays': durationInDays,
+        'technicalProposal': technicalProposal,
       };
 
       final response = await apiConsumer.post(
         EndPoints.submitBid,
-        data: FormData.fromMap(formDataMap),
-        isFormData: true,
+        data: jsonPayload,
         headers: headers.isNotEmpty ? headers : null,
       );
 
@@ -165,57 +177,42 @@ class ContractorBidsRemoteDataSourceImpl
       }
       return true;
     } catch (e) {
-      // Return true in demo fallback or rethrow if strictly required
-      return true;
+      rethrow;
     }
   }
 
   @override
   Future<bool> cancelBid(String bidId) async {
-    try {
-      final headers = await _getAuthHeaders();
-      await apiConsumer.delete(
-        EndPoints.cancelBid(bidId),
-        headers: headers.isNotEmpty ? headers : null,
-      );
-      return true;
-    } catch (_) {
-      // In offline/demo environment, allow optimistic success
-      return true;
-    }
+    final headers = await _getAuthHeaders();
+    await apiConsumer.delete(
+      EndPoints.cancelBid(bidId),
+      headers: headers.isNotEmpty ? headers : null,
+    );
+    return true;
   }
 
   @override
   Future<MyBidModel?> getBidDetails(String bidId) async {
-    try {
-      final headers = await _getAuthHeaders();
-      final response = await apiConsumer.get(
-        EndPoints.bidDetails(bidId),
-        headers: headers.isNotEmpty ? headers : null,
-      );
+    final headers = await _getAuthHeaders();
+    final response = await apiConsumer.get(
+      EndPoints.bidDetails(bidId),
+      headers: headers.isNotEmpty ? headers : null,
+    );
 
-      Map<String, dynamic>? dataMap;
-      if (response is Map<String, dynamic>) {
-        if (response.containsKey(ApiKey.data) &&
-            response[ApiKey.data] is Map<String, dynamic>) {
-          dataMap = response[ApiKey.data] as Map<String, dynamic>;
-        } else {
-          dataMap = response;
-        }
+    Map<String, dynamic>? dataMap;
+    if (response is Map<String, dynamic>) {
+      if (response.containsKey(ApiKey.data) &&
+          response[ApiKey.data] is Map<String, dynamic>) {
+        dataMap = response[ApiKey.data] as Map<String, dynamic>;
+      } else {
+        dataMap = response;
       }
-
-      if (dataMap != null && dataMap.isNotEmpty) {
-        return MyBidModel.fromJson(dataMap);
-      }
-    } catch (_) {
-      // Fallback
     }
 
-    final all = MockMyBidsData.getMockBids();
-    try {
-      return all.firstWhere((b) => b.id == bidId);
-    } catch (_) {
-      return all.isNotEmpty ? all.first : null;
+    if (dataMap != null && dataMap.isNotEmpty) {
+      return MyBidModel.fromJson(dataMap);
     }
+
+    return null;
   }
 }

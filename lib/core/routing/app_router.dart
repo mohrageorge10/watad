@@ -10,32 +10,35 @@ import 'package:watad/features/auth/presentation/pages/forget_password_page.dart
 import 'package:watad/features/auth/presentation/pages/login_page.dart';
 import 'package:watad/features/auth/presentation/pages/otp_page.dart';
 import 'package:watad/features/auth/presentation/pages/reset_password_page.dart';
-import 'package:watad/features/auth/presentation/pages/role_selection_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_email_confirmation_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_password_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_personal_info_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_role_page.dart';
 import 'package:watad/features/auth/presentation/pages/welcome_page.dart';
 import 'package:watad/features/contractor/home/presentation/pages/home_gate_screen.dart';
+import 'package:watad/features/contractor/home/presentation/pages/contractor_my_projects_screen.dart';
+import 'package:watad/features/contractor/project_dashboard/presentation/pages/contractor_project_dashboard_screen.dart';
+import 'package:watad/features/contractor/daily_logs/presentation/pages/add_daily_log_screen.dart';
+import 'package:watad/features/contractor/daily_logs/presentation/pages/ai_crack_inspection_screen.dart';
+import 'package:watad/features/contractor/milestone_logs/presentation/pages/milestone_logs_screen.dart';
+import 'package:watad/features/contractor/milestone_inspection/presentation/pages/milestone_completion_inspection_screen.dart';
+import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/contractor_profile_page.dart';
 import 'package:watad/features/contractor/profile/presentation/pages/edit_profile_page.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/add_portfolio_project_screen.dart';
 import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_project_details_screen.dart';
-import 'package:watad/features/contractor/portfolio/presentation/pages/portfolio_projects_screen.dart';
 import 'package:watad/features/contractor/bids/domain/entities/my_bid_entity.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/bid_details_screen.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/contractor_bids_screen.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/edit_bid_screen.dart';
 import 'package:watad/features/contractor/bids/presentation/pages/my_bids_management_screen.dart';
-import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_details_entity.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_entity.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_project_details_screen.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/marketplace_screen.dart';
 import 'package:watad/features/contractor/marketplace/presentation/pages/submit_bid_screen.dart';
-import 'package:watad/features/contractor/contracts/presentation/pages/contract_details_sign_screen.dart';
 import 'package:watad/features/contractor/contracts/presentation/pages/contract_preview_screen.dart';
 import 'package:watad/features/contractor/contracts/domain/entities/contract_entity.dart';
 import 'package:watad/features/onboarding/presentation/pages/on_boarding_page.dart';
@@ -342,20 +345,6 @@ final GoRouter appRouter = GoRouter(
           _buildAnimatedPage(state: state, child: const WelcomePage()),
     ),
     GoRoute(
-      path: AppRoutes.roleSelection,
-      name: AppRoutes.roleSelection,
-      pageBuilder: (context, state) {
-        final extra = state.extra as Map<String, dynamic>?;
-        return _buildAnimatedPage(
-          state: state,
-          child: RoleSelectionPage(
-            authProvider: extra?['provider'] as String?,
-            authToken: extra?['token'] as String?,
-          ),
-        );
-      },
-    ),
-    GoRoute(
       path: AppRoutes.loginScreen,
       name: AppRoutes.loginScreen,
       pageBuilder: (context, state) =>
@@ -453,26 +442,54 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: AppRoutes.editProfile,
       name: AppRoutes.editProfile,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: EditProfilePage(cubit: state.extra as ContractorProfileCubit?),
-      ),
+      pageBuilder: (context, state) {
+        ContractorProfileCubit? cubit;
+        ContractorProfileEntity? profile;
+
+        if (state.extra is ContractorProfileCubit) {
+          cubit = state.extra as ContractorProfileCubit;
+        } else if (state.extra is ContractorProfileEntity) {
+          profile = state.extra as ContractorProfileEntity;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: EditProfilePage(
+            cubit: cubit,
+            initialProfile: profile,
+          ),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.portfolioProjects,
       name: AppRoutes.portfolioProjects,
       pageBuilder: (context, state) => _buildAnimatedPage(
         state: state,
-        child: const PortfolioProjectsScreen(),
+        child: const ContractorMyProjectsScreen(
+          showBottomNavBar: true,
+          initialTabIndex: 1,
+        ),
       ),
     ),
     GoRoute(
       path: AppRoutes.myProjects,
       name: AppRoutes.myProjects,
-      pageBuilder: (context, state) => _buildAnimatedPage(
-        state: state,
-        child: const PortfolioProjectsScreen(),
-      ),
+      pageBuilder: (context, state) {
+        int initialTab = 0;
+        if (state.extra is int) {
+          initialTab = state.extra as int;
+        } else if (state.extra is Map<String, dynamic>) {
+          initialTab = (state.extra as Map<String, dynamic>)['initialTab'] as int? ?? 0;
+        }
+        return _buildAnimatedPage(
+          state: state,
+          child: ContractorMyProjectsScreen(
+            showBottomNavBar: true,
+            initialTabIndex: initialTab,
+          ),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.contractorBids,
@@ -546,8 +563,31 @@ final GoRouter appRouter = GoRouter(
         if (state.extra is MarketplaceProjectDetailsEntity) {
           details = state.extra as MarketplaceProjectDetailsEntity;
         } else if (state.extra is MarketplaceProjectEntity) {
-          details = MockMarketplaceDetailsData.getDetailsForProject(
-            state.extra as MarketplaceProjectEntity,
+          final p = state.extra as MarketplaceProjectEntity;
+          details = MarketplaceProjectDetailsEntity(
+            id: p.id,
+            title: p.title,
+            status: 'Open for Bidding',
+            location: p.location,
+            images: p.image.isNotEmpty ? [p.image] : const [],
+            specs: [
+              MarketplaceSpecItemEntity(
+                icon: 'assets/icons/ruler.svg',
+                label: 'Land Size',
+                value: p.specs.land,
+              ),
+              MarketplaceSpecItemEntity(
+                icon: 'assets/icons/hammer.svg',
+                label: 'Scope',
+                value: p.specs.scope,
+              ),
+            ],
+            estimatedBudget: p.budgetValue,
+            expectedDuration: '6 Months',
+            startDate: 'Immediate',
+            completionDate: 'TBD',
+            description: 'Project in ${p.location} with budget of ${p.budgetValue}. Land: ${p.specs.land}, Scope: ${p.specs.scope}.',
+            attachments: const [],
           );
         }
 
@@ -561,12 +601,14 @@ final GoRouter appRouter = GoRouter(
       path: AppRoutes.submitBid,
       name: AppRoutes.submitBid,
       pageBuilder: (context, state) {
+        String? projectId;
         String projectName = 'Villa Construction Project - New Cairo';
-        String initialCost = '2,450,000';
+        String initialCost = '2,000,000';
         String initialDuration = '6';
 
         if (state.extra is MarketplaceProjectDetailsEntity) {
           final p = state.extra as MarketplaceProjectDetailsEntity;
+          projectId = p.id;
           projectName = '${p.title} - ${p.location}';
           final costDigits = p.estimatedBudget
               .replaceAll(RegExp(r'[^0-9,]'), '')
@@ -578,6 +620,7 @@ final GoRouter appRouter = GoRouter(
           if (durDigits.isNotEmpty) initialDuration = durDigits;
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
+          projectId = map['projectId'] as String? ?? map['id'] as String?;
           projectName = map['projectName'] as String? ?? projectName;
           initialCost = map['initialCost'] as String? ?? initialCost;
           initialDuration =
@@ -587,6 +630,7 @@ final GoRouter appRouter = GoRouter(
         return _buildAnimatedPage(
           state: state,
           child: SubmitBidScreen(
+            projectId: projectId,
             projectName: projectName,
             initialCost: initialCost,
             initialDuration: initialDuration,
@@ -599,36 +643,64 @@ final GoRouter appRouter = GoRouter(
       name: AppRoutes.editBid,
       pageBuilder: (context, state) {
         String bidId = '';
-        String projectName = 'Villa Construction Project - New Cairo';
-        String initialCost = '2,450,000';
-        String initialDuration = '6';
+        String projectId = '';
+        String projectName = '';
+        String initialCost = '';
+        String initialDuration = '';
+        String initialProposal = '';
+        String? initialFileName;
+        String? initialAttachmentUrl;
+        MyBidEntity? bidEntity;
 
         if (state.extra is MyBidEntity) {
           final b = state.extra as MyBidEntity;
+          bidEntity = b;
           bidId = b.id;
+          projectId = b.projectId;
           projectName = b.title;
           final costDigits = b.yourBid
-              .replaceAll(RegExp(r'[^0-9,]'), '')
+              .replaceAll(RegExp(r'[^0-9.]'), '')
               .trim();
           if (costDigits.isNotEmpty) initialCost = costDigits;
           final durDigits = b.duration.replaceAll(RegExp(r'[^0-9]'), '').trim();
           if (durDigits.isNotEmpty) initialDuration = durDigits;
+          initialProposal = b.proposal.isNotEmpty
+              ? b.proposal
+              : (b.description != 'No description provided.' &&
+                      b.description != '-' &&
+                      !b.description.startsWith('Project in ')
+                  ? b.description
+                  : '');
+          initialFileName = b.attachmentName;
+          initialAttachmentUrl = b.attachmentUrl;
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
           bidId = map['bidId'] as String? ?? bidId;
+          projectId = map['projectId'] as String? ?? projectId;
           projectName = map['projectName'] as String? ?? projectName;
           initialCost = map['initialCost'] as String? ?? initialCost;
           initialDuration =
               map['initialDuration'] as String? ?? initialDuration;
+          initialProposal =
+              map['initialProposal'] as String? ?? initialProposal;
+          initialFileName =
+              map['initialFileName'] as String? ?? initialFileName;
+          initialAttachmentUrl =
+              map['initialAttachmentUrl'] as String? ?? initialAttachmentUrl;
         }
 
         return _buildAnimatedPage(
           state: state,
           child: EditBidScreen(
+            bid: bidEntity,
             bidId: bidId,
+            projectId: projectId,
             projectName: projectName,
             initialCost: initialCost,
             initialDuration: initialDuration,
+            initialProposal: initialProposal,
+            initialFileName: initialFileName,
+            initialAttachmentUrl: initialAttachmentUrl,
           ),
         );
       },
@@ -653,7 +725,6 @@ final GoRouter appRouter = GoRouter(
       name: AppRoutes.contractDetails,
       pageBuilder: (context, state) {
         String? contractId;
-        String? bidId;
         ContractEntity? initialContract;
         if (state.extra is String) {
           contractId = state.extra as String;
@@ -663,7 +734,6 @@ final GoRouter appRouter = GoRouter(
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
           contractId = map['contractId'] as String?;
-          bidId = map['bidId'] as String?;
           if (map['contract'] is ContractEntity) {
             initialContract = map['contract'] as ContractEntity;
           }
@@ -671,9 +741,8 @@ final GoRouter appRouter = GoRouter(
 
         return _buildAnimatedPage(
           state: state,
-          child: ContractDetailsSignScreen(
+          child: ContractPreviewScreen(
             contractId: contractId,
-            bidId: bidId,
             initialContract: initialContract,
           ),
         );
@@ -708,6 +777,117 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: AppRoutes.contractorProjectDashboard,
+      name: AppRoutes.contractorProjectDashboard,
+      pageBuilder: (context, state) {
+        String projectId = 'proj_1';
+        if (state.extra is String) {
+          projectId = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          projectId =
+              (state.extra as Map<String, dynamic>)['projectId'] as String? ??
+                  projectId;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: ContractorProjectDashboardScreen(
+            projectId: projectId,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractorAddDailyLog,
+      name: AppRoutes.contractorAddDailyLog,
+      pageBuilder: (context, state) {
+        String? projectId;
+        String? projectName;
+        String? milestoneName;
+        String? location;
+
+        if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          projectId = map['projectId'] as String?;
+          projectName = map['projectName'] as String?;
+          milestoneName = map['milestoneName'] as String?;
+          location = map['location'] as String?;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: AddDailyLogScreen(
+            projectId: projectId,
+            projectName: projectName,
+            milestoneName: milestoneName,
+            location: location,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractorAiCrackInspection,
+      name: AppRoutes.contractorAiCrackInspection,
+      pageBuilder: (context, state) {
+        String imagePath = '';
+        String? location;
+
+        if (state.extra is String) {
+          imagePath = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          final map = state.extra as Map<String, dynamic>;
+          imagePath = map['imagePath'] as String? ?? '';
+          location = map['location'] as String?;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: AiCrackInspectionScreen(
+            imagePath: imagePath,
+            location: location,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractorMilestoneLogs,
+      name: AppRoutes.contractorMilestoneLogs,
+      pageBuilder: (context, state) {
+        String? projectId;
+        if (state.extra is String) {
+          projectId = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          projectId = (state.extra as Map<String, dynamic>)['projectId'] as String?;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: MilestoneLogsScreen(
+            projectId: projectId,
+          ),
+        );
+      },
+    ),
+    GoRoute(
+      path: AppRoutes.contractorMilestoneInspection,
+      name: AppRoutes.contractorMilestoneInspection,
+      pageBuilder: (context, state) {
+        String milestoneId = 'ms_101';
+        if (state.extra is String) {
+          milestoneId = state.extra as String;
+        } else if (state.extra is Map<String, dynamic>) {
+          milestoneId =
+              (state.extra as Map<String, dynamic>)['milestoneId'] as String? ??
+                  milestoneId;
+        }
+
+        return _buildAnimatedPage(
+          state: state,
+          child: MilestoneCompletionInspectionScreen(
+            milestoneId: milestoneId,
+          ),
+        );
+      },
       path: AppRoutes.copilot,
       builder: (context, state) => const CopilotChatView(),
     ),

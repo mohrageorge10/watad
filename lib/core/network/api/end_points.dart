@@ -1,7 +1,5 @@
 class EndPoints {
-  static const String baseUrl =
-      "https://watad-c5c6hkgmcxe5dzeg.uaenorth-01.azurewebsites.net/api/";
-  // Backup URL: "http://watad-api.runasp.net/api/"
+  static const String baseUrl = "http://watad-api.runasp.net/api/";
 
   // ================= Central Dashboard =================
   static String timelineOverview(String projectId) =>
@@ -18,8 +16,6 @@ class EndPoints {
   static const String confirmEmail = "Auth/confirm-email";
   static const String resendConfirmOtp = "Auth/resend-confirmation-otp";
   static const String login = "Auth/login";
-  static const String googleLogin = "Auth/google-login";
-  static const String facebookLogin = "Auth/facebook-login";
   static const String refreshToken = "Auth/refresh-token";
   static const String revokeToken = "Auth/revoke-token";
   static const String logout = "Auth/logout";
@@ -73,7 +69,6 @@ class EndPoints {
   // =================== Bids & Marketplace ===================
   static const String submitBid = "Bids/submit-bid";
   static const String contractorBids = "Bids/contractor-bids";
-  static const String myBids = "Bids/contractor-bids";
   static const String bids = "Bids";
   static String cancelBid(String id) => "Bids/cancel-bid/$id";
   static String acceptedBidContract(String projectId) =>
@@ -100,8 +95,6 @@ class EndPoints {
   static String updatePortfolioProject(String projectId) =>
       "Contractor/$projectId/update-portfolioproject";
   static String contractorProjectDashboard(String projectId) =>
-      "Contractor/projects/$projectId/dashboard";
-  static String projectDashboard(String projectId) =>
       "Contractor/projects/$projectId/dashboard";
 
   // =================== Change Orders ===================
@@ -132,8 +125,6 @@ class EndPoints {
   static String rejectMilestone(String milestoneId) =>
       "milestones/$milestoneId/reject";
   static String requestMilestoneInspection(String milestoneId) =>
-      "milestones/$milestoneId/request-inspection";
-  static String requestInspection(String milestoneId) =>
       "milestones/$milestoneId/request-inspection";
 
   static String milestoneInspectionDetails(String inspectionId) =>

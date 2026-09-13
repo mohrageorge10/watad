@@ -63,6 +63,11 @@ class MarketplaceProjectEntity extends Equatable {
       category: category ?? this.category,
     );
   }
+  
+  double get numericBudget {
+    final cleaned = budgetValue.replaceAll(RegExp(r'[^0-9.]'), '');
+    return double.tryParse(cleaned) ?? 0.0;
+  }
 
   @override
   List<Object?> get props => [

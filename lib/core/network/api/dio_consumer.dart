@@ -11,15 +11,21 @@ import 'package:watad/core/utils/cache_keys.dart';
 
 class DioConsumer extends ApiConsumer {
   final Dio dio;
+  final CacheHelper cacheHelper;
+  final SecureStorageHelper secureStorage;
 
-  DioConsumer({required this.dio}) {
+  DioConsumer({
+    required this.dio,
+    required this.cacheHelper,
+    required this.secureStorage,
+  }) {
     dio.options.baseUrl = EndPoints.baseUrl;
     dio.options.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    dio.options.connectTimeout = const Duration(seconds: 30);
-    dio.options.receiveTimeout = const Duration(seconds: 30);
+    dio.options.connectTimeout = const Duration(seconds: 15);
+    dio.options.receiveTimeout = const Duration(seconds: 15);
 
     dio.interceptors.add(
       InterceptorsWrapper(
@@ -28,11 +34,11 @@ class DioConsumer extends ApiConsumer {
           String? token = TokenManager.instance.token;
 
           // 2. Fallback to SharedPreferences (for rememberMe sessions)
-          token ??= CacheHelper().getData(key: CacheKeys.token) as String?;
+          token ??= cacheHelper.getData(key: CacheKeys.token) as String?;
 
           // 3. Fallback to SecureStorage (for non-rememberMe cold starts)
           if (token == null || token.isEmpty) {
-            token = await SecureStorageHelper().read(key: CacheKeys.token);
+            token = await secureStorage.read(key: CacheKeys.token);
             // Cache it in memory for subsequent requests
             if (token != null && token.isNotEmpty) {
               TokenManager.instance.setToken(token);
@@ -82,6 +88,7 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow; // Ensures non-null return path for the compiler
     }
   }
 
@@ -103,6 +110,7 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow; // Ensures non-null return path for the compiler
     }
   }
 
@@ -124,6 +132,7 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow; // Ensures non-null return path for the compiler
     }
   }
 
@@ -148,6 +157,7 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow; // Ensures non-null return path for the compiler
     }
   }
 
@@ -172,6 +182,7 @@ class DioConsumer extends ApiConsumer {
       return response.data;
     } on DioException catch (e) {
       handleDioException(e);
+      rethrow; // Ensures non-null return path for the compiler
     }
   }
 }

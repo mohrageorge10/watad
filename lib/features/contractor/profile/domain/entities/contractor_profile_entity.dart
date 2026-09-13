@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 
 class ContractorProfileEntity extends Equatable {
   final String id;
@@ -16,6 +17,7 @@ class ContractorProfileEntity extends Equatable {
   final List<String> specializations;
   final List<String> coveredGovernorates;
   final List<String> portfolioImages;
+  final List<PortfolioProjectItemModel> portfolioProjects;
   final String? profileImagePath;
   final bool? isCompleted;
 
@@ -35,18 +37,25 @@ class ContractorProfileEntity extends Equatable {
     required this.specializations,
     required this.coveredGovernorates,
     required this.portfolioImages,
+    this.portfolioProjects = const [],
     this.profileImagePath,
     this.isCompleted,
   });
 
   bool get isProfileComplete {
-    if (isCompleted != null) return isCompleted!;
-    return companyName.trim().isNotEmpty &&
-        commercialRegister.trim().isNotEmpty &&
-        commercialRegister.trim() != '-' &&
-        taxCard.trim().isNotEmpty &&
-        taxCard.trim() != '-' &&
-        aboutMe.trim().isNotEmpty;
+    if (isCompleted == true) return true;
+
+    final hasCompany = companyName.trim().isNotEmpty;
+    final hasAbout = aboutMe.trim().isNotEmpty &&
+        !aboutMe.contains('Tap Edit Profile') &&
+        !aboutMe.contains('Tell clients about');
+    final hasCommercial =
+        commercialRegister.trim().isNotEmpty && commercialRegister.trim() != '-';
+    final hasTax = taxCard.trim().isNotEmpty && taxCard.trim() != '-';
+    final hasSpec = specializations.isNotEmpty;
+    final hasExp = yearsOfExperience.trim().isNotEmpty && yearsOfExperience.trim() != '0';
+
+    return hasCompany && (hasAbout || hasCommercial || hasTax || hasSpec || hasExp);
   }
 
   ContractorProfileEntity copyWith({
@@ -65,6 +74,7 @@ class ContractorProfileEntity extends Equatable {
     List<String>? specializations,
     List<String>? coveredGovernorates,
     List<String>? portfolioImages,
+    List<PortfolioProjectItemModel>? portfolioProjects,
     String? profileImagePath,
     bool clearProfileImage = false,
     bool? isCompleted,
@@ -85,6 +95,7 @@ class ContractorProfileEntity extends Equatable {
       specializations: specializations ?? this.specializations,
       coveredGovernorates: coveredGovernorates ?? this.coveredGovernorates,
       portfolioImages: portfolioImages ?? this.portfolioImages,
+      portfolioProjects: portfolioProjects ?? this.portfolioProjects,
       profileImagePath: clearProfileImage
           ? null
           : (profileImagePath ?? this.profileImagePath),
@@ -109,6 +120,7 @@ class ContractorProfileEntity extends Equatable {
         specializations,
         coveredGovernorates,
         portfolioImages,
+        portfolioProjects,
         profileImagePath,
         isCompleted,
       ];

@@ -17,17 +17,19 @@ import 'package:watad/features/contractor/profile/presentation/view/sections/por
 import 'package:watad/features/contractor/profile/presentation/view/sections/reviews_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/specialization_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/stats_card_section.dart';
-import 'package:watad/features/contractor/profile/presentation/view/widgets/contractor_profile_bottom_nav_bar.dart';
+import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
 
 class ContractorProfileScreen extends StatelessWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onNavigateToMyProjects;
+  final VoidCallback? onNavigateToPortfolio;
   final bool showBottomNavBar;
 
   const ContractorProfileScreen({
     super.key,
     this.onSettingsTap,
     this.onNavigateToMyProjects,
+    this.onNavigateToPortfolio,
     this.showBottomNavBar = true,
   });
 
@@ -87,14 +89,17 @@ class ContractorProfileScreen extends StatelessWidget {
                           onSettingsTap: onSettingsTap,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(top: 85.h),
+                          padding: EdgeInsets.only(top: 100.h),
                           child: MainProfileCardSection(
                             profile: profile,
-                            onEditProfileTap: () {
-                              context.push(
+                            onEditProfileTap: () async {
+                              final updated = await context.push(
                                 AppRoutes.editProfile,
                                 extra: cubit,
                               );
+                              if (updated == true || context.mounted) {
+                                await cubit.loadProfile();
+                              }
                             },
                             onUpdatePhoto: (path) {
                               cubit.updateProfileImage(path);
@@ -132,29 +137,40 @@ class ContractorProfileScreen extends StatelessWidget {
                       ),
                       SpecializationSection(
                         profile: profile,
-                        onAddSpecialization: (item) {
-                          cubit.addSpecialization(item);
-                        },
-                        onRemoveSpecialization: (item) {
-                          cubit.removeSpecialization(item);
+                        onEditTap: () async {
+                          final updated = await context.push(
+                            AppRoutes.editProfile,
+                            extra: cubit,
+                          );
+                          if (updated == true || context.mounted) {
+                            await cubit.loadProfile();
+                          }
                         },
                       ),
                       CoveredGovernoratesSection(
                         profile: profile,
-                        onAddCity: (city) {
-                          cubit.addCoveredGovernorate(city);
-                        },
-                        onRemoveCity: (city) {
-                          cubit.removeCoveredGovernorate(city);
+                        onEditTap: () async {
+                          final updated = await context.push(
+                            AppRoutes.editProfile,
+                            extra: cubit,
+                          );
+                          if (updated == true || context.mounted) {
+                            await cubit.loadProfile();
+                          }
                         },
                       ),
                       PortfolioSection(
                         profile: profile,
                         onViewAllTap: () {
-                          if (onNavigateToMyProjects != null) {
+                          if (onNavigateToPortfolio != null) {
+                            onNavigateToPortfolio!();
+                          } else if (onNavigateToMyProjects != null) {
                             onNavigateToMyProjects!();
                           } else {
-                            context.push(AppRoutes.portfolioProjects);
+                            context.push(
+                              AppRoutes.myProjects,
+                              extra: 1,
+                            );
                           }
                         },
                       ),
@@ -163,10 +179,15 @@ class ContractorProfileScreen extends StatelessWidget {
                       PortfolioSection(
                         profile: profile,
                         onViewAllTap: () {
-                          if (onNavigateToMyProjects != null) {
+                          if (onNavigateToPortfolio != null) {
+                            onNavigateToPortfolio!();
+                          } else if (onNavigateToMyProjects != null) {
                             onNavigateToMyProjects!();
                           } else {
-                            context.push(AppRoutes.portfolioProjects);
+                            context.push(
+                              AppRoutes.myProjects,
+                              extra: 1,
+                            );
                           }
                         },
                       ),
@@ -189,13 +210,17 @@ class ContractorProfileScreen extends StatelessWidget {
         },
       ),
       bottomNavigationBar: showBottomNavBar
-          ? ContractorProfileBottomNavBar(
+          ? ContractorBottomNavBar(
               currentIndex: 4,
               onTap: (index) {
-                if (index == 2) {
-                  context.push(AppRoutes.portfolioProjects);
-                } else if (index == 0) {
+                if (index == 0) {
                   context.go(AppRoutes.home);
+                } else if (index == 1) {
+                  context.go(AppRoutes.marketplace);
+                } else if (index == 2) {
+                  context.go(AppRoutes.myProjects);
+                } else if (index == 3) {
+                  context.go(AppRoutes.myBids);
                 }
               },
             )

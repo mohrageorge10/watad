@@ -125,28 +125,6 @@ void main() {
         expect(json['resetToken'], 'guid-reset-token');
         expect(json['newPassword'], 'NewPassword123');
       });
-
-      test('GoogleLoginRequestModel converts to Json correctly', () {
-        final model = GoogleLoginRequestModel(
-          idToken: 'google_id_token_xyz',
-          userType: 1,
-        );
-
-        final json = model.toJson();
-        expect(json['idToken'], 'google_id_token_xyz');
-        expect(json['userType'], 1);
-      });
-
-      test('FacebookLoginRequestModel converts to Json correctly', () {
-        final model = FacebookLoginRequestModel(
-          accessToken: 'facebook_access_token_xyz',
-          userType: 3,
-        );
-
-        final json = model.toJson();
-        expect(json['accessToken'], 'facebook_access_token_xyz');
-        expect(json['userType'], 3);
-      });
     });
 
     group('ErrorModel Parsing', () {

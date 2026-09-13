@@ -1,24 +1,42 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 
-class ContractDigitalSignatureWidget extends StatelessWidget {
+class ContractDigitalSignatureWidget extends StatefulWidget {
   final VoidCallback? onClear;
-  final VoidCallback? onTapSignature;
-  final bool hasSignature;
+  final ValueChanged<bool>? onSignatureChanged;
   final String disclaimerText;
 
   const ContractDigitalSignatureWidget({
     super.key,
     this.onClear,
-    this.onTapSignature,
-    this.hasSignature = false,
+    this.onSignatureChanged,
     this.disclaimerText =
         'Your signature will be added to the contract document before final submission.',
   });
 
   @override
+  State<ContractDigitalSignatureWidget> createState() =>
+      _ContractDigitalSignatureWidgetState();
+}
+
+class _ContractDigitalSignatureWidgetState
+    extends State<ContractDigitalSignatureWidget> {
+  final List<Offset?> _points = [];
+
+  void _handleClear() {
+    setState(() {
+      _points.clear();
+    });
+    widget.onSignatureChanged?.call(false);
+    widget.onClear?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bool hasDrawn = _points.isNotEmpty;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -47,40 +65,77 @@ class ContractDigitalSignatureWidget extends StatelessWidget {
             ),
             child: Container(
               width: double.infinity,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+              height: 70.h,
+              padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: const Color(0xFFFAFAFC),
                 borderRadius: BorderRadius.circular(12.r),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Signature wave graphic & placeholder text
+                  // Signature interactive drawing canvas / placeholder
                   Expanded(
-                    child: InkWell(
-                      onTap: onTapSignature,
-                      child: Row(
-                        children: [
-                          // Handwritten wave signature icon
-                          CustomPaint(
-                            size: Size(44.w, 24.h),
-                            painter: _SignatureWavePainter(
-                              color: const Color(0xFF1D1D1F),
-                            ),
+                    child: GestureDetector(
+                      onPanStart: (details) {
+                        setState(() {
+                          _points.add(details.localPosition);
+                        });
+                        widget.onSignatureChanged?.call(true);
+                      },
+                      onPanUpdate: (details) {
+                        setState(() {
+                          _points.add(details.localPosition);
+                        });
+                      },
+                      onPanEnd: (details) {
+                        setState(() {
+                          _points.add(null);
+                        });
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.r),
+                        child: Container(
+                          color: Colors.transparent,
+                          child: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              // Placeholder when no points drawn yet
+                              if (!hasDrawn)
+                                Row(
+                                  children: [
+                                    // Handwritten wave signature icon
+                                    CustomPaint(
+                                      size: Size(44.w, 24.h),
+                                      painter: _SignatureWavePainter(
+                                        color: const Color(0xFF1D1D1F),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    Expanded(
+                                      child: Text(
+                                        'Draw your signature here',
+                                        style: TextStyle(
+                                          color: const Color(0xFF8E8E93),
+                                          fontSize: 13.sp,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                              // Custom painter for user drawn strokes
+                              if (hasDrawn)
+                                CustomPaint(
+                                  painter: _SignatureStrokePainter(
+                                    points: _points,
+                                    strokeColor: const Color(0xFF1D1D1F),
+                                  ),
+                                ),
+                            ],
                           ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Text(
-                              'Draw your signature here',
-                              style: TextStyle(
-                                color: const Color(0xFF8E8E93),
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.w400,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -89,7 +144,7 @@ class ContractDigitalSignatureWidget extends StatelessWidget {
 
                   // Clear button
                   OutlinedButton(
-                    onPressed: onClear,
+                    onPressed: _handleClear,
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(
                         color: AppColors.primary,
@@ -136,7 +191,7 @@ class ContractDigitalSignatureWidget extends StatelessWidget {
               SizedBox(width: 8.w),
               Expanded(
                 child: Text(
-                  disclaimerText,
+                  widget.disclaimerText,
                   style: TextStyle(
                     color: const Color(0xFF8E8E93),
                     fontSize: 12.sp,
@@ -210,7 +265,7 @@ class _DashedRectPainter extends CustomPainter {
   }
 }
 
-/// Custom painter for the signature wave lines matching the screenshot
+/// Custom painter for placeholder wavy line
 class _SignatureWavePainter extends CustomPainter {
   final Color color;
 
@@ -226,7 +281,6 @@ class _SignatureWavePainter extends CustomPainter {
       ..strokeJoin = StrokeJoin.round;
 
     final path = Path();
-    // Smooth wavy signature line mimicking handwritten stroke
     final h = size.height;
     final w = size.width;
 
@@ -241,5 +295,42 @@ class _SignatureWavePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _SignatureWavePainter oldDelegate) {
     return oldDelegate.color != color;
+  }
+}
+
+/// Custom painter for user drawn interactive strokes
+class _SignatureStrokePainter extends CustomPainter {
+  final List<Offset?> points;
+  final Color strokeColor;
+
+  _SignatureStrokePainter({
+    required this.points,
+    required this.strokeColor,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = strokeColor
+      ..strokeCap = StrokeCap.round
+      ..strokeJoin = StrokeJoin.round
+      ..strokeWidth = 2.4;
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i]!, points[i + 1]!, paint);
+      } else if (points[i] != null && points[i + 1] == null) {
+        canvas.drawPoints(
+          PointMode.points,
+          [points[i]!],
+          paint,
+        );
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _SignatureStrokePainter oldDelegate) {
+    return oldDelegate.points != points || oldDelegate.strokeColor != strokeColor;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/shared/widgets/app_chip_widget.dart';
 
 class EditProfileChipWidget extends StatelessWidget {
   final String text;
@@ -20,44 +20,13 @@ class EditProfileChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isActive ? AppColors.primary : const Color(0xFFE5E5EA);
-    final textColor = isActive ? AppColors.white100 : const Color(0xFF8E8E93);
-
-    return InkWell(
+    return AppChipWidget(
+      label: text,
+      isActive: isActive,
+      hasCloseIcon: hasCloseIcon,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(20.r),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              text,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 13.sp,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            if (hasCloseIcon) ...[
-              SizedBox(width: 6.w),
-              GestureDetector(
-                onTap: onCloseTap,
-                behavior: HitTestBehavior.opaque,
-                child: Icon(
-                  Icons.close_rounded,
-                  size: 15.r,
-                  color: textColor,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ),
+      onCloseTap: onCloseTap,
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
     );
   }
 }

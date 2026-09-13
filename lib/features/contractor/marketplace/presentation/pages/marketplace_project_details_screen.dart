@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
-import 'package:watad/features/contractor/marketplace/data/mock/mock_marketplace_details_data.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_details_entity.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/sections/marketplace_details_card_section.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/sections/marketplace_details_header_section.dart';
@@ -24,7 +23,21 @@ class MarketplaceProjectDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final details = project ?? MockMarketplaceDetailsData.getVillaProjectDetails();
+    final details = project ??
+        const MarketplaceProjectDetailsEntity(
+          id: '',
+          title: 'Project Details',
+          status: 'Open for Bidding',
+          location: 'Egypt',
+          images: [],
+          specs: [],
+          estimatedBudget: 'N/A',
+          expectedDuration: 'N/A',
+          startDate: 'N/A',
+          completionDate: 'N/A',
+          description: 'No detailed description available.',
+          attachments: [],
+        );
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FA),

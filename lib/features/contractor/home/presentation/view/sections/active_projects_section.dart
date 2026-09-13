@@ -70,7 +70,7 @@ class ActiveProjectsSection extends StatelessWidget {
             ContractorEmptyCardWidget(
               title: 'No Active Projects Yet',
               message:
-                  'Start exploring the market place to submit proposals or track your contracted projects here',
+                  'Start adding projects to your portfolio or track your contracted projects here',
               buttonTitle: 'Explore Marketplace',
               onButtonPressed: onExploreTap,
             )

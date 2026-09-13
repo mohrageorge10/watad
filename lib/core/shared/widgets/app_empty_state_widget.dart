@@ -58,8 +58,9 @@ class AppEmptyStateWidget extends StatelessWidget {
               AppElevatedButton(
                 title: buttonTitle!,
                 onPressed: onButtonPressed,
-                width: 200.w,
-                height: 44,
+                width: 220.w,
+                height: 46,
+                padding: EdgeInsets.symmetric(horizontal: 14.w),
               ),
             ],
           ],

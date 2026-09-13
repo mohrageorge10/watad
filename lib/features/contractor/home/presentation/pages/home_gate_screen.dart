@@ -6,6 +6,7 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/home/presentation/pages/contractor_main_layout_screen.dart';
@@ -25,9 +26,7 @@ class HomeGateScreen extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
             backgroundColor: Color(0xFFF6F8FA),
-            body: Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            ),
+            body: AppLoadingIndicator(),
           );
         }
 

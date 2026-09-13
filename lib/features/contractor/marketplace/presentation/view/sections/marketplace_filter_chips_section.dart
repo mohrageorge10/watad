@@ -5,10 +5,12 @@ import 'package:watad/features/contractor/marketplace/presentation/view/widgets/
 class FilterChipData {
   final String label;
   final IconData? icon;
+  final bool? isSelected;
 
   const FilterChipData({
     required this.label,
     this.icon,
+    this.isSelected,
   });
 }
 
@@ -39,7 +41,7 @@ class MarketplaceFilterChipsSection extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         child: Row(
           children: chips.map((chip) {
-            final isSelected = activeChip == chip.label;
+            final isSelected = chip.isSelected ?? (activeChip == chip.label);
             return Padding(
               padding: EdgeInsets.only(right: 12.w),
               child: MarketplaceFilterChip(

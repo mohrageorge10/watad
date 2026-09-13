@@ -11,6 +11,15 @@ import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/submit_bid_uploaded_file_tile.dart';
 import 'package:watad/features/contractor/profile/presentation/view/widgets/shadowed_text_field.dart';
 
+typedef OnEditBidSaveCallback = void Function({
+  required String cost,
+  required String duration,
+  required String proposal,
+  String? fileName,
+  String? filePath,
+  required bool hasFile,
+});
+
 class EditBidFormSection extends StatefulWidget {
   final String projectName;
   final String initialCost;
@@ -18,17 +27,16 @@ class EditBidFormSection extends StatefulWidget {
   final String initialProposal;
   final String? initialFileName;
   final String? initialFileSize;
-  final void Function(String cost, String duration)? onSaveChanges;
+  final OnEditBidSaveCallback? onSaveChanges;
 
   const EditBidFormSection({
     super.key,
     required this.projectName,
-    this.initialCost = '2,450,000',
-    this.initialDuration = '6',
-    this.initialProposal =
-        'We will deliver the project with high quality and on time, using experienced team and modern construction techniques.',
-    this.initialFileName = 'Technical_Proposal.pdf',
-    this.initialFileSize = '4.2 MB',
+    this.initialCost = '',
+    this.initialDuration = '',
+    this.initialProposal = '',
+    this.initialFileName,
+    this.initialFileSize,
     this.onSaveChanges,
   });
 
@@ -41,9 +49,10 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
   late final TextEditingController _durationController;
   late final TextEditingController _proposalController;
 
-  bool _hasFile = true;
-  String _fileName = 'Technical_Proposal.pdf';
-  String _fileSize = '4.2 MB';
+  bool _hasFile = false;
+  String _fileName = '';
+  String _fileSize = '';
+  String? _filePath;
   int _charCount = 0;
 
   @override
@@ -52,9 +61,9 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
     _costController = TextEditingController(text: widget.initialCost);
     _durationController = TextEditingController(text: widget.initialDuration);
     _proposalController = TextEditingController(text: widget.initialProposal);
-    _fileName = widget.initialFileName ?? 'Technical_Proposal.pdf';
-    _fileSize = widget.initialFileSize ?? '4.2 MB';
-    _hasFile = widget.initialFileName != null;
+    _hasFile = widget.initialFileName != null && widget.initialFileName!.isNotEmpty;
+    _fileName = widget.initialFileName ?? '';
+    _fileSize = widget.initialFileSize ?? '';
     _charCount = _proposalController.text.length;
 
     _proposalController.addListener(() {
@@ -62,6 +71,27 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
         _charCount = _proposalController.text.length;
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant EditBidFormSection oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialCost != widget.initialCost && _costController.text.isEmpty) {
+      _costController.text = widget.initialCost;
+    }
+    if (oldWidget.initialDuration != widget.initialDuration && _durationController.text.isEmpty) {
+      _durationController.text = widget.initialDuration;
+    }
+    if (oldWidget.initialProposal != widget.initialProposal && _proposalController.text.isEmpty) {
+      _proposalController.text = widget.initialProposal;
+    }
+    if (oldWidget.initialFileName != widget.initialFileName) {
+      setState(() {
+        _hasFile = widget.initialFileName != null && widget.initialFileName!.isNotEmpty;
+        _fileName = widget.initialFileName ?? '';
+        _fileSize = widget.initialFileSize ?? '';
+      });
+    }
   }
 
   @override
@@ -139,6 +169,7 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
           _hasFile = true;
           _fileName = picked.name;
           _fileSize = formattedSize;
+          _filePath = picked.path;
         });
 
         if (mounted) {
@@ -161,6 +192,7 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
   void _handleSave() {
     final cost = _costController.text.trim();
     final duration = _durationController.text.trim();
+    final proposal = _proposalController.text.trim();
 
     if (cost.isEmpty) {
       AppToast.showError(context, 'Please enter proposed cost.');
@@ -172,11 +204,24 @@ class _EditBidFormSectionState extends State<EditBidFormSection> {
     }
 
     if (widget.onSaveChanges != null) {
-      widget.onSaveChanges!(cost, duration);
+      widget.onSaveChanges!(
+        cost: cost,
+        duration: duration,
+        proposal: proposal,
+        fileName: _hasFile ? _fileName : null,
+        filePath: _hasFile ? _filePath : null,
+        hasFile: _hasFile,
+      );
     } else {
       AppToast.showSuccess(context, 'Changes saved successfully!');
       if (context.canPop()) {
-        context.pop();
+        context.pop({
+          'cost': cost,
+          'duration': duration,
+          'proposal': proposal,
+          'fileName': _hasFile ? _fileName : null,
+          'hasFile': _hasFile,
+        });
       }
     }
   }

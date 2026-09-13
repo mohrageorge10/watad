@@ -4,7 +4,7 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
-import 'package:watad/features/contractor/profile/data/mock/contractor_profile_mock_data.dart';
+import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/profile/data/models/contractor_profile_model.dart';
 import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 
@@ -54,21 +54,141 @@ class ContractorProfileRemoteDataSourceImpl
         headers: headers,
       );
 
+      List<PortfolioProjectItemModel> portfolioProjects = [];
+      try {
+        final portfolioResp = await apiConsumer.get(
+          EndPoints.contractorPortfolio,
+          headers: headers,
+        );
+        if (portfolioResp is List) {
+          portfolioProjects = portfolioResp
+              .map((item) =>
+                  PortfolioProjectItemModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+        } else if (portfolioResp is Map<String, dynamic>) {
+          final dynamic pData = portfolioResp[ApiKey.data] ??
+              portfolioResp['items'] ??
+              portfolioResp['portfolio'] ??
+              portfolioResp['portfolioItems'];
+          if (pData is List) {
+            portfolioProjects = pData
+                .map((item) =>
+                    PortfolioProjectItemModel.fromJson(item as Map<String, dynamic>))
+                .toList();
+          }
+        }
+      } catch (_) {}
+
       // 4. Map JSON response to ContractorProfileModel
       if (response is Map<String, dynamic>) {
         final dynamic data = response[ApiKey.data] ?? response;
         if (data is Map<String, dynamic>) {
-          return ContractorProfileModel.fromJson(data);
+          final profileModel = ContractorProfileModel.fromJson(data);
+
+          // Merge projects from dedicated portfolio endpoint with profile summary
+          final Map<String, PortfolioProjectItemModel> mergedProjects = {};
+          for (final p in profileModel.portfolioProjects) {
+            if (p.id.isNotEmpty) mergedProjects[p.id] = p;
+          }
+          for (final p in portfolioProjects) {
+            if (p.id.isNotEmpty) mergedProjects[p.id] = p;
+          }
+          final List<PortfolioProjectItemModel> effectiveProjects =
+              mergedProjects.isNotEmpty
+                  ? mergedProjects.values.toList()
+                  : (portfolioProjects.isNotEmpty
+                      ? portfolioProjects
+                      : profileModel.portfolioProjects);
+
+          final cachedCompany =
+              cacheHelper.getData(key: 'contractor_cached_company_name') as String?;
+          final cachedCommercial =
+              cacheHelper.getData(key: 'contractor_cached_commercial_register') as String?;
+          final cachedTax =
+              cacheHelper.getData(key: 'contractor_cached_tax_card') as String?;
+          final cachedAbout =
+              cacheHelper.getData(key: 'contractor_cached_about_me') as String?;
+          final cachedIsComplete =
+              cacheHelper.getData(key: 'contractor_is_profile_complete') == true;
+
+          return ContractorProfileModel(
+            id: profileModel.id,
+            name: profileModel.name,
+            companyName: (cachedCompany != null && cachedCompany.trim().isNotEmpty)
+                ? cachedCompany.trim()
+                : profileModel.companyName,
+            rating: profileModel.rating,
+            reviewsCount: profileModel.reviewsCount,
+            isVerified: profileModel.isVerified,
+            yearsOfExperience: profileModel.yearsOfExperience,
+            projectsCompiled: effectiveProjects.isNotEmpty
+                ? effectiveProjects.length.toString()
+                : profileModel.projectsCompiled,
+            verificationStatus: profileModel.verificationStatus,
+            commercialRegister: (cachedCommercial != null && cachedCommercial.trim().isNotEmpty)
+                ? cachedCommercial.trim()
+                : profileModel.commercialRegister,
+            taxCard: (cachedTax != null && cachedTax.trim().isNotEmpty)
+                ? cachedTax.trim()
+                : profileModel.taxCard,
+            aboutMe: (cachedAbout != null && cachedAbout.trim().isNotEmpty)
+                ? cachedAbout.trim()
+                : profileModel.aboutMe,
+            specializations: profileModel.specializations,
+            coveredGovernorates: profileModel.coveredGovernorates,
+            portfolioImages: profileModel.portfolioImages,
+            portfolioProjects: effectiveProjects,
+            profileImagePath: profileModel.profileImagePath,
+            isCompleted: cachedIsComplete || profileModel.isCompleted == true,
+          );
         }
       }
 
-      throw const FormatException('Invalid profile response structure');
-    } on DioException {
-      // Catch DioException (401 Unauthorized, timeout, network errors) gracefully
+      return _createInitialProfile();
+    } on DioException catch (e) {
+      // If 404 or not found, return initial profile so new contractors can set up details
+      if (e.response?.statusCode == 404) {
+        return _createInitialProfile();
+      }
       rethrow;
-    } catch (e) {
-      rethrow;
+    } catch (_) {
+      return _createInitialProfile();
     }
+  }
+
+  ContractorProfileModel _createInitialProfile() {
+    final cachedName = (cacheHelper.getData(key: CacheKeys.userName) as String?) ?? 'Contractor';
+    final cachedId = (cacheHelper.getData(key: CacheKeys.userId) as String?) ?? '';
+    final cachedCompany =
+        cacheHelper.getData(key: 'contractor_cached_company_name') as String?;
+    final cachedAbout =
+        cacheHelper.getData(key: 'contractor_cached_about_me') as String?;
+    final cachedCommercial =
+        cacheHelper.getData(key: 'contractor_cached_commercial_register') as String?;
+    final cachedTax =
+        cacheHelper.getData(key: 'contractor_cached_tax_card') as String?;
+    final cachedIsComplete =
+        cacheHelper.getData(key: 'contractor_is_profile_complete') == true;
+
+    return ContractorProfileModel(
+      id: cachedId,
+      name: cachedName.isNotEmpty ? cachedName : 'Contractor',
+      companyName: cachedCompany ?? '',
+      rating: 0.0,
+      reviewsCount: 0,
+      isVerified: false,
+      yearsOfExperience: '0',
+      projectsCompiled: '0',
+      verificationStatus: 'Unverified',
+      commercialRegister: cachedCommercial ?? '',
+      taxCard: cachedTax ?? '',
+      aboutMe: cachedAbout ?? '',
+      specializations: const [],
+      coveredGovernorates: const [],
+      portfolioImages: const [],
+      profileImagePath: null,
+      isCompleted: cachedIsComplete,
+    );
   }
 
   @override
@@ -107,19 +227,7 @@ class ContractorProfileRemoteDataSourceImpl
     required String contractorId,
     String? userName,
   }) async {
-    final token = await secureStorage.read(key: CacheKeys.token) ??
-        (cacheHelper.getData(key: CacheKeys.token) as String?);
-
-    if (token != null && token.isNotEmpty) {
-      return await fetchContractorProfile();
-    }
-
-    // Fallback for unauthenticated local development / testing
-    await Future.delayed(const Duration(milliseconds: 600));
-    return ContractorProfileMockData.getContractorProfile(
-      contractorId: contractorId,
-      userName: userName,
-    );
+    return await fetchContractorProfile();
   }
 
   @override
@@ -152,46 +260,11 @@ class ContractorProfileRemoteDataSourceImpl
         }
       }
 
-      return _getMockReviews();
+      return const [];
     } on DioException {
-      return _getMockReviews();
+      return const [];
     } catch (_) {
-      return _getMockReviews();
+      return const [];
     }
-  }
-
-  List<ReviewModel> _getMockReviews() {
-    return const [
-      ReviewModel(
-        id: 'rev_1',
-        reviewerName: 'Eng. Tarek Mostafa',
-        reviewerImage: null,
-        rating: 5.0,
-        comment:
-            'Exceptional concrete pouring quality. Delivered ahead of scheduled milestone with full safety compliance.',
-        date: '2 weeks ago',
-        projectName: 'New Cairo Villa',
-      ),
-      ReviewModel(
-        id: 'rev_2',
-        reviewerName: 'Al-Rehab Developers',
-        reviewerImage: null,
-        rating: 4.8,
-        comment:
-            'Professional team with strong engineering discipline and timely execution of foundation work.',
-        date: '1 month ago',
-        projectName: 'Commercial Tower Foundation',
-      ),
-      ReviewModel(
-        id: 'rev_3',
-        reviewerName: 'Fahad Al-Otaibi',
-        reviewerImage: null,
-        rating: 4.9,
-        comment:
-            'Superb communication and technical diligence throughout the project stages. Highly recommended.',
-        date: '2 months ago',
-        projectName: 'Al-Riyadh Tower',
-      ),
-    ];
   }
 }

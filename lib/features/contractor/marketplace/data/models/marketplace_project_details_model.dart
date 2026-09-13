@@ -85,30 +85,129 @@ class MarketplaceProjectDetailsModel extends MarketplaceProjectDetailsEntity {
   });
 
   factory MarketplaceProjectDetailsModel.fromJson(Map<String, dynamic> json) {
+    // Title
+    final String title = json['title'] as String? ??
+        json['projectName'] as String? ??
+        'Project Details';
+
+    // Status
+    final String status = json['status'] as String? ?? 'Open for Bids';
+
+    // Location
+    String location = json['location'] as String? ?? '';
+    if (location.isEmpty) {
+      final city = json['city'] as String?;
+      final gov = json['governorate'] as String?;
+      if (city != null && gov != null && city.isNotEmpty && gov.isNotEmpty) {
+        location = '$city, $gov';
+      } else if (gov != null && gov.isNotEmpty) {
+        location = gov;
+      } else if (city != null && city.isNotEmpty) {
+        location = city;
+      } else {
+        location = 'Egypt';
+      }
+    }
+
+    // Images
+    List<String> images = (json['images'] as List<dynamic>?)
+            ?.map((item) => item.toString())
+            .toList() ??
+        [];
+    if (images.isEmpty && json['photos'] is List) {
+      images = (json['photos'] as List).map((e) => e.toString()).toList();
+    }
+    if (images.isEmpty && json['mediaUrls'] is List) {
+      images = (json['mediaUrls'] as List).map((e) => e.toString()).toList();
+    }
+    if (images.isEmpty && json['image'] != null) {
+      images = [json['image'].toString()];
+    }
+    if (images.isEmpty) {
+      images = [
+        'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80',
+      ];
+    }
+
+    // Specs
+    List<MarketplaceSpecItemModel> specs = [];
+    if (json['specs'] is List) {
+      specs = (json['specs'] as List)
+          .map((item) =>
+              MarketplaceSpecItemModel.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } else {
+      if (json['landArea'] != null) {
+        specs.add(MarketplaceSpecItemModel(
+          icon: 'assets/icons/ruler.svg',
+          label: 'Land Size',
+          value: '${json['landArea']} m²',
+        ));
+      }
+      if (json['floorsCount'] != null) {
+        specs.add(MarketplaceSpecItemModel(
+          icon: 'assets/icons/layers.svg',
+          label: 'Floors',
+          value: '${json['floorsCount']} Floors',
+        ));
+      }
+      if (json['finishingLevel'] != null) {
+        specs.add(MarketplaceSpecItemModel(
+          icon: 'assets/icons/brush.svg',
+          label: 'Finishing',
+          value: json['finishingLevel'].toString(),
+        ));
+      }
+    }
+
+    // Estimated Budget
+    String estimatedBudget = json['estimatedBudget']?.toString() ??
+        json['budgetValue']?.toString() ??
+        '';
+    if (estimatedBudget.isNotEmpty && !estimatedBudget.startsWith('EGP')) {
+      final num? numBudget = num.tryParse(estimatedBudget);
+      if (numBudget != null) {
+        estimatedBudget = 'EGP ${numBudget.toStringAsFixed(0)}';
+      } else {
+        estimatedBudget = 'EGP $estimatedBudget';
+      }
+    }
+
+    // Expected Duration
+    String expectedDuration = json['expectedDuration'] as String? ?? '';
+    if (expectedDuration.isEmpty && json['expectedDurationMonths'] != null) {
+      expectedDuration = '${json['expectedDurationMonths']} Months';
+    }
+
+    // Dates & Description
+    final startDate = json['startDate'] as String? ??
+        json['expectedStartDate'] as String? ??
+        'Flexible';
+    final completionDate = json['completionDate'] as String? ?? 'N/A';
+    final description = json['description'] as String? ??
+        json['notes'] as String? ??
+        'Project open for bidding on the marketplace.';
+
+    // Attachments
+    final attachments = (json['attachments'] as List<dynamic>?)
+            ?.map((item) => MarketplaceAttachmentModel.fromJson(
+                item as Map<String, dynamic>))
+            .toList() ??
+        const [];
+
     return MarketplaceProjectDetailsModel(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      status: json['status'] as String? ?? 'Open for Bids',
-      location: json['location'] as String? ?? '',
-      images: (json['images'] as List<dynamic>?)
-              ?.map((item) => item.toString())
-              .toList() ??
-          const [],
-      specs: (json['specs'] as List<dynamic>?)
-              ?.map((item) => MarketplaceSpecItemModel.fromJson(
-                  item as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      estimatedBudget: json['estimatedBudget'] as String? ?? '',
-      expectedDuration: json['expectedDuration'] as String? ?? '',
-      startDate: json['startDate'] as String? ?? '',
-      completionDate: json['completionDate'] as String? ?? '',
-      description: json['description'] as String? ?? '',
-      attachments: (json['attachments'] as List<dynamic>?)
-              ?.map((item) => MarketplaceAttachmentModel.fromJson(
-                  item as Map<String, dynamic>))
-              .toList() ??
-          const [],
+      id: json['id']?.toString() ?? json['projectId']?.toString() ?? '',
+      title: title,
+      status: status,
+      location: location,
+      images: images,
+      specs: specs,
+      estimatedBudget: estimatedBudget.isNotEmpty ? estimatedBudget : 'EGP 1,500,000',
+      expectedDuration: expectedDuration.isNotEmpty ? expectedDuration : '6 Months',
+      startDate: startDate,
+      completionDate: completionDate,
+      description: description,
+      attachments: attachments,
     );
   }
 

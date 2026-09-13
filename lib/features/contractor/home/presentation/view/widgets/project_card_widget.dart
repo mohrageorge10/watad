@@ -62,11 +62,46 @@ class ProjectCardWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // 1. Project Image (64x64px, borderRadius: 8px)
-                GreyImagePlaceholder(
-                  width: 64.w,
-                  height: 64.h,
-                  borderRadius: 8,
-                  iconSize: 24,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.r),
+                  child: SizedBox(
+                    width: 64.w,
+                    height: 64.h,
+                    child: (imagePath != null &&
+                            imagePath!.isNotEmpty &&
+                            imagePath!.startsWith('http'))
+                        ? Image.network(
+                            imagePath!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const GreyImagePlaceholder(
+                              width: 64,
+                              height: 64,
+                              borderRadius: 8,
+                              iconSize: 24,
+                            ),
+                          )
+                        : (imagePath != null &&
+                                imagePath!.isNotEmpty &&
+                                imagePath!.startsWith('assets/'))
+                            ? Image.asset(
+                                imagePath!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const GreyImagePlaceholder(
+                                  width: 64,
+                                  height: 64,
+                                  borderRadius: 8,
+                                  iconSize: 24,
+                                ),
+                              )
+                            : const GreyImagePlaceholder(
+                                width: 64,
+                                height: 64,
+                                borderRadius: 8,
+                                iconSize: 24,
+                              ),
+                  ),
                 ),
 
                 // 2. Project Details (Expanded Column)

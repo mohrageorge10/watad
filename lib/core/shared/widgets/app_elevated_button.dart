@@ -68,12 +68,17 @@ class AppElevatedButton extends StatelessWidget {
                     leftIcon!,
                     SizedBox(width: 8.w),
                   ],
-                  Text(
-                    title,
-                    style: textStyle ??
-                        (disabled
-                            ? AppTextStyles.btnGrey600
-                            : AppTextStyles.btnWhite600),
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        title,
+                        style: textStyle ??
+                            (disabled
+                                ? AppTextStyles.btnGrey600
+                                : AppTextStyles.btnWhite600),
+                      ),
+                    ),
                   ),
                   if (rightIcon != null) ...[
                     SizedBox(width: 8.w),

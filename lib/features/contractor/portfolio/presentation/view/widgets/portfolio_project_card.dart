@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/portfolio/presentation/view/widgets/portfolio_status_badge.dart';
@@ -164,19 +167,26 @@ class PortfolioProjectCard extends StatelessWidget {
   }
 
   Widget _buildProjectImage() {
+    final path = project.image.isNotEmpty
+        ? project.image
+        : (project.mediaUrls.isNotEmpty ? project.mediaUrls.first : '');
+    final isHttp = path.startsWith('http://') || path.startsWith('https://');
+    final isLocal = !isHttp && path.isNotEmpty && File(path).existsSync();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         width: 80.w,
         height: 80.w,
         color: const Color(0xFFEDEFFE),
-        child: project.image.startsWith('http')
+        child: isHttp
             ? Image.network(
-                project.image,
+                path,
                 width: 80.w,
                 height: 80.w,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => _fallbackImagePlaceholder(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _fallbackImagePlaceholder(),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
@@ -184,19 +194,24 @@ class PortfolioProjectCard extends StatelessWidget {
                     height: 80.w,
                     color: const Color(0xFFF3F4F6),
                     child: Center(
-                      child: SizedBox(
-                        width: 18.r,
-                        height: 18.r,
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
+                      child: AppLoadingIndicator(
+                        size: 18.r,
+                        strokeWidth: 2,
                       ),
                     ),
                   );
                 },
               )
-            : _fallbackImagePlaceholder(),
+            : (isLocal
+                ? Image.file(
+                    File(path),
+                    width: 80.w,
+                    height: 80.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _fallbackImagePlaceholder(),
+                  )
+                : _fallbackImagePlaceholder()),
       ),
     );
   }
