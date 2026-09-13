@@ -112,7 +112,9 @@ class _ChangePasswordOtpViewState extends State<ChangePasswordOtpView> {
       backgroundColor: AppColors.white100,
       appBar: AppBar(
         backgroundColor: AppColors.white100,
-        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        elevation: 4,
+        shadowColor: Colors.black.withOpacity(0.05),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColors.primary, size: 24.r),
@@ -147,9 +149,15 @@ class _ChangePasswordOtpViewState extends State<ChangePasswordOtpView> {
                 width: double.infinity,
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
                 decoration: BoxDecoration(
-                  color: AppColors.signUp,
+                  color: AppColors.white100,
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(color: AppColors.grey200, width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 child: Row(
                   children: [

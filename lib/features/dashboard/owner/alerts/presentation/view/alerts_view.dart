@@ -11,6 +11,8 @@ import '../cubit/alerts_cubit.dart';
 import '../cubit/alerts_state.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/alert_category_chips.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
+import 'package:watad/core/routing/app_routes.dart';
 
 class AlertsView extends StatefulWidget {
   const AlertsView({super.key});
@@ -90,6 +92,12 @@ class _AlertsViewState extends State<AlertsView> {
                       onTap: () {
                         if (context.canPop()) {
                           context.pop();
+                        } else {
+                          try {
+                            context.read<MainLayoutCubit>().changeBottomNavIndex(0);
+                          } catch (_) {
+                            context.go(AppRoutes.projectDashboard);
+                          }
                         }
                       },
                       child: const Icon(Icons.arrow_back, color: AppColors.primary),

@@ -9,6 +9,7 @@ import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
 
 /// Outer widget that provides the AuthCubit via BlocProvider
 class NewPasswordView extends StatelessWidget {
@@ -64,27 +65,24 @@ class _NewPasswordContentState extends State<_NewPasswordContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoading) {
-          SmartDialog.showLoading(msg: "Updating Password...");
-        } else {
-          SmartDialog.dismiss(status: SmartStatus.loading);
-        }
-
         if (state is ConfirmNewPasswordSuccessState) {
-          SmartDialog.showToast(state.message);
+          AppToast.showSuccess(context, state.message);
           // Navigate back to profile
           Navigator.of(context).popUntil((route) => route.isFirst);
         } else if (state is AuthErrorState) {
-          SmartDialog.showToast(state.message);
+          AppToast.showError(context, state.message);
         }
       },
-      child: Scaffold(
+      builder: (context, state) {
+        return Scaffold(
         backgroundColor: AppColors.white100,
         appBar: AppBar(
           backgroundColor: AppColors.white100,
-          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.05),
           centerTitle: true,
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: AppColors.primary, size: 24.r),
@@ -279,6 +277,7 @@ class _NewPasswordContentState extends State<_NewPasswordContent> {
                   // Confirm Button
                   AppElevatedButton(
                     title: 'Confirm',
+                    isLoading: state is AuthLoading,
                     onPressed: _onConfirm,
                     width: double.infinity,
                     height: 52,
@@ -291,7 +290,8 @@ class _NewPasswordContentState extends State<_NewPasswordContent> {
             ),
           ),
         ),
-      ),
+      );
+      },
     );
   }
 }

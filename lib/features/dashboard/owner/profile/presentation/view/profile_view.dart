@@ -10,6 +10,7 @@ import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_profile_cubit.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_profile_state.dart';
 import 'package:watad/features/auth/presentation/view/change_password_view.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -166,6 +167,12 @@ class _ProfileHeader extends StatelessWidget {
                     onTap: () {
                       if (context.canPop()) {
                         context.pop();
+                      } else {
+                        try {
+                          context.read<MainLayoutCubit>().changeBottomNavIndex(0);
+                        } catch (_) {
+                          context.go(AppRoutes.projectDashboard);
+                        }
                       }
                     },
                     child: Icon(Icons.arrow_back, color: AppColors.white100, size: 24.r),

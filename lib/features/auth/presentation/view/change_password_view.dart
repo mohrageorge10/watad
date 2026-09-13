@@ -9,6 +9,7 @@ import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:watad/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
 import 'package:watad/features/auth/presentation/view/change_password_otp_view.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
@@ -58,16 +59,10 @@ class _ChangePasswordContentState extends State<_ChangePasswordContent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthLoading) {
-          SmartDialog.showLoading(msg: "Verifying...");
-        } else {
-          SmartDialog.dismiss(status: SmartStatus.loading);
-        }
-
         if (state is VerifyCurrentPasswordSuccessState) {
-          SmartDialog.showToast(state.message);
+          AppToast.showSuccess(context, state.message);
           final email =
               sl<CacheHelper>().getData(key: CacheKeys.userName) ?? "";
           Navigator.push(
@@ -77,14 +72,17 @@ class _ChangePasswordContentState extends State<_ChangePasswordContent> {
             ),
           );
         } else if (state is AuthErrorState) {
-          SmartDialog.showToast(state.message);
+          AppToast.showError(context, state.message);
         }
       },
-      child: Scaffold(
+      builder: (context, state) {
+        return Scaffold(
         backgroundColor: AppColors.white100,
         appBar: AppBar(
           backgroundColor: AppColors.white100,
-          elevation: 0,
+          surfaceTintColor: Colors.transparent,
+          elevation: 4,
+          shadowColor: Colors.black.withOpacity(0.05),
           centerTitle: true,
           leading: IconButton(
             icon:
@@ -123,8 +121,15 @@ class _ChangePasswordContentState extends State<_ChangePasswordContent> {
                     padding: EdgeInsets.symmetric(
                         horizontal: 16.w, vertical: 16.h),
                     decoration: BoxDecoration(
-                      color: AppColors.signUp,
+                      color: AppColors.white100,
                       borderRadius: BorderRadius.circular(12.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Row(
                       children: [
@@ -241,6 +246,7 @@ class _ChangePasswordContentState extends State<_ChangePasswordContent> {
                   // Continue Button
                   AppElevatedButton(
                     title: 'Continue',
+                    isLoading: state is AuthLoading,
                     onPressed: _verifyCurrentPassword,
                     width: double.infinity,
                     height: 52,
@@ -253,7 +259,8 @@ class _ChangePasswordContentState extends State<_ChangePasswordContent> {
             ),
           ),
         ),
-      ),
+      );
+      },
     );
   }
 }
