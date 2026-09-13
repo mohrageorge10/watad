@@ -22,6 +22,7 @@ class AppRoutes {
 
   // ============ Owner Feature ============
   static const String ownerDashboard = '/project-dashboard';
+  static const String ownerProjectDashboardDetails = '/project-dashboard-details';
   static const String ownerCreateProject = '/create-project';
   static const String ownerFinancialSummary = '/financial-summary';
   static const String ownerProgressSiteUpdates = '/progress-site-updates';
@@ -75,6 +76,7 @@ class AppRoutes {
   static const String resetPasswordScreen = authResetPassword;
 
   static const String projectDashboard = ownerDashboard;
+  static const String projectDashboardDetails = ownerProjectDashboardDetails;
   static const String createProject = ownerCreateProject;
   static const String financialSummary = ownerFinancialSummary;
   static const String progressSiteUpdates = ownerProgressSiteUpdates;

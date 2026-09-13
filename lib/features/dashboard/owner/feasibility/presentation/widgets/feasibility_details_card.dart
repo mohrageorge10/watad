@@ -44,7 +44,7 @@ class FeasibilityDetailsCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Total Bulit Area',
+            'Total Build Area',
             style: AppTextStyles.font14Medium.copyWith(color: AppColors.grey900, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 4.h),

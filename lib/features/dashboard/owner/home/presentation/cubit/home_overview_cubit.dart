@@ -14,7 +14,7 @@ class HomeOverviewCubit extends Cubit<HomeOverviewState> {
     final result = await getCurrentProjectOverviewUseCase();
     result.fold(
       (data) {
-        if (!data.hasActiveProject) {
+        if (data.projectId == null || data.projectId!.isEmpty) {
           emit(const HomeOverviewEmpty());
         } else {
           emit(HomeOverviewLoaded(data));

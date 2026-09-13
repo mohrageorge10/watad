@@ -14,6 +14,7 @@ class CurrentProjectOverview extends Equatable {
   final int daysElapsed;
   final DateTime? estimatedCompletionDate;
   final bool hasActiveProject;
+  final bool hasContract;
 
   const CurrentProjectOverview({
     this.projectId,
@@ -29,6 +30,7 @@ class CurrentProjectOverview extends Equatable {
     required this.daysElapsed,
     this.estimatedCompletionDate,
     required this.hasActiveProject,
+    this.hasContract = false,
   });
 
   @override
@@ -46,5 +48,6 @@ class CurrentProjectOverview extends Equatable {
         daysElapsed,
         estimatedCompletionDate,
         hasActiveProject,
+        hasContract,
       ];
 }

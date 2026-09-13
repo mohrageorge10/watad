@@ -8,6 +8,7 @@ class ProjectSummary extends Equatable {
   final String status;
   final num overallProgressPercentage;
   final DateTime? updatedAt;
+  final bool hasContract;
 
   const ProjectSummary({
     required this.projectId,
@@ -17,6 +18,7 @@ class ProjectSummary extends Equatable {
     required this.status,
     required this.overallProgressPercentage,
     this.updatedAt,
+    this.hasContract = false,
   });
 
   @override
@@ -28,5 +30,6 @@ class ProjectSummary extends Equatable {
         status,
         overallProgressPercentage,
         updatedAt,
+        hasContract,
       ];
 }

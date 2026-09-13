@@ -57,7 +57,7 @@ class HomeProjectsSection extends StatelessWidget {
                       ProjectListItem(
                         project: project,
                         onTap: () {
-                          // TODO: context.pushNamed(Routes.projectDetails, arguments: project.projectId);
+                          context.push(AppRoutes.projectDashboardDetails, extra: project.projectId);
                         },
                       ),
                       SizedBox(height: 10.h),

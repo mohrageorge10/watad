@@ -45,7 +45,9 @@ class MyProjectsListSection extends StatelessWidget {
               final project = projects[index];
               return ProjectListItem(
                 project: project,
-                onTap: () {},
+                onTap: () {
+                  context.push(AppRoutes.projectDashboardDetails, extra: project.projectId);
+                },
               );
             },
           ),

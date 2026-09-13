@@ -8,7 +8,7 @@ import 'package:watad/features/dashboard/owner/projects/create_project/presentat
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/widgets/step1_section.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/widgets/step2_section.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/widgets/step3_section.dart';
-import 'package:watad/features/dashboard/owner/projects/create_project/presentation/widgets/step5_section.dart';
+import 'package:watad/features/dashboard/owner/projects/create_project/presentation/widgets/step4_section.dart';
 
 class CreateProjectView extends StatelessWidget {
   const CreateProjectView({super.key});
@@ -35,7 +35,7 @@ class CreateProjectView extends StatelessWidget {
                         Step1Section(),
                         Step2Section(),
                         Step3Section(),
-                        Step5Section(),
+                        Step4Section(),
                       ],
                     );
                   },
@@ -104,22 +104,25 @@ class CreateProjectView extends StatelessWidget {
               child: Row(
                 children: List.generate(4, (index) {
                   final step = index + 1;
+                  final isCompleted = state.currentStep > step;
                   final isActive = state.currentStep == step;
-                  
+                  final isCircleHighlighted = isActive || isCompleted;
+                  final isLineHighlighted = isCompleted;
+
                   final circle = Container(
                     width: 40.w,
                     height: 40.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: isActive
+                      color: isCircleHighlighted
                           ? AppColors.primary
-                          : AppColors.grey200,
+                          : AppColors.grey300,
                     ),
                     alignment: Alignment.center,
                     child: Text(
                       step.toString(),
                       style: AppTextStyles.font14Medium.copyWith(
-                        color: AppColors.grey900,
+                        color: isCircleHighlighted ? AppColors.white100 : AppColors.grey900,
                       ),
                     ),
                   );
@@ -135,7 +138,7 @@ class CreateProjectView extends StatelessWidget {
                         Expanded(
                           child: Container(
                             height: 4.h,
-                            color: AppColors.grey200,
+                            color: isLineHighlighted ? AppColors.primary : AppColors.grey300,
                           ),
                         ),
                       ],

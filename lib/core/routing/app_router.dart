@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/main_layout/presentation/view/main_layout.dart';
+import 'package:watad/features/dashboard/owner/project_dashboard/presentation/view/project_dashboard_view.dart';
 import 'package:watad/features/auth/data/models/role_model.dart';
 import 'package:watad/features/auth/presentation/pages/forget_password_page.dart';
 import 'package:watad/features/auth/presentation/pages/login_page.dart';
@@ -151,6 +152,17 @@ final GoRouter appRouter = GoRouter(
       name: AppRoutes.projectDashboard,
       pageBuilder: (context, state) =>
           _buildAnimatedPage(state: state, child: const MainLayout()),
+    ),
+    GoRoute(
+      path: AppRoutes.projectDashboardDetails,
+      name: AppRoutes.projectDashboardDetails,
+      pageBuilder: (context, state) {
+        final projectId = state.extra as String?;
+        return _buildAnimatedPage(
+          state: state,
+          child: ProjectDashboardView(projectId: projectId),
+        );
+      },
     ),
     GoRoute(
       path: AppRoutes.financialSummary,

@@ -91,7 +91,7 @@ class _CreateContractBody extends StatelessWidget {
           } else if (state is CreateContractSuccess) {
             AppToast.showSuccess(context, 'Contract created successfully');
             context.pushReplacementNamed(
-              'contract_details',
+              AppRoutes.ownerContractDetails,
               extra: state.contractId,
             );
           }

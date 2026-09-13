@@ -30,13 +30,13 @@ class ChangeOrdersPageHeader extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: GestureDetector(
-              onTap: () => context.pop(),
-              child: Icon(
+            child: IconButton(
+              icon: Icon(
                 Icons.arrow_back,
                 color: AppColors.primary,
                 size: 24.sp,
               ),
+              onPressed: () => context.pop(),
             ),
           ),
           Text(
