@@ -80,6 +80,14 @@ class ContractorBidsRemoteDataSourceImpl
             .map((item) =>
                 ContractorBidModel.fromJson(item as Map<String, dynamic>))
             .toList();
+      } else if (data is Map<String, dynamic>) {
+        final dynamic items = data['items'] ?? data['bids'] ?? data['data'];
+        if (items is List) {
+          return items
+              .map((item) =>
+                  ContractorBidModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+        }
       }
     }
 
@@ -103,6 +111,11 @@ class ContractorBidsRemoteDataSourceImpl
             response[ApiKey.data] ?? response['items'] ?? response['bids'];
         if (data is List) {
           rawList = data;
+        } else if (data is Map<String, dynamic>) {
+          final dynamic items = data['items'] ?? data['bids'] ?? data['data'];
+          if (items is List) {
+            rawList = items;
+          }
         }
       }
 
@@ -138,27 +151,22 @@ class ContractorBidsRemoteDataSourceImpl
       final costClean = proposedCost.replaceAll(RegExp(r'[^0-9.]'), '');
       final durationClean = proposedDuration.replaceAll(RegExp(r'[^0-9]'), '');
 
-      dynamic fileUpload;
-      if (attachmentFilePath != null && attachmentFilePath.isNotEmpty) {
-        final fileName = attachmentFilePath.split('/').last.split('\\').last;
-        fileUpload = await MultipartFile.fromFile(
-          attachmentFilePath,
-          filename: fileName,
-        );
-      }
+      final int rawDuration = int.tryParse(durationClean) ?? int.tryParse(proposedDuration) ?? 1;
+      // Convert months (1..24) to days (e.g. 6 months -> 180 days)
+      final int durationInDays = rawDuration <= 24 ? rawDuration * 30 : rawDuration;
 
-      final formDataMap = <String, dynamic>{
-        'ProjectId': projectId,
-        'ProposedCost': double.tryParse(costClean) ?? proposedCost,
-        'ProposedDuration': int.tryParse(durationClean) ?? proposedDuration,
-        'TechnicalProposal': technicalProposal,
-        'Attachments': ?fileUpload,
+      final jsonPayload = <String, dynamic>{
+        'projectId': projectId,
+        'proposedCost': double.tryParse(costClean) ?? double.tryParse(proposedCost) ?? 0.0,
+        'proposedDurationDays': durationInDays,
+        'proposedDuration': durationInDays,
+        'durationDays': durationInDays,
+        'technicalProposal': technicalProposal,
       };
 
       final response = await apiConsumer.post(
         EndPoints.submitBid,
-        data: FormData.fromMap(formDataMap),
-        isFormData: true,
+        data: jsonPayload,
         headers: headers.isNotEmpty ? headers : null,
       );
 

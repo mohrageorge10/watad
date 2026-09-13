@@ -69,14 +69,6 @@ class ResetPasswordSuccessState extends AuthState {
   List<Object?> get props => [message];
 }
 
-class SocialLoginSuccessState extends AuthState {
-  final AuthResponseEntity response;
-  const SocialLoginSuccessState(this.response);
-
-  @override
-  List<Object?> get props => [response];
-}
-
 class AuthErrorState extends AuthState {
   final String message;
   const AuthErrorState(this.message);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_confirmation_dialog.dart';
 import 'package:watad/core/shared/widgets/app_toast.dart';
@@ -31,7 +32,9 @@ class EditProfileScreen extends StatelessWidget {
     try {
       activeCubit ??= context.read<ContractorProfileCubit>();
     } catch (_) {
-      // Fallback
+      try {
+        activeCubit ??= sl<ContractorProfileCubit>();
+      } catch (_) {}
     }
 
     final currentProfile = initialProfile ??
@@ -61,8 +64,13 @@ class EditProfileScreen extends StatelessWidget {
                 String? commercialRegister,
                 String? taxId,
               }) async {
-                if (activeCubit != null) {
-                  final error = await activeCubit.updateProfile(
+                final cubitToUse = activeCubit ??
+                    (sl.isRegistered<ContractorProfileCubit>()
+                        ? sl<ContractorProfileCubit>()
+                        : null);
+
+                if (cubitToUse != null) {
+                  final error = await cubitToUse.updateProfile(
                     name: name,
                     companyName: companyName,
                     yearsOfExperience: experience,
@@ -104,6 +112,13 @@ class EditProfileScreen extends StatelessWidget {
                       }
                     }
                   }
+                } else {
+                  if (context.mounted) {
+                    AppToast.showError(
+                      context,
+                      'Could not connect to profile service. Please try again.',
+                    );
+                  }
                 }
               },
               onCancel: () => context.pop(),
@@ -111,7 +126,6 @@ class EditProfileScreen extends StatelessWidget {
           ],
         ),
       ),
-      // No bottomNavigationBar on Edit Profile screen as requested
     );
   }
 }

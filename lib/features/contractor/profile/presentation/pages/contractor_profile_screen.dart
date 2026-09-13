@@ -22,12 +22,14 @@ import 'package:watad/features/contractor/home/presentation/view/widgets/contrac
 class ContractorProfileScreen extends StatelessWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onNavigateToMyProjects;
+  final VoidCallback? onNavigateToPortfolio;
   final bool showBottomNavBar;
 
   const ContractorProfileScreen({
     super.key,
     this.onSettingsTap,
     this.onNavigateToMyProjects,
+    this.onNavigateToPortfolio,
     this.showBottomNavBar = true,
   });
 
@@ -160,10 +162,15 @@ class ContractorProfileScreen extends StatelessWidget {
                       PortfolioSection(
                         profile: profile,
                         onViewAllTap: () {
-                          if (onNavigateToMyProjects != null) {
+                          if (onNavigateToPortfolio != null) {
+                            onNavigateToPortfolio!();
+                          } else if (onNavigateToMyProjects != null) {
                             onNavigateToMyProjects!();
                           } else {
-                            context.push(AppRoutes.portfolioProjects);
+                            context.push(
+                              AppRoutes.myProjects,
+                              extra: 1,
+                            );
                           }
                         },
                       ),
@@ -172,10 +179,15 @@ class ContractorProfileScreen extends StatelessWidget {
                       PortfolioSection(
                         profile: profile,
                         onViewAllTap: () {
-                          if (onNavigateToMyProjects != null) {
+                          if (onNavigateToPortfolio != null) {
+                            onNavigateToPortfolio!();
+                          } else if (onNavigateToMyProjects != null) {
                             onNavigateToMyProjects!();
                           } else {
-                            context.push(AppRoutes.portfolioProjects);
+                            context.push(
+                              AppRoutes.myProjects,
+                              extra: 1,
+                            );
                           }
                         },
                       ),
@@ -201,10 +213,14 @@ class ContractorProfileScreen extends StatelessWidget {
           ? ContractorBottomNavBar(
               currentIndex: 4,
               onTap: (index) {
-                if (index == 2) {
-                  context.push(AppRoutes.portfolioProjects);
-                } else if (index == 0) {
+                if (index == 0) {
                   context.go(AppRoutes.home);
+                } else if (index == 1) {
+                  context.go(AppRoutes.marketplace);
+                } else if (index == 2) {
+                  context.go(AppRoutes.myProjects);
+                } else if (index == 3) {
+                  context.go(AppRoutes.myBids);
                 }
               },
             )

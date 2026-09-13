@@ -4,6 +4,7 @@ import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
 import 'package:watad/core/network/api/end_points.dart';
 import 'package:watad/core/utils/cache_keys.dart';
+import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/profile/data/models/contractor_profile_model.dart';
 import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 
@@ -53,11 +54,93 @@ class ContractorProfileRemoteDataSourceImpl
         headers: headers,
       );
 
+      List<PortfolioProjectItemModel> portfolioProjects = [];
+      try {
+        final portfolioResp = await apiConsumer.get(
+          EndPoints.contractorPortfolio,
+          headers: headers,
+        );
+        if (portfolioResp is List) {
+          portfolioProjects = portfolioResp
+              .map((item) =>
+                  PortfolioProjectItemModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+        } else if (portfolioResp is Map<String, dynamic>) {
+          final dynamic pData = portfolioResp[ApiKey.data] ??
+              portfolioResp['items'] ??
+              portfolioResp['portfolio'] ??
+              portfolioResp['portfolioItems'];
+          if (pData is List) {
+            portfolioProjects = pData
+                .map((item) =>
+                    PortfolioProjectItemModel.fromJson(item as Map<String, dynamic>))
+                .toList();
+          }
+        }
+      } catch (_) {}
+
       // 4. Map JSON response to ContractorProfileModel
       if (response is Map<String, dynamic>) {
         final dynamic data = response[ApiKey.data] ?? response;
         if (data is Map<String, dynamic>) {
-          return ContractorProfileModel.fromJson(data);
+          final profileModel = ContractorProfileModel.fromJson(data);
+
+          // Merge projects from dedicated portfolio endpoint with profile summary
+          final Map<String, PortfolioProjectItemModel> mergedProjects = {};
+          for (final p in profileModel.portfolioProjects) {
+            if (p.id.isNotEmpty) mergedProjects[p.id] = p;
+          }
+          for (final p in portfolioProjects) {
+            if (p.id.isNotEmpty) mergedProjects[p.id] = p;
+          }
+          final List<PortfolioProjectItemModel> effectiveProjects =
+              mergedProjects.isNotEmpty
+                  ? mergedProjects.values.toList()
+                  : (portfolioProjects.isNotEmpty
+                      ? portfolioProjects
+                      : profileModel.portfolioProjects);
+
+          final cachedCompany =
+              cacheHelper.getData(key: 'contractor_cached_company_name') as String?;
+          final cachedCommercial =
+              cacheHelper.getData(key: 'contractor_cached_commercial_register') as String?;
+          final cachedTax =
+              cacheHelper.getData(key: 'contractor_cached_tax_card') as String?;
+          final cachedAbout =
+              cacheHelper.getData(key: 'contractor_cached_about_me') as String?;
+          final cachedIsComplete =
+              cacheHelper.getData(key: 'contractor_is_profile_complete') == true;
+
+          return ContractorProfileModel(
+            id: profileModel.id,
+            name: profileModel.name,
+            companyName: (cachedCompany != null && cachedCompany.trim().isNotEmpty)
+                ? cachedCompany.trim()
+                : profileModel.companyName,
+            rating: profileModel.rating,
+            reviewsCount: profileModel.reviewsCount,
+            isVerified: profileModel.isVerified,
+            yearsOfExperience: profileModel.yearsOfExperience,
+            projectsCompiled: effectiveProjects.isNotEmpty
+                ? effectiveProjects.length.toString()
+                : profileModel.projectsCompiled,
+            verificationStatus: profileModel.verificationStatus,
+            commercialRegister: (cachedCommercial != null && cachedCommercial.trim().isNotEmpty)
+                ? cachedCommercial.trim()
+                : profileModel.commercialRegister,
+            taxCard: (cachedTax != null && cachedTax.trim().isNotEmpty)
+                ? cachedTax.trim()
+                : profileModel.taxCard,
+            aboutMe: (cachedAbout != null && cachedAbout.trim().isNotEmpty)
+                ? cachedAbout.trim()
+                : profileModel.aboutMe,
+            specializations: profileModel.specializations,
+            coveredGovernorates: profileModel.coveredGovernorates,
+            portfolioImages: profileModel.portfolioImages,
+            portfolioProjects: effectiveProjects,
+            profileImagePath: profileModel.profileImagePath,
+            isCompleted: cachedIsComplete || profileModel.isCompleted == true,
+          );
         }
       }
 
@@ -76,24 +159,35 @@ class ContractorProfileRemoteDataSourceImpl
   ContractorProfileModel _createInitialProfile() {
     final cachedName = (cacheHelper.getData(key: CacheKeys.userName) as String?) ?? 'Contractor';
     final cachedId = (cacheHelper.getData(key: CacheKeys.userId) as String?) ?? '';
+    final cachedCompany =
+        cacheHelper.getData(key: 'contractor_cached_company_name') as String?;
+    final cachedAbout =
+        cacheHelper.getData(key: 'contractor_cached_about_me') as String?;
+    final cachedCommercial =
+        cacheHelper.getData(key: 'contractor_cached_commercial_register') as String?;
+    final cachedTax =
+        cacheHelper.getData(key: 'contractor_cached_tax_card') as String?;
+    final cachedIsComplete =
+        cacheHelper.getData(key: 'contractor_is_profile_complete') == true;
+
     return ContractorProfileModel(
       id: cachedId,
       name: cachedName.isNotEmpty ? cachedName : 'Contractor',
-      companyName: 'Company Details Pending',
+      companyName: cachedCompany ?? '',
       rating: 0.0,
       reviewsCount: 0,
       isVerified: false,
       yearsOfExperience: '0',
       projectsCompiled: '0',
       verificationStatus: 'Unverified',
-      commercialRegister: '',
-      taxCard: '',
-      aboutMe: 'Tap Edit Profile to add company details, experience, and services.',
+      commercialRegister: cachedCommercial ?? '',
+      taxCard: cachedTax ?? '',
+      aboutMe: cachedAbout ?? '',
       specializations: const [],
       coveredGovernorates: const [],
       portfolioImages: const [],
       profileImagePath: null,
-      isCompleted: false,
+      isCompleted: cachedIsComplete,
     );
   }
 

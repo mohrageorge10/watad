@@ -43,7 +43,7 @@ class SpecializationSection extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'No specializations specified yet.',
+                    'Select your construction specialties to automatically get matched with relevant project tenders.',
                     style: TextStyle(
                       fontSize: 13.sp,
                       color: const Color(0xFF8E8E93),

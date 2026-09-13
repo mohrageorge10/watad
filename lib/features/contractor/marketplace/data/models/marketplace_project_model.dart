@@ -43,19 +43,90 @@ class MarketplaceProjectModel extends MarketplaceProjectEntity {
   });
 
   factory MarketplaceProjectModel.fromJson(Map<String, dynamic> json) {
+    // 1. Title
+    final String title = json['title'] as String? ??
+        json['projectName'] as String? ??
+        'Construction Project';
+
+    // 2. Location
+    String location = json['location'] as String? ?? '';
+    if (location.isEmpty) {
+      final city = json['city'] as String?;
+      final gov = json['governorate'] as String?;
+      if (city != null && gov != null && city.isNotEmpty && gov.isNotEmpty) {
+        location = '$city, $gov';
+      } else if (gov != null && gov.isNotEmpty) {
+        location = gov;
+      } else if (city != null && city.isNotEmpty) {
+        location = city;
+      } else {
+        location = 'Egypt';
+      }
+    }
+
+    // 3. Image
+    String image = json['image'] as String? ?? json['imageUrl'] as String? ?? '';
+    if (image.isEmpty && json['photos'] is List && (json['photos'] as List).isNotEmpty) {
+      image = (json['photos'] as List).first.toString();
+    }
+    if (image.isEmpty && json['mediaUrls'] is List && (json['mediaUrls'] as List).isNotEmpty) {
+      image = (json['mediaUrls'] as List).first.toString();
+    }
+    if (image.isEmpty) {
+      image = 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80';
+    }
+
+    // 4. Time Posted
+    final timePosted = json['timePosted'] as String? ??
+        json['startDate'] as String? ??
+        json['createdDate'] as String? ??
+        'Recently';
+
+    // 5. Specs
+    ProjectSpecsModel specs;
+    if (json['specs'] is Map<String, dynamic>) {
+      specs = ProjectSpecsModel.fromJson(json['specs'] as Map<String, dynamic>);
+    } else {
+      final landArea = json['landArea'] != null
+          ? '${json['landArea']} m²'
+          : (json['area'] != null ? '${json['area']} m²' : 'N/A');
+      final floors = json['floorsCount'] != null
+          ? '${json['floorsCount']} Floors'
+          : (json['floors'] != null ? json['floors'].toString() : '');
+      final finishing = json['finishingLevel'] as String? ?? '';
+      final scopeList = [if (floors.isNotEmpty) floors, if (finishing.isNotEmpty) finishing];
+      final scope = scopeList.isNotEmpty
+          ? scopeList.join(' · ')
+          : (json['scope'] as String? ?? 'General Scope');
+      specs = ProjectSpecsModel(land: landArea, scope: scope);
+    }
+
+    // 6. Budget
+    final budgetLabel = json['budgetLabel'] as String? ?? 'Est. Budget';
+    String budgetValue = json['budgetValue'] as String? ?? '';
+    if (budgetValue.isEmpty && json['estimatedBudget'] != null) {
+      final num? numBudget = num.tryParse(json['estimatedBudget'].toString());
+      budgetValue = numBudget != null
+          ? 'EGP ${numBudget.toStringAsFixed(0)}'
+          : 'EGP ${json['estimatedBudget']}';
+    }
+    if (budgetValue.isEmpty) {
+      budgetValue = 'EGP 1,500,000';
+    }
+
+    final category = json['category'] as String? ?? json['governorate'] as String?;
+
     return MarketplaceProjectModel(
-      id: json['id'] as String? ?? '',
-      title: json['title'] as String? ?? '',
-      location: json['location'] as String? ?? '',
-      image: json['image'] as String? ?? '',
-      timePosted: json['timePosted'] as String? ?? '',
+      id: json['id']?.toString() ?? json['projectId']?.toString() ?? '',
+      title: title,
+      location: location,
+      image: image,
+      timePosted: timePosted,
       isBookmarked: json['isBookmarked'] as bool? ?? false,
-      specs: json['specs'] != null
-          ? ProjectSpecsModel.fromJson(json['specs'] as Map<String, dynamic>)
-          : const ProjectSpecsModel(land: '', scope: ''),
-      budgetLabel: json['budgetLabel'] as String? ?? 'Est. Budget',
-      budgetValue: json['budgetValue'] as String? ?? '',
-      category: json['category'] as String?,
+      specs: specs,
+      budgetLabel: budgetLabel,
+      budgetValue: budgetValue,
+      category: category,
     );
   }
 

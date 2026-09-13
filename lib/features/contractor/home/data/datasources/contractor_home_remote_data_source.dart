@@ -44,17 +44,21 @@ class ContractorHomeRemoteDataSourceImpl
         (cacheHelper.getData(key: CacheKeys.userName) as String?) ??
         'Contractor';
 
-    final projectsFuture =
-        projectsRemoteDataSource.fetchContractorProjects();
-    final bidsFuture = bidsRemoteDataSource.fetchContractorBids(
-      pageNumber: 1,
-      pageSize: 5,
-    );
-    final profileFuture =
-        profileRemoteDataSource.fetchContractorProfile().then<ContractorProfileModel?>(
-              (p) => p,
-              onError: (_) => null,
-            );
+    final projectsFuture = projectsRemoteDataSource
+        .fetchContractorProjects()
+        .catchError((_) => <ContractorProjectModel>[]);
+    final bidsFuture = bidsRemoteDataSource
+        .fetchContractorBids(
+          pageNumber: 1,
+          pageSize: 5,
+        )
+        .catchError((_) => <ContractorBidModel>[]);
+    final profileFuture = profileRemoteDataSource
+        .fetchContractorProfile()
+        .then<ContractorProfileModel?>(
+          (p) => p,
+          onError: (_) => null,
+        );
 
     final results = await Future.wait([
       projectsFuture,
@@ -66,11 +70,48 @@ class ContractorHomeRemoteDataSourceImpl
     final bids = results[1] as List<ContractorBidModel>;
     final profile = results[2] as ContractorProfileModel?;
 
-    final isProfileComplete = profile?.isProfileComplete ?? false;
+    final cachedIsComplete =
+        cacheHelper.getData(key: 'contractor_is_profile_complete') == true;
+    final cachedCompany =
+        cacheHelper.getData(key: 'contractor_cached_company_name') as String?;
+    final cachedAbout =
+        cacheHelper.getData(key: 'contractor_cached_about_me') as String?;
+    final cachedCommercial =
+        cacheHelper.getData(key: 'contractor_cached_commercial_register') as String?;
+    final cachedTax =
+        cacheHelper.getData(key: 'contractor_cached_tax_card') as String?;
+
+    final effectiveCompanyName = (profile != null && profile.companyName.trim().isNotEmpty)
+        ? profile.companyName.trim()
+        : (cachedCompany?.trim() ?? '');
+
+    final effectiveAboutMe = (profile != null && profile.aboutMe.trim().isNotEmpty)
+        ? profile.aboutMe.trim()
+        : (cachedAbout?.trim() ?? '');
+
+    final effectiveCommercial = (profile != null && profile.commercialRegister.trim().isNotEmpty)
+        ? profile.commercialRegister.trim()
+        : (cachedCommercial?.trim() ?? '');
+
+    final effectiveTax = (profile != null && profile.taxCard.trim().isNotEmpty)
+        ? profile.taxCard.trim()
+        : (cachedTax?.trim() ?? '');
+
+    final hasCompany = effectiveCompanyName.isNotEmpty;
+    final hasDetails = (effectiveAboutMe.isNotEmpty && !effectiveAboutMe.contains('Tap Edit Profile')) ||
+        (effectiveCommercial.isNotEmpty && effectiveCommercial != '-') ||
+        (effectiveTax.isNotEmpty && effectiveTax != '-') ||
+        (profile?.specializations.isNotEmpty ?? false) ||
+        (profile?.portfolioProjects.isNotEmpty ?? false);
+
+    final isProfileComplete = cachedIsComplete ||
+        (hasCompany && hasDetails) ||
+        (profile?.isProfileComplete ?? false);
+
     final displayName = (profile != null && profile.name.isNotEmpty)
         ? profile.name
-        : ((profile != null && profile.companyName.isNotEmpty)
-            ? profile.companyName
+        : (effectiveCompanyName.isNotEmpty
+            ? effectiveCompanyName
             : cachedName);
 
     return ContractorHomeModel(

@@ -101,30 +101,4 @@ class AuthRepositoryImpl implements AuthRepository {
       return ApiResult.failure(ErrorHandler.handle(e));
     }
   }
-
-  @override
-  Future<ApiResult<AuthResponseEntity>> googleLogin(GoogleLoginRequestModel request) async {
-    try {
-      final response = await remoteDataSource.googleLogin(request);
-      if (!response.isSuccess) {
-        return ApiResult.failure(ServerFailure(errMessage: response.message));
-      }
-      return ApiResult.success(response.toEntity());
-    } catch (e) {
-      return ApiResult.failure(ErrorHandler.handle(e));
-    }
-  }
-
-  @override
-  Future<ApiResult<AuthResponseEntity>> facebookLogin(FacebookLoginRequestModel request) async {
-    try {
-      final response = await remoteDataSource.facebookLogin(request);
-      if (!response.isSuccess) {
-        return ApiResult.failure(ServerFailure(errMessage: response.message));
-      }
-      return ApiResult.success(response.toEntity());
-    } catch (e) {
-      return ApiResult.failure(ErrorHandler.handle(e));
-    }
-  }
 }

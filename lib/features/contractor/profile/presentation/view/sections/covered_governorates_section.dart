@@ -44,7 +44,7 @@ class CoveredGovernoratesSection extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'No covered governorates added yet.',
+                    'Add the governorates you operate in to appear in search results for local project owners.',
                     style: TextStyle(
                       fontSize: 13.sp,
                       color: const Color(0xFF8E8E93),

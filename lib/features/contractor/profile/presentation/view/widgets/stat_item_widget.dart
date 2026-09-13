@@ -16,6 +16,11 @@ class StatItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String displayValue =
+        (value.trim().isEmpty || value.trim() == '0' || value.trim() == '0+')
+            ? '-'
+            : value;
+
     return Expanded(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -36,7 +41,7 @@ class StatItemWidget extends StatelessWidget {
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              value,
+              displayValue,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,

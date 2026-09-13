@@ -53,7 +53,7 @@ class _OnBoardingPageState extends State<OnBoardingPage> {
   Widget build(BuildContext context) {
     final currentItem = OnBoardingMockData.items[_currentIndex];
     final screenHeight = MediaQuery.of(context).size.height;
-    const double contentHeightRatio = 0.382;
+    final double contentHeightRatio = screenHeight < 750 ? 0.47 : 0.44;
     final contentHeight = screenHeight * contentHeightRatio;
 
     return Scaffold(

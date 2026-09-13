@@ -19,8 +19,6 @@ class MockResendOtpUseCase extends Mock implements ResendOtpUseCase {}
 class MockForgotPasswordUseCase extends Mock implements ForgotPasswordUseCase {}
 class MockVerifyOtpUseCase extends Mock implements VerifyOtpUseCase {}
 class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
-class MockGoogleLoginUseCase extends Mock implements GoogleLoginUseCase {}
-class MockFacebookLoginUseCase extends Mock implements FacebookLoginUseCase {}
 class MockCacheHelper extends Mock implements CacheHelper {}
 class MockSecureStorageHelper extends Mock implements SecureStorageHelper {}
 
@@ -32,8 +30,6 @@ class TestDependencies {
   final MockForgotPasswordUseCase forgotPasswordUseCase = MockForgotPasswordUseCase();
   final MockVerifyOtpUseCase verifyOtpUseCase = MockVerifyOtpUseCase();
   final MockResetPasswordUseCase resetPasswordUseCase = MockResetPasswordUseCase();
-  final MockGoogleLoginUseCase googleLoginUseCase = MockGoogleLoginUseCase();
-  final MockFacebookLoginUseCase facebookLoginUseCase = MockFacebookLoginUseCase();
   final MockCacheHelper cacheHelper = MockCacheHelper();
   final MockSecureStorageHelper secureStorage = MockSecureStorageHelper();
 }
@@ -92,8 +88,6 @@ TestDependencies setupTestServiceLocator() {
   sl.registerLazySingleton<ForgotPasswordUseCase>(() => deps.forgotPasswordUseCase);
   sl.registerLazySingleton<VerifyOtpUseCase>(() => deps.verifyOtpUseCase);
   sl.registerLazySingleton<ResetPasswordUseCase>(() => deps.resetPasswordUseCase);
-  sl.registerLazySingleton<GoogleLoginUseCase>(() => deps.googleLoginUseCase);
-  sl.registerLazySingleton<FacebookLoginUseCase>(() => deps.facebookLoginUseCase);
   sl.registerLazySingleton<CacheHelper>(() => deps.cacheHelper);
   sl.registerLazySingleton<SecureStorageHelper>(() => deps.secureStorage);
 
@@ -106,8 +100,6 @@ TestDependencies setupTestServiceLocator() {
       forgotPasswordUseCase: deps.forgotPasswordUseCase,
       verifyOtpUseCase: deps.verifyOtpUseCase,
       resetPasswordUseCase: deps.resetPasswordUseCase,
-      googleLoginUseCase: deps.googleLoginUseCase,
-      facebookLoginUseCase: deps.facebookLoginUseCase,
       cacheHelper: deps.cacheHelper,
       secureStorage: deps.secureStorage,
     ),

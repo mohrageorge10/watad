@@ -20,13 +20,11 @@ class ContractorMyProjectsCubit extends Cubit<ContractorMyProjectsState> {
 
     final result = await getContractorProjectsUseCase();
 
+    if (isClosed) return;
     result.fold(
       (projects) {
-        // Filter strictly to In Progress / Accepted projects
-        _allProjects = projects.where((p) {
-          final text = p.badgeText.toLowerCase();
-          return text.contains('progress') || text.contains('accepted') || text.contains('contracted');
-        }).toList();
+        if (isClosed) return;
+        _allProjects = projects;
 
         if (_allProjects.isEmpty) {
           emit(const ContractorMyProjectsEmpty());
@@ -35,6 +33,7 @@ class ContractorMyProjectsCubit extends Cubit<ContractorMyProjectsState> {
         }
       },
       (failure) {
+        if (isClosed) return;
         emit(ContractorMyProjectsError(failure.errMessage));
       },
     );

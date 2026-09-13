@@ -85,6 +85,70 @@ class MockMarketplaceData {
         budgetValue: 'EGP 3,100,000',
         category: 'Cairo',
       ),
+      MarketplaceProjectModel(
+        id: 'proj_6',
+        title: 'Mansoura Medical Complex',
+        location: 'Mansoura, Dakahlia',
+        image:
+            'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?w=400&q=80',
+        timePosted: '1d ago',
+        isBookmarked: false,
+        specs: ProjectSpecsModel(
+          land: '950 m²',
+          scope: '4 Floors · Commercial',
+        ),
+        budgetLabel: 'Est. Budget',
+        budgetValue: 'EGP 6,200,000',
+        category: 'Mansoura',
+      ),
+      MarketplaceProjectModel(
+        id: 'proj_7',
+        title: 'Al-Galaa Residential Tower',
+        location: 'Mansoura, Dakahlia',
+        image:
+            'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=400&q=80',
+        timePosted: '2d ago',
+        isBookmarked: false,
+        specs: ProjectSpecsModel(
+          land: '1,100 m²',
+          scope: '6 Floors · Residential',
+        ),
+        budgetLabel: 'Est. Budget',
+        budgetValue: 'EGP 8,500,000',
+        category: 'Mansoura',
+      ),
+      MarketplaceProjectModel(
+        id: 'proj_8',
+        title: 'Smouha Luxury Compound',
+        location: 'Smouha, Alexandria',
+        image:
+            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80',
+        timePosted: '3d ago',
+        isBookmarked: false,
+        specs: ProjectSpecsModel(
+          land: '1,500 m²',
+          scope: '3 Floors · Compound',
+        ),
+        budgetLabel: 'Est. Budget',
+        budgetValue: 'EGP 9,800,000',
+        category: 'Alexandria',
+      ),
+      MarketplaceProjectModel(
+        id: 'proj_9',
+        title: 'Corniche Commercial Mall',
+        location: 'Gleem, Alexandria',
+        image:
+            'https://images.unsplash.com/photo-1555636222-cae831e670b3?w=400&q=80',
+        timePosted: '4d ago',
+        isBookmarked: false,
+        specs: ProjectSpecsModel(
+          land: '2,200 m²',
+          scope: '5 Floors · Commercial',
+        ),
+        budgetLabel: 'Est. Budget',
+        budgetValue: 'EGP 15,000,000',
+        category: 'Alexandria',
+      ),
     ];
   }
 }

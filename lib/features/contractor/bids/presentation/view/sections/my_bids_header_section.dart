@@ -18,6 +18,7 @@ class MyBidsHeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.paddingOf(context).top;
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -27,7 +28,7 @@ class MyBidsHeaderSection extends StatelessWidget {
           bottomRight: Radius.circular(24.r),
         ),
       ),
-      padding: EdgeInsets.fromLTRB(20.w, 48.h, 20.w, 44.h),
+      padding: EdgeInsets.fromLTRB(20.w, topPadding + 16.h, 20.w, 40.h),
       child: showBackButton
           ? Row(
               children: [

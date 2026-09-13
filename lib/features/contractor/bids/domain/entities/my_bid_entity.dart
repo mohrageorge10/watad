@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class MyBidEntity extends Equatable {
   final String id;
+  final String projectId;
   final String title;
   final String location;
   final String image;
@@ -12,9 +13,20 @@ class MyBidEntity extends Equatable {
   final String duration;
   final String submittedDate;
   final String? rejectionReason;
+  final String landArea;
+  final String floors;
+  final String finishingLevel;
+  final String description;
+  final String proposal;
+  final String? attachmentUrl;
+  final String? attachmentName;
+  final String startDate;
+  final String completionDate;
+  final List<String> images;
 
   const MyBidEntity({
     required this.id,
+    this.projectId = '',
     required this.title,
     required this.location,
     required this.image,
@@ -25,11 +37,22 @@ class MyBidEntity extends Equatable {
     required this.duration,
     required this.submittedDate,
     this.rejectionReason,
+    this.landArea = '-',
+    this.floors = '-',
+    this.finishingLevel = '-',
+    this.description = 'No description provided.',
+    this.proposal = '',
+    this.attachmentUrl,
+    this.attachmentName,
+    this.startDate = '-',
+    this.completionDate = '-',
+    this.images = const [],
   });
 
   @override
   List<Object?> get props => [
         id,
+        projectId,
         title,
         location,
         image,
@@ -40,5 +63,15 @@ class MyBidEntity extends Equatable {
         duration,
         submittedDate,
         rejectionReason,
+        landArea,
+        floors,
+        finishingLevel,
+        description,
+        proposal,
+        attachmentUrl,
+        attachmentName,
+        startDate,
+        completionDate,
+        images,
       ];
 }

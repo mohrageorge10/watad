@@ -41,64 +41,67 @@ class OnBoardingContentSection extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            children: [
-              SizedBox(
-                width: double.infinity,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    const OnBoardingBrandLogoWidget(),
-                    if (!isLastPage)
-                      Positioned(
-                        right: 0,
-                        child: OnBoardingSkipButtonWidget(
-                          onPressed: onSkipPressed,
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      const OnBoardingBrandLogoWidget(),
+                      if (!isLastPage)
+                        Positioned(
+                          right: 0,
+                          child: OnBoardingSkipButtonWidget(
+                            onPressed: onSkipPressed,
+                          ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 14.h),
-              Text(
-                item.title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.primary700,
-                  height: 1.25,
+                SizedBox(height: 10.h),
+                Text(
+                  item.title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22.sp,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary700,
+                    height: 1.2,
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.h),
-              Text(
-                item.description,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 17.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.black100,
-                  height: 1.4,
+                SizedBox(height: 12.h),
+                Text(
+                  item.description,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.black100,
+                    height: 1.35,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Column(
-            children: [
-              SizedBox(height: 20.h),
-              AppElevatedButton(
-                title: isLastPage ? 'Get Started' : 'Next',
-                onPressed: onNextPressed,
-                height: 56,
-                borderRadius: 16,
-                backgroundColor: AppColors.primary700,
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            Column(
+              children: [
+                SizedBox(height: 12.h),
+                AppElevatedButton(
+                  title: isLastPage ? 'Get Started' : 'Next',
+                  onPressed: onNextPressed,
+                  height: 52,
+                  borderRadius: 16,
+                  backgroundColor: AppColors.primary700,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

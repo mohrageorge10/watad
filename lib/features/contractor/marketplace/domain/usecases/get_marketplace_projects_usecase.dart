@@ -10,10 +10,16 @@ class GetMarketplaceProjectsUseCase {
   Future<ApiResult<List<MarketplaceProjectEntity>>> call({
     String? category,
     String? searchQuery,
+    String? governorate,
+    int? minBudget,
+    int? maxBudget,
   }) async {
     return await repository.getMarketplaceProjects(
       category: category,
       searchQuery: searchQuery,
+      governorate: governorate,
+      minBudget: minBudget,
+      maxBudget: maxBudget,
     );
   }
 }

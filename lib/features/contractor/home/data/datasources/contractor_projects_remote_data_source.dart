@@ -35,7 +35,7 @@ class ContractorProjectsRemoteDataSourceImpl
     };
 
     final queryParameters = <String, dynamic>{
-      if (status != null) ApiQueryParams.status: status,
+      ApiQueryParams.status: ?status,
     };
 
     final response = await apiConsumer.get(

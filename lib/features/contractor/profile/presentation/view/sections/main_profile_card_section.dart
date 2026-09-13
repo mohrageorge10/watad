@@ -8,6 +8,7 @@ import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/shared/widgets/permission_confirmation_dialog.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
+import 'package:watad/features/contractor/profile/presentation/view/widgets/profile_photo_cropper_dialog.dart';
 
 class MainProfileCardSection extends StatelessWidget {
   final ContractorProfileEntity profile;
@@ -179,13 +180,20 @@ class MainProfileCardSection extends StatelessWidget {
       final picker = ImagePicker();
       final XFile? image = await picker.pickImage(
         source: source,
-        maxWidth: 1024,
-        maxHeight: 1024,
-        imageQuality: 85,
+        maxWidth: 2048,
+        maxHeight: 2048,
+        imageQuality: 95,
       );
 
-      if (image != null) {
-        onUpdatePhoto?.call(image.path);
+      if (image != null && context.mounted) {
+        final String? croppedPath = await ProfilePhotoCropperDialog.show(
+          context,
+          imageFile: File(image.path),
+        );
+
+        if (croppedPath != null && croppedPath.isNotEmpty) {
+          onUpdatePhoto?.call(croppedPath);
+        }
       }
     } catch (_) {
       // Ignored or handled gracefully

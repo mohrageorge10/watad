@@ -7,12 +7,14 @@ import 'package:watad/features/contractor/profile/presentation/pages/contractor_
 class ContractorProfilePage extends StatelessWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onNavigateToMyProjects;
+  final VoidCallback? onNavigateToPortfolio;
   final bool showBottomNavBar;
 
   const ContractorProfilePage({
     super.key,
     this.onSettingsTap,
     this.onNavigateToMyProjects,
+    this.onNavigateToPortfolio,
     this.showBottomNavBar = true,
   });
 
@@ -23,6 +25,7 @@ class ContractorProfilePage extends StatelessWidget {
       child: ContractorProfileScreen(
         onSettingsTap: onSettingsTap,
         onNavigateToMyProjects: onNavigateToMyProjects,
+        onNavigateToPortfolio: onNavigateToPortfolio,
         showBottomNavBar: showBottomNavBar,
       ),
     );

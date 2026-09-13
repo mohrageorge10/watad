@@ -66,8 +66,16 @@ class StatsCardSection extends StatelessWidget {
             ),
             StatItemWidget(
               title: 'Verification\nStatus',
-              value: profile.verificationStatus,
-              valueColor: const Color(0xFF00B368),
+              value: profile.verificationStatus.isNotEmpty
+                  ? profile.verificationStatus
+                  : (profile.isVerified ? 'Verified' : 'Unverified'),
+              valueColor: (profile.isVerified ||
+                      (profile.verificationStatus.toLowerCase().contains('verified') &&
+                          !profile.verificationStatus
+                              .toLowerCase()
+                              .contains('unverified')))
+                  ? AppColors.accept
+                  : AppColors.alert,
             ),
           ],
         ),

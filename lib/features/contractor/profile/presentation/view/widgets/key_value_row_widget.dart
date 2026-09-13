@@ -15,6 +15,8 @@ class KeyValueRowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool hasValue = value.trim().isNotEmpty;
+
     return Padding(
       padding: padding ?? EdgeInsets.symmetric(vertical: 6.h),
       child: Row(
@@ -28,17 +30,23 @@ class KeyValueRowWidget extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-          Text(
-            value.trim().isNotEmpty ? value : 'Not provided',
-            style: TextStyle(
-              fontSize: 13.sp,
-              color: value.trim().isNotEmpty
-                  ? const Color(0xFF1D1D1F)
-                  : const Color(0xFF8E8E93),
-              fontWeight:
-                  value.trim().isNotEmpty ? FontWeight.w700 : FontWeight.w500,
-              fontStyle:
-                  value.trim().isNotEmpty ? FontStyle.normal : FontStyle.italic,
+          SizedBox(width: 8.w),
+          Flexible(
+            child: Text(
+              hasValue ? value : 'Not provided',
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: hasValue
+                    ? const Color(0xFF1D1D1F)
+                    : const Color(0xFF8E8E93),
+                fontWeight:
+                    hasValue ? FontWeight.w700 : FontWeight.w500,
+                fontStyle:
+                    hasValue ? FontStyle.normal : FontStyle.italic,
+              ),
             ),
           ),
         ],

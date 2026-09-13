@@ -19,6 +19,7 @@ class _ContractorMainLayoutScreenState
     extends State<ContractorMainLayoutScreen> {
   int _currentIndex = 0;
   int _homeRefreshCount = 0;
+  int _myProjectsInitialTabIndex = 0;
   final bool _hasNewAlerts = false; // Controls the red badge on Alerts tab
   late final PageController _pageController;
 
@@ -39,6 +40,9 @@ class _ContractorMainLayoutScreenState
       _currentIndex = index;
       if (index == 0) {
         _homeRefreshCount++;
+      }
+      if (index != 2) {
+        _myProjectsInitialTabIndex = 0;
       }
     });
     _pageController.animateToPage(
@@ -73,6 +77,7 @@ class _ContractorMainLayoutScreenState
           // Tab 2: My Projects (Contractor Ongoing / Accepted Projects Screen)
           ContractorMyProjectsScreen(
             showBottomNavBar: false,
+            initialTabIndex: _myProjectsInitialTabIndex,
             onBackTap: () => _onTabTapped(0),
             onNavigateToMarketplace: () => _onTabTapped(1),
             onNavigateToProfile: () => _onTabTapped(4),
@@ -87,7 +92,18 @@ class _ContractorMainLayoutScreenState
           // Tab 4: Profile
           ContractorProfilePage(
             showBottomNavBar: false,
-            onNavigateToMyProjects: () => _onTabTapped(2),
+            onNavigateToMyProjects: () {
+              setState(() {
+                _myProjectsInitialTabIndex = 0;
+              });
+              _onTabTapped(2);
+            },
+            onNavigateToPortfolio: () {
+              setState(() {
+                _myProjectsInitialTabIndex = 1;
+              });
+              _onTabTapped(2);
+            },
           ),
         ],
       ),

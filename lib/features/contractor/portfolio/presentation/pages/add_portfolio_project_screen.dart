@@ -13,6 +13,7 @@ import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/portfolio/presentation/cubit/portfolio_cubit.dart';
+import 'package:watad/features/contractor/profile/data/constants/profile_constants.dart';
 
 class AddPortfolioProjectScreen extends StatefulWidget {
   final PortfolioProjectItemModel? project;
@@ -33,6 +34,7 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
   late final TextEditingController _titleController;
   late final TextEditingController _descriptionController;
   late final TextEditingController _locationController;
+  late final FocusNode _locationFocusNode;
   late final TextEditingController _costController;
   late final TextEditingController _dateController;
   late final TextEditingController _mediaUrlController;
@@ -50,6 +52,7 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
     _titleController = TextEditingController(text: p?.title ?? '');
     _descriptionController = TextEditingController(text: p?.description ?? '');
     _locationController = TextEditingController(text: p?.location ?? '');
+    _locationFocusNode = FocusNode();
     _costController = TextEditingController(
         text: p?.projectCost != null
             ? p!.projectCost!.toStringAsFixed(0)
@@ -70,6 +73,7 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _locationController.dispose();
+    _locationFocusNode.dispose();
     _costController.dispose();
     _dateController.dispose();
     _mediaUrlController.dispose();
@@ -313,15 +317,110 @@ class _AddPortfolioProjectScreenState extends State<AddPortfolioProjectScreen> {
 
               // Location
               _buildFieldLabel('Location *'),
-              AppTextField(
-                controller: _locationController,
-                hintText: 'e.g. New Cairo, Cairo',
-                prefixIcon: const Icon(Icons.location_on_outlined, color: AppColors.grey500),
-                validator: (val) {
-                  if (val == null || val.trim().isEmpty) {
-                    return 'Please enter location';
+              RawAutocomplete<String>(
+                textEditingController: _locationController,
+                focusNode: _locationFocusNode,
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.trim().isEmpty) {
+                    return const Iterable<String>.empty();
                   }
-                  return null;
+                  final query = textEditingValue.text.toLowerCase().trim();
+                  return ProfileConstants.egyptianCityLocations.where(
+                    (String option) => option.toLowerCase().contains(query),
+                  );
+                },
+                onSelected: (String selection) {
+                  _locationController.text = selection;
+                },
+                fieldViewBuilder: (
+                  BuildContext context,
+                  TextEditingController textEditingController,
+                  FocusNode focusNode,
+                  VoidCallback onFieldSubmitted,
+                ) {
+                  return AppTextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    hintText: 'e.g. New Cairo, Cairo',
+                    prefixIcon: const Icon(
+                      Icons.location_on_outlined,
+                      color: AppColors.grey500,
+                    ),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Please enter location';
+                      }
+                      return null;
+                    },
+                  );
+                },
+                optionsViewBuilder: (
+                  BuildContext context,
+                  AutocompleteOnSelected<String> onSelected,
+                  Iterable<String> options,
+                ) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 6,
+                      borderRadius: BorderRadius.circular(12.r),
+                      color: AppColors.white100,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 40.w,
+                        constraints: BoxConstraints(maxHeight: 200.h),
+                        decoration: BoxDecoration(
+                          color: AppColors.white100,
+                          borderRadius: BorderRadius.circular(12.r),
+                          border: Border.all(
+                            color: const Color(0xFFE5E5EA),
+                            width: 1,
+                          ),
+                        ),
+                        child: ListView.separated(
+                          padding: EdgeInsets.symmetric(vertical: 4.h),
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          separatorBuilder: (_, _) => const Divider(
+                            height: 1,
+                            thickness: 0.5,
+                            color: Color(0xFFF0F0F0),
+                          ),
+                          itemBuilder: (BuildContext context, int index) {
+                            final String option = options.elementAt(index);
+                            return InkWell(
+                              onTap: () => onSelected(option),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 14.w,
+                                  vertical: 12.h,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_on_rounded,
+                                      size: 16.r,
+                                      color: AppColors.primary,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Expanded(
+                                      child: Text(
+                                        option,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xFF1D1D1F),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
               SizedBox(height: 16.h),

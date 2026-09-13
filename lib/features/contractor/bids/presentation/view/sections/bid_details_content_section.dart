@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/shared/widgets/app_elevated_button.dart';
 import 'package:watad/core/theme/app_colors.dart';
-import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_attachment_tile_widget.dart';
 import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_key_detail_item_widget.dart';
 import 'package:watad/features/contractor/bids/presentation/view/widgets/bid_spec_column_widget.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/widgets/marketplace_image_gallery.dart';
@@ -27,26 +26,19 @@ class BidDetailsContentSection extends StatefulWidget {
   const BidDetailsContentSection({
     super.key,
     this.bidId,
-    this.title = 'Villa Construction Project',
-    this.location = 'New Cairo, Cairo',
+    this.title = 'Project Details',
+    this.location = 'Egypt',
     this.status = 'Pending Review',
-    this.estimatedBudget = 'EGP 2,450,000',
-    this.expectedDuration = '6 Months',
-    this.startDate = 'Nov 2026',
-    this.completionDate = 'May 2027',
-    this.landArea = '500 m²',
-    this.floors = '2',
-    this.finishingLevel = 'Standard',
-    this.description =
-        'A modern villa with contemporary design, integrated smart home systems, and premium finishing. Located in a prime area in New Cairo.',
+    this.estimatedBudget = '-',
+    this.expectedDuration = '-',
+    this.startDate = '-',
+    this.completionDate = '-',
+    this.landArea = '-',
+    this.floors = '-',
+    this.finishingLevel = '-',
+    this.description = 'No description provided.',
     this.images = const [
       'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=900&q=80',
-      'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&q=80',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
-      'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80',
-      'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80',
-      'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&q=80',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80',
     ],
     this.initialIsBookmarked = false,
     this.onViewContractTap,
@@ -155,12 +147,16 @@ class _BidDetailsContentSectionState extends State<BidDetailsContentSection> {
                                 size: 14.r,
                               ),
                               SizedBox(width: 4.w),
-                              Text(
-                                widget.location,
-                                style: TextStyle(
-                                  color: const Color(0xFF1D1D1F),
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.w400,
+                              Expanded(
+                                child: Text(
+                                  widget.location,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: const Color(0xFF1D1D1F),
+                                    fontSize: 13.sp,
+                                    fontWeight: FontWeight.w400,
+                                  ),
                                 ),
                               ),
                             ],
@@ -192,21 +188,28 @@ class _BidDetailsContentSectionState extends State<BidDetailsContentSection> {
                 // Specs Section (Row with spaceEvenly)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BidSpecColumnWidget(
-                      icon: Icons.aspect_ratio_rounded,
-                      label: 'Land Area',
-                      value: widget.landArea,
+                    Expanded(
+                      child: BidSpecColumnWidget(
+                        icon: Icons.aspect_ratio_rounded,
+                        label: 'Land Area',
+                        value: widget.landArea,
+                      ),
                     ),
-                    BidSpecColumnWidget(
-                      icon: Icons.layers_outlined,
-                      label: 'Floors',
-                      value: widget.floors,
+                    Expanded(
+                      child: BidSpecColumnWidget(
+                        icon: Icons.layers_outlined,
+                        label: 'Floors',
+                        value: widget.floors,
+                      ),
                     ),
-                    BidSpecColumnWidget(
-                      icon: Icons.check_circle_outline_rounded,
-                      label: 'Finishing Level',
-                      value: widget.finishingLevel,
+                    Expanded(
+                      child: BidSpecColumnWidget(
+                        icon: Icons.check_circle_outline_rounded,
+                        label: 'Finishing',
+                        value: widget.finishingLevel,
+                      ),
                     ),
                   ],
                 ),
@@ -290,15 +293,14 @@ class _BidDetailsContentSectionState extends State<BidDetailsContentSection> {
                     color: const Color(0xFF1D1D1F),
                   ),
                 ),
-                SizedBox(height: 10.h),
+                SizedBox(height: 8.h),
 
-                const BidAttachmentTileWidget(
-                  title: 'Architectural_Drawings.pdf',
-                  size: '4.2 MB',
-                ),
-                const BidAttachmentTileWidget(
-                  title: 'Soil_Survey_Report.pdf',
-                  size: '1.8 MB',
+                Text(
+                  'No attachments provided.',
+                  style: TextStyle(
+                    color: const Color(0xFF8E8E93),
+                    fontSize: 13.sp,
+                  ),
                 ),
 
                 if (widget.status == 'Accepted') ...[

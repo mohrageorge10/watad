@@ -30,21 +30,37 @@ class BidSpecColumnWidget extends StatelessWidget {
           size: 24.r,
         ),
         SizedBox(height: 6.h),
-        Text(
-          label,
-          style: TextStyle(
-            color: const Color(0xFF8E8E93),
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w400,
+        SizedBox(
+          height: 18.h,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: TextStyle(
+                color: const Color(0xFF8E8E93),
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
         ),
         SizedBox(height: 4.h),
-        Text(
-          value,
-          style: TextStyle(
-            color: valueColor ?? AppColors.primary,
-            fontSize: 14.sp,
-            fontWeight: FontWeight.bold,
+        SizedBox(
+          height: 22.h,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: TextStyle(
+                color: valueColor ?? AppColors.primary,
+                fontSize: 14.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ],

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/utils/cache_keys.dart';
+import 'package:watad/features/contractor/portfolio/data/models/portfolio_project_item_model.dart';
 import 'package:watad/features/contractor/profile/data/models/review_model.dart';
 import 'package:watad/features/contractor/profile/domain/entities/contractor_profile_entity.dart';
 import 'package:watad/features/contractor/profile/domain/usecases/get_contractor_profile_usecase.dart';
@@ -24,6 +25,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
   static const String _kCachedGovernorates = 'contractor_cached_governorates';
   static const String _kCachedCommercialRegister = 'contractor_cached_commercial_register';
   static const String _kCachedTaxCard = 'contractor_cached_tax_card';
+  static const String _kCachedPortfolioProjects = 'contractor_cached_portfolio_projects';
 
   ContractorProfileCubit({
     required this.getContractorProfileUseCase,
@@ -41,8 +43,10 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
 
     final result = await getContractorProfileUseCase(contractorId: currentId);
 
+    if (isClosed) return;
     await result.fold(
       (profile) async {
+        if (isClosed) return;
         // Merge with any cached overrides first
         final mergedProfile = _applyCachedOverrides(profile);
 
@@ -55,6 +59,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
             reviews = reviewsResult.fold((data) => data, (_) => const []);
           }
 
+          if (isClosed) return;
           emit(ContractorProfileSuccess(
             profile: mergedProfile,
             reviews: reviews,
@@ -62,6 +67,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
         }
       },
       (failure) async {
+        if (isClosed) return;
         emit(ContractorProfileError(failure.errMessage));
       },
     );
@@ -77,6 +83,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
     final cachedTaxCard = cacheHelper.getData(key: _kCachedTaxCard) as String?;
     final cachedSpecializationsRaw = cacheHelper.getData(key: _kCachedSpecializations) as String?;
     final cachedGovernoratesRaw = cacheHelper.getData(key: _kCachedGovernorates) as String?;
+    final cachedPortfolioProjectsRaw = cacheHelper.getData(key: _kCachedPortfolioProjects) as String?;
 
     List<String>? cachedSpecializations;
     if (cachedSpecializationsRaw != null && cachedSpecializationsRaw.isNotEmpty) {
@@ -98,16 +105,55 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
       } catch (_) {}
     }
 
+    List<PortfolioProjectItemModel> cachedProjects = [];
+    if (cachedPortfolioProjectsRaw != null && cachedPortfolioProjectsRaw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(cachedPortfolioProjectsRaw);
+        if (decoded is List) {
+          cachedProjects = decoded
+              .map((e) => PortfolioProjectItemModel.fromJson(
+                  Map<String, dynamic>.from(e)))
+              .toList();
+        }
+      } catch (_) {}
+    }
+
+    final mergedPortfolioProjects = [
+      ...cachedProjects,
+      ...profile.portfolioProjects.where((p) => !cachedProjects.any((cp) =>
+          cp.id == p.id ||
+          cp.title.toLowerCase().trim() == p.title.toLowerCase().trim())),
+    ];
+
+    final rawAboutMe = cachedAboutMe ?? profile.aboutMe;
+    final cleanAboutMe = (rawAboutMe.contains('Tap Edit Profile') ||
+            rawAboutMe.contains('Specializing in'))
+        ? ''
+        : rawAboutMe;
+
+    final rawCompanyName = cachedCompanyName ?? profile.companyName;
+    final cleanCompanyName =
+        rawCompanyName == 'Company Details Pending' ? '' : rawCompanyName;
+
+    final rawExperience = cachedExperience ?? profile.yearsOfExperience;
+    final cleanExperience = (rawExperience == '0' || rawExperience == '15')
+        ? (cachedExperience != null && cachedExperience != '15' ? cachedExperience : '')
+        : rawExperience;
+
     return profile.copyWith(
       profileImagePath: cachedImage ?? profile.profileImagePath,
       name: cachedName ?? profile.name,
-      companyName: cachedCompanyName ?? profile.companyName,
-      yearsOfExperience: cachedExperience ?? profile.yearsOfExperience,
-      aboutMe: cachedAboutMe ?? profile.aboutMe,
+      companyName: cleanCompanyName,
+      yearsOfExperience: cleanExperience,
+      aboutMe: cleanAboutMe,
       specializations: cachedSpecializations ?? profile.specializations,
       coveredGovernorates: cachedGovernorates ?? profile.coveredGovernorates,
       commercialRegister: cachedCommercialRegister ?? profile.commercialRegister,
       taxCard: cachedTaxCard ?? profile.taxCard,
+      portfolioProjects: mergedPortfolioProjects,
+      projectsCompiled: mergedPortfolioProjects.isNotEmpty
+          ? mergedPortfolioProjects.length.toString()
+          : profile.projectsCompiled,
     );
   }
 
@@ -170,6 +216,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
     if (taxCard != null) {
       await cacheHelper.saveData(key: _kCachedTaxCard, value: taxCard);
     }
+    await cacheHelper.saveData(key: 'contractor_is_profile_complete', value: true);
 
     // 4. Update local state upon successful update
     final currentProfile = (state is ContractorProfileSuccess)
@@ -201,6 +248,7 @@ class ContractorProfileCubit extends Cubit<ContractorProfileState> {
       coveredGovernorates: coveredGovernorates,
       commercialRegister: commercialRegister ?? currentProfile.commercialRegister,
       taxCard: taxCard ?? currentProfile.taxCard,
+      isCompleted: true,
     );
 
     List<ReviewModel> reviews = const [];

@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/cache/token_manager.dart';
-import 'package:watad/core/services/social_auth_service.dart';
 import 'package:watad/core/utils/cache_keys.dart';
 import 'package:watad/features/auth/data/models/auth_request_models.dart';
 import 'package:watad/features/auth/domain/entities/user_entity.dart';
@@ -17,11 +16,8 @@ class AuthCubit extends Cubit<AuthState> {
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final VerifyOtpUseCase verifyOtpUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
-  final GoogleLoginUseCase googleLoginUseCase;
-  final FacebookLoginUseCase facebookLoginUseCase;
   final CacheHelper cacheHelper;
   final SecureStorageHelper secureStorage;
-  final SocialAuthService? socialAuthService;
 
   AuthCubit({
     required this.loginUseCase,
@@ -31,11 +27,8 @@ class AuthCubit extends Cubit<AuthState> {
     required this.forgotPasswordUseCase,
     required this.verifyOtpUseCase,
     required this.resetPasswordUseCase,
-    required this.googleLoginUseCase,
-    required this.facebookLoginUseCase,
     required this.cacheHelper,
     required this.secureStorage,
-    this.socialAuthService,
   }) : super(AuthInitial());
 
   Future<void> login(LoginRequestModel request) async {
@@ -146,44 +139,6 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> googleLogin(GoogleLoginRequestModel request) async {
-    emit(AuthLoading());
-    final result = await googleLoginUseCase(request);
-    result.fold(
-      (response) async {
-        if (response.user != null) {
-          await _saveUserSession(
-            user: response.user!,
-            rememberMe: true,
-          );
-        }
-        emit(SocialLoginSuccessState(response));
-      },
-      (failure) {
-        emit(AuthErrorState(failure.errMessage));
-      },
-    );
-  }
-
-  Future<void> facebookLogin(FacebookLoginRequestModel request) async {
-    emit(AuthLoading());
-    final result = await facebookLoginUseCase(request);
-    result.fold(
-      (response) async {
-        if (response.user != null) {
-          await _saveUserSession(
-            user: response.user!,
-            rememberMe: true,
-          );
-        }
-        emit(SocialLoginSuccessState(response));
-      },
-      (failure) {
-        emit(AuthErrorState(failure.errMessage));
-      },
-    );
-  }
-
   Future<void> _saveUserSession({
     required UserEntity user,
     required bool rememberMe,
@@ -252,10 +207,6 @@ class AuthCubit extends Cubit<AuthState> {
       await cacheHelper.removeData(key: CacheKeys.userType);
       await cacheHelper.removeData(key: CacheKeys.userName);
       await cacheHelper.removeData(key: CacheKeys.rememberMe);
-
-      try {
-        await socialAuthService?.signOut();
-      } catch (_) {}
 
       emit(AuthInitial()); // Reset state to initial.
     } catch (e) {

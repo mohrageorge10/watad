@@ -99,33 +99,3 @@ class ResetPasswordRequestModel {
         'newPassword': newPassword,
       };
 }
-
-class GoogleLoginRequestModel {
-  final String idToken;
-  final int userType;
-
-  const GoogleLoginRequestModel({
-    required this.idToken,
-    required this.userType,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'idToken': idToken,
-        'userType': userType,
-      };
-}
-
-class FacebookLoginRequestModel {
-  final String accessToken;
-  final int userType;
-
-  const FacebookLoginRequestModel({
-    required this.accessToken,
-    required this.userType,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'accessToken': accessToken,
-        'userType': userType,
-      };
-}

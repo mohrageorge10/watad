@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/shared/widgets/app_loading_indicator.dart';
@@ -165,19 +167,26 @@ class PortfolioProjectCard extends StatelessWidget {
   }
 
   Widget _buildProjectImage() {
+    final path = project.image.isNotEmpty
+        ? project.image
+        : (project.mediaUrls.isNotEmpty ? project.mediaUrls.first : '');
+    final isHttp = path.startsWith('http://') || path.startsWith('https://');
+    final isLocal = !isHttp && path.isNotEmpty && File(path).existsSync();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),
       child: Container(
         width: 80.w,
         height: 80.w,
         color: const Color(0xFFEDEFFE),
-        child: project.image.startsWith('http')
+        child: isHttp
             ? Image.network(
-                project.image,
+                path,
                 width: 80.w,
                 height: 80.w,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => _fallbackImagePlaceholder(),
+                errorBuilder: (context, error, stackTrace) =>
+                    _fallbackImagePlaceholder(),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
@@ -193,7 +202,16 @@ class PortfolioProjectCard extends StatelessWidget {
                   );
                 },
               )
-            : _fallbackImagePlaceholder(),
+            : (isLocal
+                ? Image.file(
+                    File(path),
+                    width: 80.w,
+                    height: 80.w,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        _fallbackImagePlaceholder(),
+                  )
+                : _fallbackImagePlaceholder()),
       ),
     );
   }

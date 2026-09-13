@@ -104,11 +104,15 @@ class MyBidsListSection extends StatelessWidget {
                     if (result is Map<String, dynamic>) {
                       final cost = result['cost'] as String?;
                       final duration = result['duration'] as String?;
+                      final proposal = result['proposal'] as String?;
+                      final fileName = result['fileName'] as String?;
                       if (cost != null && duration != null) {
                         cubit.updateBid(
                           bid.id,
                           yourBid: cost,
                           duration: duration,
+                          proposal: proposal,
+                          attachmentName: fileName,
                         );
                       }
                     }

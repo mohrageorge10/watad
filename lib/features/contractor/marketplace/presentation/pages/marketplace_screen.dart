@@ -1,11 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
-import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_state.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
 import 'package:watad/features/contractor/marketplace/domain/entities/marketplace_project_entity.dart';
 import 'package:watad/features/contractor/marketplace/presentation/cubit/marketplace_cubit.dart';
@@ -15,6 +17,9 @@ import 'package:watad/features/contractor/marketplace/presentation/view/sections
 import 'package:watad/features/contractor/marketplace/presentation/view/sections/marketplace_projects_list_section.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/sections/marketplace_search_filter_section.dart';
 import 'package:watad/features/contractor/marketplace/presentation/view/sections/marketplace_shimmer_section.dart';
+import 'package:watad/features/contractor/marketplace/presentation/view/widgets/marketplace_budget_filter_bottom_sheet.dart';
+import 'package:watad/features/contractor/profile/data/datasources/contractor_profile_remote_data_source.dart';
+import 'package:watad/features/contractor/profile/presentation/cubit/contractor_profile_cubit.dart';
 
 class MarketplaceScreen extends StatelessWidget {
   final VoidCallback? onBackTap;
@@ -68,11 +73,60 @@ class _MarketplaceView extends StatefulWidget {
 
 class _MarketplaceViewState extends State<_MarketplaceView> {
   late final TextEditingController _searchController;
+  List<String> _userGovernorates = ['Cairo', 'Giza'];
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _loadUserGovernorates();
+  }
+
+  void _loadUserGovernorates() {
+    // 1. Check local cache first
+    try {
+      if (sl.isRegistered<CacheHelper>()) {
+        final raw = sl<CacheHelper>().getData(key: 'contractor_cached_governorates') as String?;
+        if (raw != null && raw.isNotEmpty) {
+          final decoded = jsonDecode(raw);
+          if (decoded is List && decoded.isNotEmpty) {
+            final list = decoded
+                .map((e) => e.toString().trim())
+                .where((s) => s.isNotEmpty)
+                .toList();
+            if (list.isNotEmpty) {
+              _userGovernorates = list;
+            }
+          }
+        }
+      }
+    } catch (_) {}
+
+    // 2. Check ContractorProfileCubit state if active
+    try {
+      if (sl.isRegistered<ContractorProfileCubit>()) {
+        final profileState = sl<ContractorProfileCubit>().state;
+        if (profileState is ContractorProfileSuccess &&
+            profileState.profile.coveredGovernorates.isNotEmpty) {
+          _userGovernorates = profileState.profile.coveredGovernorates;
+        }
+      }
+    } catch (_) {}
+
+    // 3. Fetch from remote data source to always have latest profile locations
+    Future.microtask(() async {
+      try {
+        if (sl.isRegistered<ContractorProfileRemoteDataSource>()) {
+          final profile = await sl<ContractorProfileRemoteDataSource>()
+              .fetchContractorProfile();
+          if (profile.coveredGovernorates.isNotEmpty && mounted) {
+            setState(() {
+              _userGovernorates = profile.coveredGovernorates;
+            });
+          }
+        }
+      } catch (_) {}
+    });
   }
 
   @override
@@ -102,100 +156,29 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
 
   void _handleFilterTap(BuildContext context) {
     final cubit = context.read<MarketplaceCubit>();
-    showModalBottomSheet(
-      context: context,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (bottomSheetContext) {
-        Widget buildOption({
-          required IconData icon,
-          required String title,
-          required String chipValue,
-        }) {
-          final isSelected = cubit.currentCategory == chipValue;
-          return ListTile(
-            leading: Icon(
-              icon,
-              color: isSelected ? AppColors.primary : AppColors.grey500,
-              size: 22.r,
-            ),
-            title: Text(
-              title,
-              style: TextStyle(
-                fontSize: 15.sp,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                color: isSelected ? AppColors.primary : AppColors.grey900,
-              ),
-            ),
-            trailing: isSelected
-                ? Icon(
-                    Icons.check_circle_rounded,
-                    color: AppColors.primary,
-                    size: 20.r,
-                  )
-                : null,
-            onTap: () {
-              cubit.selectFilterChip(chipValue);
-              Navigator.pop(bottomSheetContext);
-            },
-          );
+    MarketplaceBudgetFilterBottomSheet.show(
+      context,
+      initialBudget: cubit.currentMinBudget,
+      currentCategory: cubit.currentCategory,
+      availableGovernorates: _userGovernorates,
+      onApply: (category, minBudget) {
+        if (category != cubit.currentCategory) {
+          cubit.selectFilterChip(category);
         }
-
-        return SafeArea(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Filter by Location & Budget',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.grey900,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      splashRadius: 20.r,
-                      onPressed: () => Navigator.pop(bottomSheetContext),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                buildOption(
-                  icon: Icons.location_city_rounded,
-                  title: 'All Locations',
-                  chipValue: 'All',
-                ),
-                buildOption(
-                  icon: Icons.pin_drop_outlined,
-                  title: 'Cairo Only',
-                  chipValue: 'Cairo',
-                ),
-                buildOption(
-                  icon: Icons.pin_drop_outlined,
-                  title: 'Giza Only',
-                  chipValue: 'Giza',
-                ),
-                buildOption(
-                  icon: Icons.account_balance_wallet_outlined,
-                  title: 'Sort by Budget (Lowest First)',
-                  chipValue: 'Budget',
-                ),
-              ],
-            ),
-          ),
-        );
+        cubit.setBudgetFilter(minBudget);
+      },
+      onReset: () {
+        cubit.clearFilters();
       },
     );
+  }
+
+  String _formatChipBudget(int amount) {
+    if (amount >= 1000000) {
+      final m = amount / 1000000;
+      return m % 1 == 0 ? '${m.toInt()}M' : '${m.toStringAsFixed(1)}M';
+    }
+    return '${(amount / 1000).toInt()}K';
   }
 
   void _handleViewDetails(
@@ -257,10 +240,46 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
                               ? state.activeChip
                               : context.read<MarketplaceCubit>().currentCategory;
 
+                  final minBudget = state is MarketplaceSuccess
+                      ? state.minBudget
+                      : state is MarketplaceEmpty
+                          ? state.minBudget
+                          : state is MarketplaceLoading
+                              ? state.minBudget
+                              : context.read<MarketplaceCubit>().currentMinBudget;
+
+                  final isBudgetActive = minBudget != null && minBudget > 0;
+                  final budgetLabel = isBudgetActive
+                      ? 'Budget (${_formatChipBudget(minBudget)}+)'
+                      : 'Budget';
+
+                  final chipList = <FilterChipData>[
+                    FilterChipData(
+                      label: 'All',
+                      isSelected: activeChip == 'All' && !isBudgetActive,
+                    ),
+                    ..._userGovernorates.map(
+                      (gov) => FilterChipData(
+                        label: gov,
+                        isSelected: activeChip == gov,
+                      ),
+                    ),
+                    FilterChipData(
+                      label: budgetLabel,
+                      icon: Icons.tune_rounded,
+                      isSelected: isBudgetActive || activeChip == 'Budget',
+                    ),
+                  ];
+
                   return MarketplaceFilterChipsSection(
                     activeChip: activeChip,
+                    chips: chipList,
                     onChipSelected: (chip) {
-                      context.read<MarketplaceCubit>().selectFilterChip(chip);
+                      if (chip.startsWith('Budget')) {
+                        _handleFilterTap(context);
+                      } else {
+                        context.read<MarketplaceCubit>().selectFilterChip(chip);
+                      }
                     },
                   );
                 },
@@ -284,7 +303,7 @@ class _MarketplaceViewState extends State<_MarketplaceView> {
                     buttonTitle: 'Reset Filter',
                     onButtonPressed: () {
                       _searchController.clear();
-                      context.read<MarketplaceCubit>().selectFilterChip('All');
+                      context.read<MarketplaceCubit>().clearFilters();
                     },
                   );
                 }
