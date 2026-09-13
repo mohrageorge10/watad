@@ -48,7 +48,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     final response = await apiConsumer.get(
       EndPoints.ownerProjects,
       queryParameters: {
-        if (status != null) 'Status': status,
+        'Status': ?status,
         'PageNumber': pageNumber,
         'PageSize': pageSize,
       },

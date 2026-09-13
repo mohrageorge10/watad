@@ -64,7 +64,9 @@ class BudgetBreakdownCard extends StatelessWidget {
           ),
           SizedBox(width: 12.w),
           Text(
-            '${item.value} (${item.percentage})',
+            item.percentage != null
+                ? '${item.value} (${item.percentage})'
+                : item.value,
             style: AppTextStyles.font14SemiBoldDark,
           ),
         ],

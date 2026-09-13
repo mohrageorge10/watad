@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import '../../domain/entities/change_order_item.dart';
 
 class ChangeOrderListItem extends StatelessWidget {
@@ -11,103 +13,94 @@ class ChangeOrderListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        color: AppColors.white100,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
+    return GestureDetector(
+      onTap: () {
+        context.push(AppRoutes.changeOrderDetails, extra: {
+          'id': item.id,
+          'isPending': false,
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        margin: EdgeInsets.only(bottom: 16.h),
+        decoration: BoxDecoration(
+          color: AppColors.white100,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            item.id,
-            style: AppTextStyles.font14SemiBoldDark.copyWith(
-              fontWeight: FontWeight.w700,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.description,
+                  style: AppTextStyles.font14SemiBoldDark.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  item.costImpact,
+                  style: AppTextStyles.font14SemiBoldDark.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  item.createdAt,
+                  style: AppTextStyles.font12RegularGrey.copyWith(
+                    color: AppColors.grey500,
+                  ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: 4.h),
-          Text(
-            item.title,
-            style: AppTextStyles.font12MediumGrey.copyWith(
-              color: AppColors.grey500,
-            ),
-          ),
-          SizedBox(height: 12.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.amount,
-                    style: AppTextStyles.font14SemiBoldDark.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 4.h),
-                  Text(
-                    item.date,
-                    style: AppTextStyles.font12RegularGrey.copyWith(
-                      fontSize: 10.sp,
-                      color: AppColors.grey400,
-                    ),
-                  ),
-                ],
-              ),
-              _buildStatusWidget(item.status),
-            ],
-          ),
+          _buildStatusWidget(item.status),
         ],
       ),
+    ),
     );
   }
 
-  Widget _buildStatusWidget(ChangeOrderStatus status) {
-    if (status == ChangeOrderStatus.review) {
-      return SizedBox(
-        height: 32.h,
-        child: ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
-            elevation: 0,
-          ),
-          child: Text(
-            "Review",
-            style: AppTextStyles.font12MediumGrey.copyWith(
-              color: AppColors.white100,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-        decoration: BoxDecoration(
-          color: AppColors.accept,
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Text(
-          "Approved",
-          style: AppTextStyles.font12MediumGrey.copyWith(
-            color: AppColors.white100,
-          ),
-        ),
-      );
+  Widget _buildStatusWidget(String status) {
+    Color bgColor = AppColors.grey100;
+    Color textColor = AppColors.grey600;
+
+    final lowerStatus = status.toLowerCase();
+    if (lowerStatus.contains("approved")) {
+      bgColor = AppColors.accept;
+      textColor = AppColors.white100;
+    } else if (lowerStatus.contains("pending") || lowerStatus.contains("review")) {
+      bgColor = AppColors.accent;
+      textColor = AppColors.white100;
+    } else if (lowerStatus.contains("rejected")) {
+      bgColor = AppColors.alert;
+      textColor = AppColors.white100;
     }
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Text(
+        status,
+        style: AppTextStyles.font12MediumGrey.copyWith(
+          color: textColor,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
   }
 }

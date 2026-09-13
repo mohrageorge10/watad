@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../../core/theme/app_colors.dart';
-import '../../../../../../core/theme/app_text_styles.dart';
-import '../../data/repositories/mock_project_dashboard_repository.dart';
+import 'package:watad/core/di/service_locator.dart';
+import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
+import 'package:watad/core/shared/widgets/app_toast.dart';
+import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/theme/app_text_styles.dart';
 import '../cubit/project_dashboard_cubit.dart';
 import '../cubit/project_dashboard_state.dart';
+import '../widgets/dashboard_shimmer.dart';
+import '../widgets/milestones_section.dart';
 import '../widgets/progress_card_section.dart';
 import '../widgets/quick_access_section.dart';
-import '../widgets/activity_feed_section.dart';
 
 class ProjectDashboardView extends StatelessWidget {
-  const ProjectDashboardView({super.key});
+  final String? projectId;
+
+  const ProjectDashboardView({super.key, this.projectId});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProjectDashboardCubit(MockProjectDashboardRepository())
-        ..fetchDashboardData('mock_project_id'),
+      create: (context) => sl<ProjectDashboardCubit>()
+        ..fetchDashboardData(projectId),
       child: const ProjectDashboardBody(),
     );
   }
@@ -31,12 +36,29 @@ class ProjectDashboardBody extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.secondBackground,
       body: SafeArea(
-        child: BlocBuilder<ProjectDashboardCubit, ProjectDashboardState>(
+        child: BlocConsumer<ProjectDashboardCubit, ProjectDashboardState>(
+          listener: (context, state) {
+            if (state is ProjectDashboardError) {
+              AppToast.showError(context, state.message);
+            }
+          },
           builder: (context, state) {
-            if (state is ProjectDashboardLoading) {
-              return const Center(child: CircularProgressIndicator());
+            if (state is ProjectDashboardLoading || state is ProjectDashboardInitial) {
+              return const DashboardShimmer();
+            } else if (state is ProjectDashboardEmpty) {
+              return const AppEmptyStateWidget(
+                title: 'No Active Project',
+                message: 'No active project found to display its dashboard.',
+              );
             } else if (state is ProjectDashboardError) {
-              return Center(child: Text('Error: ${state.message}'));
+              return AppEmptyStateWidget(
+                title: 'Failed to load dashboard',
+                message: state.message,
+                buttonTitle: 'Retry',
+                onButtonPressed: () {
+                  context.read<ProjectDashboardCubit>().fetchDashboardData();
+                },
+              );
             } else if (state is ProjectDashboardLoaded) {
               final data = state.data;
               return SingleChildScrollView(
@@ -44,7 +66,7 @@ class ProjectDashboardBody extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Custom App Bar
+                    // Custom App Bar (Unchanged)
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -53,7 +75,7 @@ class ProjectDashboardBody extends StatelessWidget {
                         borderRadius: BorderRadius.circular(16.r),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),
@@ -64,10 +86,13 @@ class ProjectDashboardBody extends StatelessWidget {
                         children: [
                           Positioned(
                             left: 16.w,
-                            child: Icon(
-                              Icons.arrow_back,
-                              color: AppColors.primary,
-                              size: 24.sp,
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).maybePop(),
+                              child: Icon(
+                                Icons.arrow_back,
+                                color: AppColors.primary,
+                                size: 24.sp,
+                              ),
                             ),
                           ),
                           Text(
@@ -80,14 +105,17 @@ class ProjectDashboardBody extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 24.h),
-                    
+
+                    // Dynamic Blue Container (Uses existing ProgressCardSection UI)
                     ProgressCardSection(progress: data.progress),
                     SizedBox(height: 24.h),
-                    
+
+                    // Static 4 Quick Access Cards (Unchanged)
                     QuickAccessSection(items: data.quickAccessItems),
                     SizedBox(height: 24.h),
-                    
-                    ActivityFeedSection(items: data.activityFeed),
+
+                    // Dynamic Milestones List
+                    MilestonesSection(milestones: data.milestones),
                   ],
                 ),
               );

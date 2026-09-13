@@ -5,6 +5,7 @@ import 'package:watad/core/theme/app_text_styles.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_profile_cubit.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_profile_state.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
 
 class OwnerHomeHeaderSection extends StatelessWidget {
   const OwnerHomeHeaderSection({super.key});
@@ -16,7 +17,10 @@ class OwnerHomeHeaderSection extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(Icons.person_outline, color: AppColors.grey900, size: 28.sp),
+          GestureDetector(
+            onTap: () => context.read<MainLayoutCubit>().changeBottomNavIndex(4),
+            child: Icon(Icons.person_outline, color: AppColors.grey900, size: 28.sp),
+          ),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(
@@ -50,27 +54,30 @@ class OwnerHomeHeaderSection extends StatelessWidget {
               ],
             ),
           ),
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Icon(
-                Icons.notifications_none_rounded,
-                color: AppColors.grey900,
-                size: 26.sp,
-              ),
-              Positioned(
-                top: 2.h,
-                right: 2.w,
-                child: Container(
-                  width: 8.w,
-                  height: 8.w,
-                  decoration: const BoxDecoration(
-                    color: AppColors.alert,
-                    shape: BoxShape.circle,
+          GestureDetector(
+            onTap: () => context.read<MainLayoutCubit>().changeBottomNavIndex(3),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Icon(
+                  Icons.notifications_none_rounded,
+                  color: AppColors.grey900,
+                  size: 26.sp,
+                ),
+                Positioned(
+                  top: 2.h,
+                  right: 2.w,
+                  child: Container(
+                    width: 8.w,
+                    height: 8.w,
+                    decoration: const BoxDecoration(
+                      color: AppColors.alert,
+                      shape: BoxShape.circle,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

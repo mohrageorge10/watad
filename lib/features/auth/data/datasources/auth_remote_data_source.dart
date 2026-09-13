@@ -11,6 +11,10 @@ abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> forgotPassword(ForgotPasswordRequestModel request);
   Future<AuthResponseModel> verifyOtp(VerifyOtpRequestModel request);
   Future<AuthResponseModel> resetPassword(ResetPasswordRequestModel request);
+  Future<AuthResponseModel> googleLogin(GoogleLoginRequestModel request);
+  Future<AuthResponseModel> facebookLogin(FacebookLoginRequestModel request);
+  Future<AuthResponseModel> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request);
+  Future<AuthResponseModel> confirmNewPassword(ConfirmNewPasswordRequestModel request);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -77,6 +81,42 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthResponseModel> resetPassword(ResetPasswordRequestModel request) async {
     final response = await apiConsumer.post(
       EndPoints.resetPassword,
+      data: request.toJson(),
+    );
+    return AuthResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<AuthResponseModel> googleLogin(GoogleLoginRequestModel request) async {
+    final response = await apiConsumer.post(
+      EndPoints.googleLogin,
+      data: request.toJson(),
+    );
+    return AuthResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<AuthResponseModel> facebookLogin(FacebookLoginRequestModel request) async {
+    final response = await apiConsumer.post(
+      EndPoints.facebookLogin,
+      data: request.toJson(),
+    );
+    return AuthResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<AuthResponseModel> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+    final response = await apiConsumer.post(
+      EndPoints.verifyCurrentPassword,
+      data: request.toJson(),
+    );
+    return AuthResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<AuthResponseModel> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+    final response = await apiConsumer.post(
+      EndPoints.confirmChangePassword,
       data: request.toJson(),
     );
     return AuthResponseModel.fromJson(response);

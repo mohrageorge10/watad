@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class BudgetBreakdownItem {
   final String title;
   final String value;
-  final String percentage;
+  final String? percentage;
   final Color color;
 
   BudgetBreakdownItem({
     required this.title,
     required this.value,
-    required this.percentage,
+    this.percentage,
     required this.color,
   });
 }
@@ -17,12 +17,12 @@ class BudgetBreakdownItem {
 class QuickStat {
   final String title;
   final String value;
-  final String currency;
+  final String percentage;
 
   QuickStat({
     required this.title,
     required this.value,
-    required this.currency,
+    required this.percentage,
   });
 }
 
@@ -36,7 +36,7 @@ class PaymentItem {
 
   PaymentItem({
     required this.title,
-    required this.subtitle,
+    this.subtitle = '',
     required this.date,
     required this.value,
     required this.status,

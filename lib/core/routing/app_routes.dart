@@ -4,7 +4,6 @@ class AppRoutes {
   static const String home = '/home';
   static const String onBoarding = '/on-boarding';
   static const String welcome = '/welcome';
-
   // ============ Auth Feature ============
   static const String authLogin = '/login';
   static const String authRoleSelection = '/role-selection';
@@ -15,6 +14,11 @@ class AppRoutes {
   static const String authForgetPassword = '/forget-password';
   static const String authOtp = '/otp';
   static const String authResetPassword = '/reset-password';
+
+  // ============ Change Password Feature ============
+  static const String changePassword = '/change-password';
+  static const String changePasswordOtp = '/change-password-otp';
+  static const String newPassword = '/new-password';
 
   // ============ Owner Feature ============
   static const String ownerDashboard = '/project-dashboard';
@@ -29,6 +33,18 @@ class AppRoutes {
   static const String ownerCreateContractForm = '/create-contract-form';
   static const String ownerMilestonesForm = '/milestones-form';
   static const String ownerContractDetails = '/owner-contract-details';
+  
+  // From HEAD (Owner change orders details)
+  static const String allChangeOrders = '/all-change-orders';
+  static const String changeOrderDetails = '/change-order-details';
+  static const String confirmAcceptChangeOrder = '/confirm-accept-change-order';
+  static const String confirmRejectChangeOrder = '/confirm-reject-change-order';
+  static const String changeOrderAccepted = '/change-order-accepted';
+  static const String createChangeOrder = '/create-change-order';
+  static const String changeOrderSubmitted = '/change-order-submitted';
+
+  static const String futurePlan = '/future-plan';
+  static const String copilot = '/copilot';
 
   // ============ Contractor Feature ============
   static const String contractorProfile = '/contractor-profile';

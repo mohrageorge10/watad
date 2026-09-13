@@ -42,16 +42,39 @@ class ConstructionProgress {
   });
 }
 
+class MilestoneItem {
+  final String id;
+  final String title;
+  final String targetCompletionDate;
+  final String status;
+
+  MilestoneItem({
+    required this.id,
+    required this.title,
+    required this.targetCompletionDate,
+    required this.status,
+  });
+
+  factory MilestoneItem.fromJson(Map<String, dynamic> json) {
+    return MilestoneItem(
+      id: json['id'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      targetCompletionDate: json['targetCompletionDate'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+    );
+  }
+}
+
 class DashboardData {
   final String projectName;
   final ConstructionProgress progress;
   final List<QuickAccessItem> quickAccessItems;
-  final List<ActivityFeedItem> activityFeed;
+  final List<MilestoneItem> milestones;
 
   DashboardData({
     required this.projectName,
     required this.progress,
     required this.quickAccessItems,
-    required this.activityFeed,
+    required this.milestones,
   });
 }

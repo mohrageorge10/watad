@@ -99,3 +99,63 @@ class ResetPasswordRequestModel {
         'newPassword': newPassword,
       };
 }
+
+class GoogleLoginRequestModel {
+  final String idToken;
+  final int userType;
+
+  const GoogleLoginRequestModel({
+    required this.idToken,
+    required this.userType,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'idToken': idToken,
+        'userType': userType,
+      };
+}
+
+class FacebookLoginRequestModel {
+  final String accessToken;
+  final int userType;
+
+  const FacebookLoginRequestModel({
+    required this.accessToken,
+    required this.userType,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'accessToken': accessToken,
+        'userType': userType,
+      };
+}
+
+class VerifyCurrentPasswordRequestModel {
+  final String currentPassword;
+
+  const VerifyCurrentPasswordRequestModel({
+    required this.currentPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'currentPassword': currentPassword,
+      };
+}
+
+class ConfirmNewPasswordRequestModel {
+  final String otpCode;
+  final String newPassword;
+  final String confirmNewPassword;
+
+  const ConfirmNewPasswordRequestModel({
+    required this.otpCode,
+    required this.newPassword,
+    required this.confirmNewPassword,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'otpCode': otpCode,
+        'newPassword': newPassword,
+        'confirmNewPassword': confirmNewPassword,
+      };
+}

@@ -11,6 +11,7 @@ class MockProgressSiteUpdatesRepository {
 
     return ProgressUpdatesData(
       overallProgress: 68,
+      totalUploads: 3,
       phaseProgressList: [
         PhaseProgressItem(
           title: "Foundation",

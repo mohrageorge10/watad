@@ -51,3 +51,31 @@ class ResetPasswordUseCase {
   Future<ApiResult<AuthResponseEntity>> call(ResetPasswordRequestModel request) =>
       repository.resetPassword(request);
 }
+
+class GoogleLoginUseCase {
+  final AuthRepository repository;
+  const GoogleLoginUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(GoogleLoginRequestModel request) =>
+      repository.googleLogin(request);
+}
+
+class FacebookLoginUseCase {
+  final AuthRepository repository;
+  const FacebookLoginUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(FacebookLoginRequestModel request) =>
+      repository.facebookLogin(request);
+}
+
+class VerifyCurrentPasswordUseCase {
+  final AuthRepository repository;
+  const VerifyCurrentPasswordUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(VerifyCurrentPasswordRequestModel request) =>
+      repository.verifyCurrentPassword(request);
+}
+
+class ConfirmNewPasswordUseCase {
+  final AuthRepository repository;
+  const ConfirmNewPasswordUseCase(this.repository);
+  Future<ApiResult<AuthResponseEntity>> call(ConfirmNewPasswordRequestModel request) =>
+      repository.confirmNewPassword(request);
+}

@@ -1,6 +1,16 @@
 class EndPoints {
   static const String baseUrl = "http://watad-api.runasp.net/api/";
 
+  // ================= Central Dashboard =================
+  static String timelineOverview(String projectId) =>
+      "Owner/centraldashboard/$projectId/timeline-overview";
+  static String financialOverview(String projectId) =>
+      "Owner/centraldashboard/$projectId/financial-overview";
+  static String progressBargraph(String projectId) =>
+      "Owner/centraldashboard/$projectId/progress-bargraph";
+  static String siteLogsArchive(String projectId) =>
+      "contractor/site-logs/project/$projectId/archive";
+
   // =================== Auth ===================
   static const String signUp = "Auth/register";
   static const String confirmEmail = "Auth/confirm-email";
@@ -94,7 +104,7 @@ class EndPoints {
   static String estimateChangeOrder(String id) => "ChangeOrders/$id/estimate";
   static String pendingChangeOrders(String projectId) =>
       "ChangeOrders/project/$projectId/pending";
-  static String historyChangeOrders(String projectId) =>
+  static String changeOrdersHistory(String projectId) =>
       "ChangeOrders/project/$projectId/history";
   static String pendingEstimationChangeOrders(String projectId) =>
       "ChangeOrders/project/$projectId/pending-estimation";

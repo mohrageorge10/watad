@@ -16,6 +16,10 @@ class AuthCubit extends Cubit<AuthState> {
   final ForgotPasswordUseCase forgotPasswordUseCase;
   final VerifyOtpUseCase verifyOtpUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
+  final GoogleLoginUseCase googleLoginUseCase;
+  final FacebookLoginUseCase facebookLoginUseCase;
+  final VerifyCurrentPasswordUseCase verifyCurrentPasswordUseCase;
+  final ConfirmNewPasswordUseCase confirmNewPasswordUseCase;
   final CacheHelper cacheHelper;
   final SecureStorageHelper secureStorage;
 
@@ -27,6 +31,10 @@ class AuthCubit extends Cubit<AuthState> {
     required this.forgotPasswordUseCase,
     required this.verifyOtpUseCase,
     required this.resetPasswordUseCase,
+    required this.googleLoginUseCase,
+    required this.facebookLoginUseCase,
+    required this.verifyCurrentPasswordUseCase,
+    required this.confirmNewPasswordUseCase,
     required this.cacheHelper,
     required this.secureStorage,
   }) : super(AuthInitial());
@@ -132,6 +140,70 @@ class AuthCubit extends Cubit<AuthState> {
     result.fold(
       (response) {
         emit(ResetPasswordSuccessState(response.message));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> googleLogin(GoogleLoginRequestModel request) async {
+    emit(AuthLoading());
+    final result = await googleLoginUseCase(request);
+    result.fold(
+      (response) async {
+        if (response.user != null) {
+          await _saveUserSession(
+            user: response.user!,
+            rememberMe: true,
+          );
+        }
+        emit(SocialLoginSuccessState(response));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> facebookLogin(FacebookLoginRequestModel request) async {
+    emit(AuthLoading());
+    final result = await facebookLoginUseCase(request);
+    result.fold(
+      (response) async {
+        if (response.user != null) {
+          await _saveUserSession(
+            user: response.user!,
+            rememberMe: true,
+          );
+        }
+        emit(SocialLoginSuccessState(response));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request) async {
+    emit(AuthLoading());
+    final result = await verifyCurrentPasswordUseCase(request);
+    result.fold(
+      (response) {
+        emit(VerifyCurrentPasswordSuccessState(response.message));
+      },
+      (failure) {
+        emit(AuthErrorState(failure.errMessage));
+      },
+    );
+  }
+
+  Future<void> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
+    emit(AuthLoading());
+    final result = await confirmNewPasswordUseCase(request);
+    result.fold(
+      (response) {
+        emit(ConfirmNewPasswordSuccessState(response.message));
       },
       (failure) {
         emit(AuthErrorState(failure.errMessage));

@@ -3,13 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/view/home_view.dart';
 import '../cubit/main_layout_cubit.dart';
-import 'package:watad/core/di/service_locator.dart';
-import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:go_router/go_router.dart';
-import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/marketplace_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/presentation/view/project_dashboard_view.dart';
 import 'package:watad/features/dashboard/owner/alerts/presentation/view/alerts_view.dart';
+import 'package:watad/features/dashboard/owner/profile/presentation/view/profile_view.dart';
 
 class MainLayout extends StatelessWidget {
   const MainLayout({super.key});
@@ -31,15 +28,7 @@ class MainLayout extends StatelessWidget {
                 const ProjectDashboardView(), // 2. Dashboard
                 const MarketplaceView(), // 3. Marketplace
                 const AlertsView(), // 4. Alerts
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      sl<AuthCubit>().logout();
-                      context.go(AppRoutes.welcome);
-                    },
-                    child: const Text('Logout'),
-                  ),
-                ), // 5. Profile
+                const ProfileView(), // 5. Profile
               ],
             ),
             bottomNavigationBar: Container(
@@ -47,7 +36,7 @@ class MainLayout extends StatelessWidget {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.04),
+                    color: Colors.black.withValues(alpha: 0.04),
                     blurRadius: 10,
                     offset: const Offset(0, -4),
                   ),

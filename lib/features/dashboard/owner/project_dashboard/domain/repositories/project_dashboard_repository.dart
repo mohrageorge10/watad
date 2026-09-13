@@ -1,5 +1,6 @@
+import 'package:watad/core/network/api/api_result.dart';
 import '../../domain/entities/dashboard_data.dart';
 
 abstract class ProjectDashboardRepository {
-  Future<DashboardData> getDashboardData(String projectId);
+  Future<ApiResult<DashboardData>> getDashboardData(String projectId);
 }
