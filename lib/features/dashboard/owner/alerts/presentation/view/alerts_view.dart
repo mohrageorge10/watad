@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -86,7 +87,11 @@ class _AlertsViewState extends State<AlertsView> {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        }
+                      },
                       child: const Icon(Icons.arrow_back, color: AppColors.primary),
                     ),
                     Expanded(

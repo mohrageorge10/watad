@@ -21,6 +21,8 @@ class MockVerifyOtpUseCase extends Mock implements VerifyOtpUseCase {}
 class MockResetPasswordUseCase extends Mock implements ResetPasswordUseCase {}
 class MockGoogleLoginUseCase extends Mock implements GoogleLoginUseCase {}
 class MockFacebookLoginUseCase extends Mock implements FacebookLoginUseCase {}
+class MockVerifyCurrentPasswordUseCase extends Mock implements VerifyCurrentPasswordUseCase {}
+class MockConfirmNewPasswordUseCase extends Mock implements ConfirmNewPasswordUseCase {}
 class MockCacheHelper extends Mock implements CacheHelper {}
 class MockSecureStorageHelper extends Mock implements SecureStorageHelper {}
 
@@ -35,6 +37,8 @@ void main() {
   late MockResetPasswordUseCase mockResetPasswordUseCase;
   late MockGoogleLoginUseCase mockGoogleLoginUseCase;
   late MockFacebookLoginUseCase mockFacebookLoginUseCase;
+  late MockVerifyCurrentPasswordUseCase mockVerifyCurrentPasswordUseCase;
+  late MockConfirmNewPasswordUseCase mockConfirmNewPasswordUseCase;
   late MockCacheHelper mockCacheHelper;
   late MockSecureStorageHelper mockSecureStorageHelper;
 
@@ -57,6 +61,8 @@ void main() {
     mockResetPasswordUseCase = MockResetPasswordUseCase();
     mockGoogleLoginUseCase = MockGoogleLoginUseCase();
     mockFacebookLoginUseCase = MockFacebookLoginUseCase();
+    mockVerifyCurrentPasswordUseCase = MockVerifyCurrentPasswordUseCase();
+    mockConfirmNewPasswordUseCase = MockConfirmNewPasswordUseCase();
     mockCacheHelper = MockCacheHelper();
     mockSecureStorageHelper = MockSecureStorageHelper();
 
@@ -70,6 +76,8 @@ void main() {
       resetPasswordUseCase: mockResetPasswordUseCase,
       googleLoginUseCase: mockGoogleLoginUseCase,
       facebookLoginUseCase: mockFacebookLoginUseCase,
+      verifyCurrentPasswordUseCase: mockVerifyCurrentPasswordUseCase,
+      confirmNewPasswordUseCase: mockConfirmNewPasswordUseCase,
       cacheHelper: mockCacheHelper,
       secureStorage: mockSecureStorageHelper,
     );

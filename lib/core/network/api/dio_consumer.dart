@@ -175,25 +175,4 @@ class DioConsumer extends ApiConsumer {
     }
   }
 
-  //! PUT
-  @override
-  Future<dynamic> put(
-    String path, {
-    dynamic data,
-    Map<String, dynamic>? queryParameters,
-    bool isFormData = false,
-  }) async {
-    try {
-      final response = await dio.put(
-        path,
-        data: isFormData && data is Map<String, dynamic>
-            ? FormData.fromMap(data)
-            : data,
-        queryParameters: queryParameters,
-      );
-      return response.data;
-    } on DioException catch (e) {
-      handleDioException(e);
-    }
-  }
 }

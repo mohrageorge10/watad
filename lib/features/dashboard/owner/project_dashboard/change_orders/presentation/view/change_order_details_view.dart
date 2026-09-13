@@ -12,7 +12,6 @@ import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/d
 import '../cubit/change_order_details_cubit.dart';
 import '../cubit/change_order_details_state.dart';
 import '../widgets/change_order_formatters.dart';
-import '../widgets/change_order_impact_item.dart';
 import '../widgets/change_order_status_badge.dart';
 
 class ChangeOrderDetailsView extends StatelessWidget {

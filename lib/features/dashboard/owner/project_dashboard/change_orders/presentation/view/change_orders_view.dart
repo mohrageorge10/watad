@@ -83,7 +83,7 @@ class ChangeOrdersView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.r),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 10,
                                 offset: const Offset(0, 2),
                               ),
@@ -94,7 +94,7 @@ class ChangeOrdersView extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.all(8.w),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
+                                  color: AppColors.primary.withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: Icon(Icons.pending_actions_outlined, color: AppColors.primary, size: 20.w),
@@ -141,7 +141,7 @@ class ChangeOrdersView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -152,7 +152,7 @@ class ChangeOrdersView extends StatelessWidget {
                             Container(
                               padding: EdgeInsets.all(8.w),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
+                                color: AppColors.primary.withValues(alpha: 0.1),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(Icons.calendar_today_outlined, color: AppColors.primary, size: 20.w),

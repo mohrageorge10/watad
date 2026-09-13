@@ -45,14 +45,14 @@ class ActiveProjectCardSection extends StatelessWidget {
                 SizedBox(width: 4.w),
                 Text(
                   project.location,
-                  style: AppTextStyles.font12RegularGrey.copyWith(color: AppColors.white100.withOpacity(0.8)),
+                  style: AppTextStyles.font12RegularGrey.copyWith(color: AppColors.white100.withValues(alpha: 0.8)),
                 ),
               ],
             ),
             SizedBox(height: 24.h),
             Text(
               "Overall Progress",
-              style: AppTextStyles.font12MediumGrey.copyWith(color: AppColors.white100.withOpacity(0.8)),
+              style: AppTextStyles.font12MediumGrey.copyWith(color: AppColors.white100.withValues(alpha: 0.8)),
             ),
             SizedBox(height: 8.h),
             Row(

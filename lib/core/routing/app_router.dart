@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:watad/core/routing/app_routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/features/dashboard/owner/main_layout/presentation/view/main_layout.dart';
@@ -11,6 +12,7 @@ import 'package:watad/features/auth/presentation/pages/login_page.dart';
 import 'package:watad/features/auth/presentation/pages/otp_page.dart';
 import 'package:watad/features/auth/presentation/pages/reset_password_page.dart';
 import 'package:watad/features/auth/presentation/pages/role_selection_page.dart';
+import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_email_confirmation_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_password_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_personal_info_page.dart';
@@ -44,8 +46,12 @@ import 'package:watad/features/dashboard/owner/feasibility/domain/entities/feasi
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_calculator_view.dart';
 import 'package:watad/features/dashboard/owner/feasibility/presentation/view/feasibility_report_view.dart';
 import 'package:watad/features/dashboard/owner/projects/create_project/presentation/view/create_project_view.dart';
-import 'package:watad/features/dashboard/owner/alerts/presentation/view/alerts_view.dart';
-import 'package:watad/features/dashboard/owner/copilot/presentation/view/copilot_chat_view.dart';
+import 'package:watad/features/copilot/presentation/view/copilot_view.dart';
+import 'package:watad/features/copilot/presentation/cubit/copilot_cubit.dart';
+import 'package:watad/features/copilot/domain/usecases/copilot_usecases.dart';
+import 'package:watad/features/copilot/data/repositories/copilot_repository_impl.dart';
+import 'package:watad/features/copilot/data/datasources/copilot_api_service.dart';
+import 'package:watad/features/copilot/data/datasources/copilot_signalr_service.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/view/future_plan_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_details_view.dart';
 import 'package:watad/features/dashboard/owner/marketplace/presentation/view/bid_result_view.dart';
@@ -56,7 +62,6 @@ import 'package:watad/features/dashboard/owner/project_dashboard/financial_summa
 import 'package:watad/features/dashboard/owner/project_dashboard/progress_site_updates/presentation/view/progress_site_updates_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/all_change_orders_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_orders_view.dart';
-<<<<<<< HEAD
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/domain/entities/change_order_details.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_details_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/confirm_accept_change_order_view.dart';
@@ -64,7 +69,6 @@ import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/p
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_accepted_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/create_change_order_view.dart';
 import 'package:watad/features/dashboard/owner/project_dashboard/change_orders/presentation/view/change_order_submitted_view.dart';
-=======
 
 CustomTransitionPage<void> _buildAnimatedPage({
   required GoRouterState state,
@@ -93,8 +97,6 @@ CustomTransitionPage<void> _buildAnimatedPage({
     },
   );
 }
-
->>>>>>> origin/develop
 final GoRouter appRouter = GoRouter(
   initialLocation: AppRoutes.splash,
   observers: [FlutterSmartDialog.observer],
@@ -262,17 +264,10 @@ final GoRouter appRouter = GoRouter(
           _buildAnimatedPage(state: state, child: const CreateProjectView()),
     ),
     GoRoute(
-<<<<<<< HEAD
       path: AppRoutes.futurePlan,
       builder: (context, state) => const FuturePlanView(),
     ),
     GoRoute(
-      name: 'bid_details',
-      path: AppRoutes.bidDetails,
-      builder: (context, state) {
-        final bidId = state.extra as String;
-        return BidDetailsView(bidId: bidId);
-=======
       path: AppRoutes.ownerBidDetails,
       name: AppRoutes.ownerBidDetails,
       pageBuilder: (context, state) {
@@ -287,7 +282,6 @@ final GoRouter appRouter = GoRouter(
           state: state,
           child: BidDetailsView(bidId: bidId),
         );
->>>>>>> origin/develop
       },
     ),
     GoRoute(
@@ -718,7 +712,21 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: AppRoutes.copilot,
-      builder: (context, state) => const CopilotChatView(),
+      builder: (context, state) {
+        final projectId = state.extra as String?;
+        return BlocProvider(
+          create: (context) => CopilotCubit(
+            useCases: CopilotUseCases(
+              repository: CopilotRepositoryImpl(
+                apiService: CopilotApiServiceImpl(),
+                signalRService: CopilotSignalRServiceImpl(),
+              ),
+            ),
+            getCurrentProjectOverviewUseCase: sl(),
+          )..init(projectId),
+          child: CopilotView(projectId: projectId ?? ''),
+        );
+      },
     ),
   ],
 );

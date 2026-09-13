@@ -164,8 +164,8 @@ class _ProfileHeader extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      if (Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop();
+                      if (context.canPop()) {
+                        context.pop();
                       }
                     },
                     child: Icon(Icons.arrow_back, color: AppColors.white100, size: 24.r),
@@ -205,7 +205,7 @@ class _ProfileHeader extends StatelessWidget {
                         ? Image.network(
                       profilePictureUrl!,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
+                      errorBuilder: (_, _, _) => Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
                     )
                         : Icon(Icons.person, size: 48.r, color: AppColors.deactivation),
                   ),

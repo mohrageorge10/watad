@@ -41,7 +41,7 @@ class ProgressCardSection extends StatelessWidget {
                 height: 4.h,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: AppColors.white100.withOpacity(0.3),
+                  color: AppColors.white100.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(2.r),
                 ),
               ),

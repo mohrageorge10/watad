@@ -116,7 +116,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<AuthResponseModel> confirmNewPassword(ConfirmNewPasswordRequestModel request) async {
     final response = await apiConsumer.post(
-      EndPoints.confirmNewPassword,
+      EndPoints.confirmChangePassword,
       data: request.toJson(),
     );
     return AuthResponseModel.fromJson(response);

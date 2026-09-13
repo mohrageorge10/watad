@@ -29,7 +29,7 @@ class CopilotActive extends CopilotState {
 
 class CopilotError extends CopilotState {
   final String errorMessage;
-  const CopilotError(List<CopilotMessage> messages, this.errorMessage) : super(messages);
+  const CopilotError(super.messages, this.errorMessage);
 
   @override
   List<Object?> get props => [messages, errorMessage];

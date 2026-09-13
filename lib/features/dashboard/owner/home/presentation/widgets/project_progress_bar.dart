@@ -15,7 +15,7 @@ class ProjectProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trackColor = isDarkBackground
-        ? AppColors.white100.withOpacity(0.2)
+        ? AppColors.white100.withValues(alpha: 0.2)
         : AppColors.signUp; // E6E6E6
     
     final fillColor = isDarkBackground
