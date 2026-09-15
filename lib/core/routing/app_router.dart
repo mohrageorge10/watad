@@ -12,7 +12,6 @@ import 'package:watad/features/auth/presentation/pages/forget_password_page.dart
 import 'package:watad/features/auth/presentation/pages/login_page.dart';
 import 'package:watad/features/auth/presentation/pages/otp_page.dart';
 import 'package:watad/features/auth/presentation/pages/reset_password_page.dart';
-import 'package:watad/features/auth/presentation/pages/role_selection_page.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_email_confirmation_page.dart';
 import 'package:watad/features/auth/presentation/pages/sign_up_password_page.dart';

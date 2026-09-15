@@ -89,44 +89,6 @@ Future<void> setupServiceLocator() async {
     ),
   );
 
-  //! Auth Feature
-  // DataSource
-  sl.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(apiConsumer: sl()),
-  );
-
-  // Repository
-  sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: sl()),
-  );
-
-  // UseCases
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => RegisterUseCase(sl()));
-  sl.registerLazySingleton(() => ConfirmEmailUseCase(sl()));
-  sl.registerLazySingleton(() => ResendOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ForgotPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => VerifyOtpUseCase(sl()));
-  sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => VerifyCurrentPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => ConfirmNewPasswordUseCase(sl()));
-
-  // Cubit
-  sl.registerFactory(
-    () => AuthCubit(
-      loginUseCase: sl(),
-      registerUseCase: sl(),
-      confirmEmailUseCase: sl(),
-      resendOtpUseCase: sl(),
-      forgotPasswordUseCase: sl(),
-      verifyOtpUseCase: sl(),
-      resetPasswordUseCase: sl(),
-      verifyCurrentPasswordUseCase: sl(),
-      confirmNewPasswordUseCase: sl(),
-      cacheHelper: sl(),
-      secureStorage: sl(),
-    ),
-  );
 
   //! Contractor Home Feature
   // DataSource
