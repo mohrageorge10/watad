@@ -13,4 +13,5 @@ abstract class AuthRepository {
 
   Future<ApiResult<AuthResponseEntity>> verifyCurrentPassword(VerifyCurrentPasswordRequestModel request);
   Future<ApiResult<AuthResponseEntity>> confirmNewPassword(ConfirmNewPasswordRequestModel request);
+  Future<ApiResult<void>> logout(String refreshToken);
 }

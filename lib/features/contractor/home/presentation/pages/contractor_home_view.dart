@@ -91,7 +91,15 @@ class ContractorHomeView extends StatelessWidget {
                           () {
                             context.push(AppRoutes.contractorMyProjects);
                           },
-                      onProjectTap: (project) {},
+                      onProjectTap: (project) {
+                        context.pushNamed(
+                          AppRoutes.contractorProjectDashboard,
+                          extra: {
+                            'projectId': project.projectId ?? project.id,
+                            'projectName': project.title,
+                          },
+                        );
+                      },
                       onExploreTap: onNavigateToMarketplace ??
                           () {
                             context.go(AppRoutes.marketplace);

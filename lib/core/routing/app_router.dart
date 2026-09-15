@@ -773,6 +773,7 @@ final GoRouter appRouter = GoRouter(
       name: AppRoutes.contractPreview,
       pageBuilder: (context, state) {
         String? contractId;
+        String? projectId;
         ContractEntity? initialContract;
         if (state.extra is String) {
           contractId = state.extra as String;
@@ -782,6 +783,7 @@ final GoRouter appRouter = GoRouter(
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
           contractId = map['contractId'] as String?;
+          projectId = map['projectId'] as String?;
           if (map['contract'] is ContractEntity) {
             initialContract = map['contract'] as ContractEntity;
           }
@@ -791,6 +793,7 @@ final GoRouter appRouter = GoRouter(
           state: state,
           child: ContractPreviewScreen(
             contractId: contractId,
+            projectId: projectId,
             initialContract: initialContract,
           ),
         );
@@ -824,6 +827,7 @@ final GoRouter appRouter = GoRouter(
         String? projectId;
         String? projectName;
         String? milestoneName;
+        String? milestoneId;
         String? location;
 
         if (state.extra is Map<String, dynamic>) {
@@ -831,6 +835,7 @@ final GoRouter appRouter = GoRouter(
           projectId = map['projectId'] as String?;
           projectName = map['projectName'] as String?;
           milestoneName = map['milestoneName'] as String?;
+          milestoneId = map['milestoneId'] as String?;
           location = map['location'] as String?;
         }
 
@@ -840,6 +845,7 @@ final GoRouter appRouter = GoRouter(
             projectId: projectId,
             projectName: projectName,
             milestoneName: milestoneName,
+            milestoneId: milestoneId,
             location: location,
           ),
         );

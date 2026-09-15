@@ -18,6 +18,7 @@ class AuthCubit extends Cubit<AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final VerifyCurrentPasswordUseCase verifyCurrentPasswordUseCase;
   final ConfirmNewPasswordUseCase confirmNewPasswordUseCase;
+  final LogoutUseCase logoutUseCase;
   final CacheHelper cacheHelper;
   final SecureStorageHelper secureStorage;
 
@@ -31,6 +32,7 @@ class AuthCubit extends Cubit<AuthState> {
     required this.resetPasswordUseCase,
     required this.verifyCurrentPasswordUseCase,
     required this.confirmNewPasswordUseCase,
+    required this.logoutUseCase,
     required this.cacheHelper,
     required this.secureStorage,
   }) : super(AuthInitial());
@@ -228,6 +230,13 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(AuthLoading());
     try {
+      final refreshToken = await secureStorage.read(key: CacheKeys.refreshToken) 
+          ?? cacheHelper.getData(key: CacheKeys.refreshToken);
+      
+      if (refreshToken != null) {
+        await logoutUseCase(refreshToken);
+      }
+
       TokenManager.instance.clearToken();
       await secureStorage.delete(key: CacheKeys.token);
       await secureStorage.delete(key: CacheKeys.refreshToken);

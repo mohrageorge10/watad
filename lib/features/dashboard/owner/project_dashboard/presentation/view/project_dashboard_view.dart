@@ -26,18 +26,32 @@ class ProjectDashboardView extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<ProjectDashboardCubit>()
         ..fetchDashboardData(projectId),
-      child: const ProjectDashboardBody(),
+      child: ProjectDashboardBody(projectId: projectId),
     );
   }
 }
 
 class ProjectDashboardBody extends StatelessWidget {
-  const ProjectDashboardBody({super.key});
+  final String? projectId;
+  const ProjectDashboardBody({super.key, this.projectId});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.secondBackground,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.push(AppRoutes.copilot, extra: projectId);
+        },
+        backgroundColor: AppColors.primary,
+        elevation: 4,
+        shape: const CircleBorder(),
+        child: Icon(
+          Icons.smart_toy_outlined,
+          color: AppColors.white100,
+          size: 28.sp,
+        ),
+      ),
       body: SafeArea(
         child: BlocConsumer<ProjectDashboardCubit, ProjectDashboardState>(
           listener: (context, state) {

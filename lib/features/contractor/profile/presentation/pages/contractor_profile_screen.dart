@@ -18,7 +18,10 @@ import 'package:watad/features/contractor/profile/presentation/view/sections/rev
 import 'package:watad/features/contractor/profile/presentation/view/sections/specialization_section.dart';
 import 'package:watad/features/contractor/profile/presentation/view/sections/stats_card_section.dart';
 import 'package:watad/features/contractor/home/presentation/view/widgets/contractor_bottom_nav_bar.dart';
-
+import 'package:watad/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:watad/core/shared/widgets/app_elevated_button.dart';
+import 'package:watad/core/theme/app_colors.dart';
+import 'package:watad/core/di/service_locator.dart';
 class ContractorProfileScreen extends StatelessWidget {
   final VoidCallback? onSettingsTap;
   final VoidCallback? onNavigateToMyProjects;
@@ -199,7 +202,21 @@ class ContractorProfileScreen extends StatelessWidget {
                       ),
                     ],
 
-                    SizedBox(height: 24.h),
+                    SizedBox(height: 32.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: AppElevatedButton(
+                        title: 'Logout',
+                        backgroundColor: AppColors.alert,
+                        onPressed: () async {
+                          await sl<AuthCubit>().logout();
+                          if (context.mounted) {
+                            context.go(AppRoutes.welcome);
+                          }
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 32.h),
                   ],
                 ),
               ),

@@ -17,6 +17,7 @@ abstract class AuthRemoteDataSource {
   Future<AuthResponseModel> confirmNewPassword(
     ConfirmNewPasswordRequestModel request,
   );
+  Future<void> logout(String refreshToken);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -114,5 +115,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data: request.toJson(),
     );
     return AuthResponseModel.fromJson(response);
+  }
+
+  @override
+  Future<void> logout(String refreshToken) async {
+    await apiConsumer.post(
+      EndPoints.logout,
+      data: {'refreshToken': refreshToken},
+    );
   }
 }

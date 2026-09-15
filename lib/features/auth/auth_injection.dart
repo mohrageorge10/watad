@@ -26,6 +26,7 @@ void initAuthFeature(GetIt sl) {
   sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
   sl.registerLazySingleton(() => VerifyCurrentPasswordUseCase(sl()));
   sl.registerLazySingleton(() => ConfirmNewPasswordUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
 
   //! Cubit
   sl.registerFactory(
@@ -39,6 +40,7 @@ void initAuthFeature(GetIt sl) {
       resetPasswordUseCase: sl(),
       verifyCurrentPasswordUseCase: sl(),
       confirmNewPasswordUseCase: sl(),
+      logoutUseCase: sl(),
       cacheHelper: sl(),
       secureStorage: sl(),
     ),

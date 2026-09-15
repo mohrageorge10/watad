@@ -14,6 +14,7 @@ import 'package:watad/core/services/file_download_service.dart';
 
 class ContractPreviewScreen extends StatelessWidget {
   final String? contractId;
+  final String? projectId;
   final ContractEntity? initialContract;
   final VoidCallback? onBackTap;
   final VoidCallback? onSettingsTap;
@@ -21,6 +22,7 @@ class ContractPreviewScreen extends StatelessWidget {
   const ContractPreviewScreen({
     super.key,
     this.contractId,
+    this.projectId,
     this.initialContract,
     this.onBackTap,
     this.onSettingsTap,
@@ -38,6 +40,7 @@ class ContractPreviewScreen extends StatelessWidget {
       },
       child: _ContractPreviewView(
         contractId: contractId,
+        projectId: projectId,
         initialContract: initialContract,
         onBackTap: onBackTap,
         onSettingsTap: onSettingsTap,
@@ -48,12 +51,14 @@ class ContractPreviewScreen extends StatelessWidget {
 
 class _ContractPreviewView extends StatelessWidget {
   final String? contractId;
+  final String? projectId;
   final ContractEntity? initialContract;
   final VoidCallback? onBackTap;
   final VoidCallback? onSettingsTap;
 
   const _ContractPreviewView({
     this.contractId,
+    this.projectId,
     this.initialContract,
     this.onBackTap,
     this.onSettingsTap,
@@ -63,7 +68,7 @@ class _ContractPreviewView extends StatelessWidget {
     context.pushNamed(
       AppRoutes.contractorProjectDashboard,
       extra: {
-        'projectId': contractId ?? initialContract?.projectId ?? 'proj_1',
+        'projectId': projectId ?? contractId ?? initialContract?.projectId ?? 'proj_1',
         'projectName': initialContract?.projectName ?? 'Project Dashboard',
       },
     );

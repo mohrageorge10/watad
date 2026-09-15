@@ -137,11 +137,12 @@ class _ContractorProjectDashboardView extends StatelessWidget {
                     SizedBox(height: 16.h),
 
                     // 3. Active Milestone Card
-                    ProjectDashboardActiveMilestoneCardSection(
-                      milestone: dashboard.activeMilestone,
-                    ),
-
-                    SizedBox(height: 16.h),
+                    if (dashboard.activeMilestone.title.isNotEmpty) ...[
+                      ProjectDashboardActiveMilestoneCardSection(
+                        milestone: dashboard.activeMilestone,
+                      ),
+                      SizedBox(height: 16.h),
+                    ],
 
                     // 4. Daily Logs Section
                     ProjectDashboardDailyLogsSection(
@@ -161,6 +162,7 @@ class _ContractorProjectDashboardView extends StatelessWidget {
                             'projectId': dashboard.projectId,
                             'projectName': dashboard.title,
                             'milestoneName': dashboard.activeMilestone.title,
+                            'milestoneId': dashboard.activeMilestone.id,
                             'location': dashboard.location,
                           },
                         );

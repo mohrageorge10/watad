@@ -13,6 +13,51 @@ class ProjectDashboardHeroCardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final specItems = <Widget>[];
+    if (dashboard.landArea.isNotEmpty) {
+      specItems.add(_buildSpecItem(
+        icon: Icons.crop_square_rounded,
+        label: 'Land Area',
+        value: dashboard.landArea,
+      ));
+    }
+    if (dashboard.floors.isNotEmpty) {
+      specItems.add(_buildSpecItem(
+        icon: Icons.layers_outlined,
+        label: 'Floors',
+        value: dashboard.floors,
+      ));
+    }
+    if (dashboard.finishingLevel.isNotEmpty) {
+      specItems.add(_buildSpecItem(
+        icon: Icons.auto_awesome_outlined,
+        label: 'Finishing Level',
+        value: dashboard.finishingLevel,
+      ));
+    }
+
+    final financeItems = <Widget>[];
+    if (dashboard.contractValue.isNotEmpty) {
+      financeItems.add(_buildFinanceItem(
+        icon: Icons.payments_outlined,
+        label: 'Contract Value',
+        value: dashboard.contractValue,
+      ));
+    }
+    if (dashboard.startDate.isNotEmpty) {
+      financeItems.add(_buildFinanceItem(
+        icon: Icons.calendar_today_outlined,
+        label: 'Start Date',
+        value: dashboard.startDate,
+      ));
+    }
+    if (dashboard.endDate.isNotEmpty) {
+      financeItems.add(_buildFinanceItem(
+        label: 'End Date',
+        value: dashboard.endDate,
+      ));
+    }
+
     return Container(
       decoration: BoxDecoration(
         color: AppColors.white100,
@@ -154,55 +199,24 @@ class ProjectDashboardHeroCardSection extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 16.h),
-                const Divider(height: 1, color: Color(0xFFF2F4F7)),
-                SizedBox(height: 14.h),
+                if (specItems.isNotEmpty) ...[
+                  SizedBox(height: 16.h),
+                  const Divider(height: 1, color: Color(0xFFF2F4F7)),
+                  SizedBox(height: 14.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: specItems,
+                  ),
+                ],
 
-                // 3-Column Specifications Row (Land Area, Floors, Finishing Level)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildSpecItem(
-                      icon: Icons.crop_square_rounded,
-                      label: 'Land Area',
-                      value: dashboard.landArea,
-                    ),
-                    _buildSpecItem(
-                      icon: Icons.layers_outlined,
-                      label: 'Floors',
-                      value: dashboard.floors,
-                    ),
-                    _buildSpecItem(
-                      icon: Icons.auto_awesome_outlined,
-                      label: 'Finishing Level',
-                      value: dashboard.finishingLevel,
-                    ),
-                  ],
-                ),
-
-                SizedBox(height: 16.h),
-
-                // 3-Column Dates & Financial Row (Contract Value, Start Date, End Date)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildFinanceItem(
-                      icon: Icons.payments_outlined,
-                      label: 'Contract Value',
-                      value: dashboard.contractValue,
-                    ),
-                    _buildFinanceItem(
-                      icon: Icons.calendar_today_outlined,
-                      label: 'Start Date',
-                      value: dashboard.startDate,
-                    ),
-                    _buildFinanceItem(
-                      label: 'End Date',
-                      value: dashboard.endDate,
-                    ),
-                  ],
-                ),
+                if (financeItems.isNotEmpty) ...[
+                  SizedBox(height: 16.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: financeItems,
+                  ),
+                ],
               ],
             ),
           ),

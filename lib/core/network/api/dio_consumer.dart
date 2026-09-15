@@ -24,8 +24,8 @@ class DioConsumer extends ApiConsumer {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     };
-    dio.options.connectTimeout = const Duration(seconds: 15);
-    dio.options.receiveTimeout = const Duration(seconds: 15);
+    dio.options.connectTimeout = const Duration(seconds: 60);
+    dio.options.receiveTimeout = const Duration(seconds: 60);
 
     dio.interceptors.add(
       InterceptorsWrapper(

@@ -268,6 +268,7 @@ class _BidDetailsScreenState extends State<BidDetailsScreen> {
                       extra: {
                         'contractId': widget.bid?.id,
                         'bidId': widget.bid?.id,
+                        'projectId': widget.bid?.projectId,
                       },
                     );
                   },

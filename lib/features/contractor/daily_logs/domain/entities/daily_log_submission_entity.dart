@@ -4,6 +4,7 @@ class DailyLogSubmissionEntity extends Equatable {
   final String projectId;
   final String projectName;
   final String milestoneName;
+  final String milestoneId;
   final String location;
   final DateTime logDate;
   final List<String> mediaPaths;
@@ -19,6 +20,7 @@ class DailyLogSubmissionEntity extends Equatable {
     required this.projectId,
     required this.projectName,
     required this.milestoneName,
+    required this.milestoneId,
     required this.location,
     required this.logDate,
     required this.mediaPaths,
@@ -36,6 +38,7 @@ class DailyLogSubmissionEntity extends Equatable {
         projectId,
         projectName,
         milestoneName,
+        milestoneId,
         location,
         logDate,
         mediaPaths,

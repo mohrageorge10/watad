@@ -21,6 +21,7 @@ class DailyLogsRepositoryImpl implements DailyLogsRepository {
         projectId: submission.projectId,
         projectName: submission.projectName,
         milestoneName: submission.milestoneName,
+        milestoneId: submission.milestoneId,
         location: submission.location,
         logDate: submission.logDate,
         mediaPaths: submission.mediaPaths,

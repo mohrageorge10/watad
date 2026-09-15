@@ -21,6 +21,7 @@ class AddDailyLogScreen extends StatelessWidget {
   final String? projectId;
   final String? projectName;
   final String? milestoneName;
+  final String? milestoneId;
   final String? location;
   final VoidCallback? onBackTap;
 
@@ -29,6 +30,7 @@ class AddDailyLogScreen extends StatelessWidget {
     this.projectId,
     this.projectName,
     this.milestoneName,
+    this.milestoneId,
     this.location,
     this.onBackTap,
   });
@@ -41,6 +43,7 @@ class AddDailyLogScreen extends StatelessWidget {
         projectId: projectId ?? 'proj_1',
         projectName: projectName ?? 'Project Site',
         milestoneName: milestoneName ?? 'Active Milestone',
+        milestoneId: milestoneId ?? '',
         location: location ?? 'Site Location',
         onBackTap: onBackTap,
       ),
@@ -52,6 +55,7 @@ class _AddDailyLogView extends StatefulWidget {
   final String projectId;
   final String projectName;
   final String milestoneName;
+  final String milestoneId;
   final String location;
   final VoidCallback? onBackTap;
 
@@ -59,6 +63,7 @@ class _AddDailyLogView extends StatefulWidget {
     required this.projectId,
     required this.projectName,
     required this.milestoneName,
+    required this.milestoneId,
     required this.location,
     this.onBackTap,
   });
@@ -152,6 +157,7 @@ class _AddDailyLogViewState extends State<_AddDailyLogView> {
       projectId: widget.projectId,
       projectName: widget.projectName,
       milestoneName: widget.milestoneName,
+      milestoneId: widget.milestoneId,
       location: widget.location,
       workSummary: summary,
       equipmentUsed: equipment,

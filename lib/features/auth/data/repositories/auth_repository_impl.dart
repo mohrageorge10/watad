@@ -132,11 +132,21 @@ class AuthRepositoryImpl implements AuthRepository {
     ConfirmNewPasswordRequestModel request,
   ) async {
     try {
-      final response = await remoteDataSource.confirmNewPassword(request);
+    final response = await remoteDataSource.confirmNewPassword(request);
       if (!response.isSuccess) {
         return ApiResult.failure(ServerFailure(errMessage: response.message));
       }
       return ApiResult.success(response.toEntity());
+    } catch (e) {
+      return ApiResult.failure(ErrorHandler.handle(e));
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> logout(String refreshToken) async {
+    try {
+      await remoteDataSource.logout(refreshToken);
+      return ApiResult.success(null);
     } catch (e) {
       return ApiResult.failure(ErrorHandler.handle(e));
     }

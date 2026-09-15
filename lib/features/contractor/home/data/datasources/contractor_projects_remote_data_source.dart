@@ -35,7 +35,7 @@ class ContractorProjectsRemoteDataSourceImpl
     };
 
     final queryParameters = <String, dynamic>{
-      ApiQueryParams.status: ?status,
+      if (status != null) ApiQueryParams.status: status,
     };
 
     final response = await apiConsumer.get(
@@ -44,6 +44,7 @@ class ContractorProjectsRemoteDataSourceImpl
       headers: headers.isNotEmpty ? headers : null,
     );
 
+    print('fetchContractorProjects response: $response');
     if (response is List) {
       return response
           .map((item) =>
@@ -52,6 +53,7 @@ class ContractorProjectsRemoteDataSourceImpl
     } else if (response is Map<String, dynamic>) {
       final dynamic data =
           response[ApiKey.data] ?? response['items'] ?? response['projects'];
+      print('fetchContractorProjects extracted data: $data');
       if (data is List) {
         return data
             .map((item) =>

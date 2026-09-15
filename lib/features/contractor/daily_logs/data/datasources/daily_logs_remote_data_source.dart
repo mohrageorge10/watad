@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:watad/core/cache/cache_helper.dart';
 import 'package:watad/core/cache/secure_storage_helper.dart';
 import 'package:watad/core/network/api/api_consumer.dart';
@@ -30,9 +31,24 @@ class DailyLogsRemoteDataSourceImpl implements DailyLogsRemoteDataSource {
         ApiKey.authorization: ApiKey.bearer(token),
     };
 
+    final data = <String, dynamic>{
+      'ProjectId': submission.projectId,
+      ApiKey.milestoneId: submission.milestoneId,
+      ApiKey.workersCount: submission.workersCount,
+      ApiKey.equipmentUsed: submission.equipmentUsed,
+      ApiKey.workSummary: submission.workSummary,
+    };
+
+    if (submission.mediaPaths.isNotEmpty) {
+      data[ApiKey.mediaFile] = await Future.wait(
+        submission.mediaPaths.map((path) => MultipartFile.fromFile(path)),
+      );
+    }
+
     final response = await apiConsumer.post(
-      'Projects/${submission.projectId}/daily-logs',
-      data: submission.toJson(),
+      EndPoints.siteLogs,
+      data: data,
+      isFormData: true,
       headers: headers.isNotEmpty ? headers : null,
     );
 

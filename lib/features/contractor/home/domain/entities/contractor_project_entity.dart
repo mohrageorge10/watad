@@ -15,6 +15,7 @@ class ContractorProjectEntity extends Equatable {
   final String contractValue;
   final String contractedDate;
   final String? contractId;
+  final String? projectId;
 
   const ContractorProjectEntity({
     required this.id,
@@ -31,6 +32,7 @@ class ContractorProjectEntity extends Equatable {
     this.contractValue = 'EGP 2,450,000',
     this.contractedDate = 'Sep 08, 2026',
     this.contractId,
+    this.projectId,
   });
 
   @override
@@ -49,5 +51,6 @@ class ContractorProjectEntity extends Equatable {
         contractValue,
         contractedDate,
         contractId,
+        projectId,
       ];
 }

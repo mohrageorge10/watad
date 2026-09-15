@@ -66,3 +66,10 @@ class ConfirmNewPasswordUseCase {
   Future<ApiResult<AuthResponseEntity>> call(ConfirmNewPasswordRequestModel request) =>
       repository.confirmNewPassword(request);
 }
+
+class LogoutUseCase {
+  final AuthRepository repository;
+  const LogoutUseCase(this.repository);
+  Future<ApiResult<void>> call(String refreshToken) =>
+      repository.logout(refreshToken);
+}

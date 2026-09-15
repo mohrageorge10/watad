@@ -407,7 +407,7 @@ class _ContractorMyProjectsViewState extends State<_ContractorMyProjectsView> {
                     context.pushNamed(
                       AppRoutes.contractorProjectDashboard,
                       extra: {
-                        'projectId': project.id,
+                        'projectId': project.projectId ?? project.id,
                         'projectName': project.title,
                       },
                     );

@@ -16,6 +16,7 @@ class ContractorProjectModel extends ContractorProjectEntity {
     super.contractValue,
     super.contractedDate,
     super.contractId,
+    super.projectId,
   });
 
   factory ContractorProjectModel.fromJson(Map<String, dynamic> json) {
@@ -30,11 +31,12 @@ class ContractorProjectModel extends ContractorProjectEntity {
       badgeColorHex: badge?['color'] as String? ?? '#00B368',
       progress: json['progress'] as String?,
       ownerName: json['ownerName'] as String? ?? json['owner']?['name'] as String? ?? 'Ahmed Al-Masry',
-      landArea: json['landArea'] as String? ?? json['area']?.toString() ?? '1,200 m²',
-      floors: json['floors'] as String? ?? '${json['numberOfFloors'] ?? 2} Floors',
-      contractValue: json['contractValue'] as String? ?? json['cost']?.toString() ?? 'EGP 2,450,000',
-      contractedDate: json['contractedDate'] as String? ?? json['startDate'] as String? ?? 'Sep 08, 2026',
+      landArea: json['landArea']?.toString() ?? json['area']?.toString() ?? '1,200 m²',
+      floors: json['floors']?.toString() ?? json['floorsCount']?.toString() ?? '${json['numberOfFloors'] ?? 2} Floors',
+      contractValue: json['estimatedBudget']?.toString() ?? json['contractValue']?.toString() ?? json['cost']?.toString() ?? 'EGP 2,450,000',
+      contractedDate: json['createdAt']?.toString() ?? json['contractedDate']?.toString() ?? json['startDate']?.toString() ?? 'Sep 08, 2026',
       contractId: json['contractId']?.toString() ?? json['id']?.toString(),
+      projectId: json['projectId']?.toString(),
     );
   }
 
@@ -56,6 +58,7 @@ class ContractorProjectModel extends ContractorProjectEntity {
       'contractValue': contractValue,
       'contractedDate': contractedDate,
       'contractId': contractId,
+      'projectId': projectId,
     };
   }
 }

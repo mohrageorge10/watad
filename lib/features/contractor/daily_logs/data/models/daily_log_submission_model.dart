@@ -5,6 +5,7 @@ class DailyLogSubmissionModel extends DailyLogSubmissionEntity {
     required super.projectId,
     required super.projectName,
     required super.milestoneName,
+    required super.milestoneId,
     required super.location,
     required super.logDate,
     required super.mediaPaths,
@@ -22,6 +23,7 @@ class DailyLogSubmissionModel extends DailyLogSubmissionEntity {
       projectId: json['projectId']?.toString() ?? '',
       projectName: json['projectName'] as String? ?? 'Modern Villa Alpha',
       milestoneName: json['milestoneName'] as String? ?? 'Structural Work · Milestone 2',
+      milestoneId: json['milestoneId']?.toString() ?? '',
       location: json['location'] as String? ?? 'New Cairo, Cairo',
       logDate: json['logDate'] != null
           ? DateTime.tryParse(json['logDate'].toString()) ?? DateTime.now()
@@ -45,6 +47,7 @@ class DailyLogSubmissionModel extends DailyLogSubmissionEntity {
       'projectId': projectId,
       'projectName': projectName,
       'milestoneName': milestoneName,
+      'milestoneId': milestoneId,
       'location': location,
       'logDate': logDate.toIso8601String(),
       'mediaPaths': mediaPaths,

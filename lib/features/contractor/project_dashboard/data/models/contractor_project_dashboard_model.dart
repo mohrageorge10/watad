@@ -40,11 +40,11 @@ class ActiveMilestoneModel extends ActiveMilestoneEntity {
 
   factory ActiveMilestoneModel.fromJson(Map<String, dynamic> json) {
     return ActiveMilestoneModel(
-      id: json['id']?.toString() ?? '',
-      title: json['title'] as String? ?? json['name'] as String? ?? 'Excavation & Foundation',
-      status: json['status'] as String? ?? 'In Progress',
-      targetDate: json['targetDate'] as String? ?? 'Nov 25, 2026',
-      nextPayment: json['nextPayment'] as String? ?? 'EGP 350,000',
+      id: json['id']?.toString() ?? json['milestoneId']?.toString() ?? '',
+      title: json['title'] as String? ?? json['name'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      targetDate: json['targetDate']?.toString() ?? json['targetCompletionDate']?.toString() ?? '',
+      nextPayment: json['nextPayment']?.toString() ?? (json['amount'] != null ? 'EGP ${json['amount']}' : ''),
     );
   }
 
@@ -84,33 +84,69 @@ class ContractorProjectDashboardModel
 
   factory ContractorProjectDashboardModel.fromJson(Map<String, dynamic> json) {
     final milestoneJson = json['activeMilestone'] as Map<String, dynamic>?;
-    final logsJson = json['dailyLogs'] as List<dynamic>?;
+    final logsJson = json['dailyLogs'] as List<dynamic>? ?? json['recentSiteLogs'] as List<dynamic>?;
+
+    final id = json['projectId']?.toString() ?? json['id']?.toString() ?? '';
+    final projectCode = id.length >= 8 ? 'WTD-${id.substring(0, 8).toUpperCase()}' : '';
+    
+    // Most of these are empty because the new API doesn't provide them, 
+    // but we keep the logic just in case it's updated later.
+    final city = json['city']?.toString() ?? '';
+    final governorate = json['governorate']?.toString() ?? '';
+    final location = [city, governorate].where((e) => e.isNotEmpty).join(', ');
+
+    final area = json['landArea']?.toString() ?? '';
+    final formattedArea = area.isNotEmpty ? '$area m²' : '';
+
+    final floorsCount = json['floorsCount']?.toString() ?? '';
+    final formattedFloors = floorsCount.isNotEmpty ? '$floorsCount Floors' : '';
+
+    final budget = json['totalContractAmount']?.toString() ?? json['estimatedBudget']?.toString() ?? json['contractValue']?.toString() ?? '';
+    final formattedBudget = budget.isNotEmpty ? 'EGP $budget' : '';
+
+    final startDateString = json['expectedStartDate']?.toString() ?? json['createdAt']?.toString() ?? '';
+    String formattedStartDate = startDateString;
+    String formattedEndDate = '';
+    
+    if (startDateString.isNotEmpty) {
+      final date = DateTime.tryParse(startDateString);
+      if (date != null) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        formattedStartDate = '${months[date.month - 1]} ${date.day.toString().padLeft(2, '0')}, ${date.year}';
+      }
+    }
+
+    final finishingInt = (json['finishingLevel'] as num?)?.toInt();
+    final formattedFinishing = finishingInt == 1 ? 'Premium' : (finishingInt == 2 ? 'Standard' : (finishingInt != null ? 'Basic' : ''));
+    
+    final statusInt = (json['status'] as num?)?.toInt();
+    final formattedStatus = statusInt == 6 ? 'Active' : (statusInt != null ? 'Status $statusInt' : '');
 
     return ContractorProjectDashboardModel(
-      projectId: json['projectId']?.toString() ?? json['id']?.toString() ?? 'proj_1',
-      projectCode: json['projectCode'] as String? ?? 'WTD-2026-089',
-      title: json['title'] as String? ?? json['projectName'] as String? ?? 'Modern Villa Alpha',
-      location: json['location'] as String? ?? 'New Cairo, Cairo',
+      projectId: id,
+      projectCode: projectCode,
+      title: json['projectTitle'] as String? ?? json['title'] as String? ?? json['projectName'] as String? ?? '',
+      location: location,
       imageUrl: json['imageUrl'] as String? ?? json['image'] as String? ?? '',
-      status: json['status'] as String? ?? 'Active',
-      landArea: json['landArea'] as String? ?? '1,200 m²',
-      floors: json['floors'] as String? ?? '2',
-      finishingLevel: json['finishingLevel'] as String? ?? 'Premium',
-      contractValue: json['contractValue'] as String? ?? 'EGP 2,450,000',
-      startDate: json['startDate'] as String? ?? 'Nov 01, 2026',
-      endDate: json['endDate'] as String? ?? 'May 01, 2027',
-      overallProgress: (json['overallProgress'] as num?)?.toInt() ?? 42,
-      completedProgress: (json['completedProgress'] as num?)?.toInt() ?? 42,
-      inProgressProgress: (json['inProgressProgress'] as num?)?.toInt() ?? 38,
-      notStartedProgress: (json['notStartedProgress'] as num?)?.toInt() ?? 20,
+      status: formattedStatus,
+      landArea: formattedArea,
+      floors: formattedFloors,
+      finishingLevel: formattedFinishing,
+      contractValue: formattedBudget,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
+      overallProgress: (json['overallProgressPercentage'] as num?)?.toInt() ?? (json['overallProgress'] as num?)?.toInt() ?? 0,
+      completedProgress: (json['completedProgress'] as num?)?.toInt() ?? 0,
+      inProgressProgress: (json['inProgressProgress'] as num?)?.toInt() ?? 0,
+      notStartedProgress: (json['notStartedProgress'] as num?)?.toInt() ?? 0,
       activeMilestone: milestoneJson != null
           ? ActiveMilestoneModel.fromJson(milestoneJson)
           : const ActiveMilestoneModel(
-              id: 'ms_1',
-              title: 'Excavation & Foundation',
-              status: 'In Progress',
-              targetDate: 'Nov 25, 2026',
-              nextPayment: 'EGP 350,000',
+              id: '',
+              title: '',
+              status: '',
+              targetDate: '',
+              nextPayment: '',
             ),
       dailyLogs: logsJson != null
           ? logsJson
