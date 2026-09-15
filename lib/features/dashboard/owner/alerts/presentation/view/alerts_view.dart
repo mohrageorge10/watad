@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:watad/core/di/service_locator.dart';
 import 'package:watad/core/shared/widgets/app_empty_state_widget.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -10,6 +11,8 @@ import '../cubit/alerts_cubit.dart';
 import '../cubit/alerts_state.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/alert_category_chips.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
+import 'package:watad/core/routing/app_routes.dart';
 
 class AlertsView extends StatefulWidget {
   const AlertsView({super.key});
@@ -86,7 +89,17 @@ class _AlertsViewState extends State<AlertsView> {
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          try {
+                            context.read<MainLayoutCubit>().changeBottomNavIndex(0);
+                          } catch (_) {
+                            context.go(AppRoutes.projectDashboard);
+                          }
+                        }
+                      },
                       child: const Icon(Icons.arrow_back, color: AppColors.primary),
                     ),
                     Expanded(

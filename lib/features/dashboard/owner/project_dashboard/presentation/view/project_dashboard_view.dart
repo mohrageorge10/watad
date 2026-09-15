@@ -12,6 +12,9 @@ import '../widgets/dashboard_shimmer.dart';
 import '../widgets/milestones_section.dart';
 import '../widgets/progress_card_section.dart';
 import '../widgets/quick_access_section.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
+import 'package:watad/features/dashboard/owner/main_layout/presentation/cubit/main_layout_cubit.dart';
 
 class ProjectDashboardView extends StatelessWidget {
   final String? projectId;
@@ -87,7 +90,17 @@ class ProjectDashboardBody extends StatelessWidget {
                           Positioned(
                             left: 16.w,
                             child: GestureDetector(
-                              onTap: () => Navigator.of(context).maybePop(),
+                              onTap: () {
+                                if (context.canPop()) {
+                                  context.pop();
+                                } else {
+                                  try {
+                                    context.read<MainLayoutCubit>().changeBottomNavIndex(0);
+                                  } catch (_) {
+                                    context.go(AppRoutes.home);
+                                  }
+                                }
+                              },
                               child: Icon(
                                 Icons.arrow_back,
                                 color: AppColors.primary,

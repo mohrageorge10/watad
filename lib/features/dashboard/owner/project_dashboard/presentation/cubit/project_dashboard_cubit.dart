@@ -25,7 +25,7 @@ class ProjectDashboardCubit extends Cubit<ProjectDashboardState> {
 
       overviewResult.fold(
         (data) {
-          if (!data.hasActiveProject || data.projectId == null || data.projectId!.isEmpty) {
+          if (data.projectId == null || data.projectId!.isEmpty) {
             emit(ProjectDashboardEmpty());
             hasError = true;
           } else {

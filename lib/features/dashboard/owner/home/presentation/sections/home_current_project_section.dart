@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watad/core/theme/app_colors.dart';
 import 'package:watad/core/theme/app_text_styles.dart';
+import 'package:go_router/go_router.dart';
+import 'package:watad/core/routing/app_routes.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_overview_cubit.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/cubit/home_overview_state.dart';
 import 'package:watad/features/dashboard/owner/home/presentation/widgets/current_project_card.dart';
@@ -24,7 +26,7 @@ class HomeCurrentProjectSection extends StatelessWidget {
           return CurrentProjectCard(
             overview: state.data,
             onGoToDashboard: () {
-              // TODO: context.pushNamed(Routes.projectDashboard, arguments: state.data.projectId);
+              context.go(AppRoutes.projectDashboard);
             },
           );
         }

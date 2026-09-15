@@ -20,7 +20,10 @@ class FeasibilityReportModel extends FeasibilityReport {
       laborCost: (json['laborCost'] as num?)?.toDouble() ?? 0.0,
       finishesCost: (json['finishingCost'] as num?)?.toDouble() ?? 0.0,
       contingenciesCost: (json['contingencyBuffer'] as num?)?.toDouble() ?? 0.0,
-      totalBuiltArea: (json['totalBuiltArea'] as num?)?.toDouble() ?? 0.0,
+      totalBuiltArea: (json['totalBuiltArea'] as num?)?.toDouble() ?? 
+                      (json['totalBuildArea'] as num?)?.toDouble() ?? 
+                      (json['builtArea'] as num?)?.toDouble() ?? 
+                      0.0,
       finishingLevel: (json['finishingLevel'] as num?)?.toInt() ?? 0,
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:watad/core/routing/app_router.dart';
 import 'package:watad/core/theme/app_colors.dart';
@@ -19,6 +20,15 @@ class WatadApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
           builder: FlutterSmartDialog.init(),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('ar', 'EG'),
+            Locale('en', 'US'),
+          ],
           theme: ThemeData(
             useMaterial3: true,
             fontFamily: 'Inter',

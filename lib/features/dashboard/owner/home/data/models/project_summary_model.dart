@@ -9,6 +9,7 @@ class ProjectSummaryModel extends ProjectSummary {
     required super.status,
     required super.overallProgressPercentage,
     super.updatedAt,
+    super.hasContract = false,
   });
 
   factory ProjectSummaryModel.fromJson(Map<String, dynamic> json) {
@@ -28,6 +29,7 @@ class ProjectSummaryModel extends ProjectSummary {
       overallProgressPercentage: (rawProgress as num?) ?? 0,
       updatedAt:
           rawUpdatedAt != null ? DateTime.tryParse(rawUpdatedAt.toString()) : null,
+      hasContract: json['hasContract'] as bool? ?? (json['contractId'] != null),
     );
   }
 

@@ -16,6 +16,7 @@ class CurrentProjectOverviewModel extends CurrentProjectOverview {
     required super.daysElapsed,
     super.estimatedCompletionDate,
     required super.hasActiveProject,
+    super.hasContract = false,
   });
 
   factory CurrentProjectOverviewModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +39,7 @@ class CurrentProjectOverviewModel extends CurrentProjectOverview {
           ? DateTime.tryParse(json['estimatedCompletionDate'].toString())
           : null,
       hasActiveProject: json['hasActiveProject'] as bool? ?? false,
+      hasContract: json['hasContract'] as bool? ?? (json['contractId'] != null),
     );
   }
 
